@@ -4,6 +4,7 @@ import os
 import tempfile
 import fitz  # PyMuPDF
 from docx import Document
+
 from pdf2docx import Converter
 
 def pdf_to_word(pdf_bytes):
@@ -29,6 +30,8 @@ def pdf_to_word(pdf_bytes):
         cv.convert(temp_docx)
         cv.close()
         
+
+
         # Read the generated DOCX
         if not os.path.exists(temp_docx):
             raise Exception("Conversion failed: Output file not created")
