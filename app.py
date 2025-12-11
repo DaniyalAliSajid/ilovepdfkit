@@ -4,7 +4,7 @@ import converter
 import io
 import os
 
-app = Flask(__name__, static_folder='static_build', static_url_path='')
+app = Flask(__name__, static_folder='static_build')
 
 # CORS configuration
 CORS(app, resources={
@@ -19,13 +19,10 @@ CORS(app, resources={
 # Configuration
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
-
+@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def serve_static(path):
-    if os.path.exists(os.path.join(app.static_folder, path)):
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
         return app.send_static_file(path)
     return app.send_static_file('index.html')
 
