@@ -1,3 +1,12 @@
+# Stage 1: Build Frontend
+FROM node:20-slim AS frontend-build
+WORKDIR /app
+COPY frontend/package*.json ./
+RUN npm install
+COPY frontend/ .
+RUN npm run build
+
+# Stage 2: Runtime
 FROM python:3.12-slim
 
 # Install system dependencies including LibreOffice and Java (required for LibreOffice)
@@ -12,6 +21,9 @@ WORKDIR /app
 # Copy requirements and install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy built frontend assets
+COPY --from=frontend-build /app/dist /app/static_build
 
 # Copy application code
 COPY . .

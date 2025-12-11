@@ -1,10 +1,10 @@
-from flask import Flask, request, send_file, jsonify, render_template_string
+from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
 import converter
 import io
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static_build', static_url_path='')
 
 # CORS configuration
 CORS(app, resources={
@@ -19,47 +19,15 @@ CORS(app, resources={
 # Configuration
 MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def index():
-    return render_template_string(\"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>iLovePDFKit API</title>
-        <style>
-            body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
-            h1 { color: #e53e3e; }
-            .card { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-            code { background: #edf2f7; padding: 2px 5px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; }
-            .status { display: inline-block; padding: 5px 10px; border-radius: 9999px; font-size: 0.8em; font-weight: bold; }
-            .status.online { background-color: #c6f6d5; color: #22543d; }
-        </style>
-    </head>
-    <body>
-        <h1>iLovePDFKit API</h1>
-        <div class="card">
-            <p>Status: <span class="status online">Online</span></p>
-            <p>Welcome to the iLovePDFKit API. This service converts documents between PDF and Word formats.</p>
-        </div>
-        
-        <h2>Endpoints</h2>
-        
-        <div class="card">
-            <h3>POST /api/convert/pdf-to-word</h3>
-            <p>Convert a PDF file to a Word document.</p>
-            <p><strong>Input:</strong> Form-data with file field named <code>file</code> (.pdf)</p>
-        </div>
+    return app.send_static_file('index.html')
 
-        <div class="card">
-            <h3>POST /api/convert/word-to-pdf</h3>
-            <p>Convert a Word document to PDF.</p>
-            <p><strong>Input:</strong> Form-data with file field named <code>file</code> (.docx)</p>
-        </div>
-    </body>
-    </html>
-    \""")
+@app.route('/<path:path>')
+def serve_static(path):
+    if os.path.exists(os.path.join(app.static_folder, path)):
+        return app.send_static_file(path)
+    return app.send_static_file('index.html')
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
