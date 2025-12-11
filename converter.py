@@ -59,13 +59,11 @@ def pdf_to_word(pdf_bytes):
 
 def word_to_pdf(docx_bytes):
     """
-    Convert Word to PDF using Microsoft Word COM automation (via docx2pdf)
+    Convert Word to PDF using Microsoft Word (Windows) or LibreOffice (Linux)
     """
-    import pythoncom
-    from docx2pdf import convert
+    import platform
+    import subprocess
     
-    # Initialize COM for this thread
-    pythoncom.CoInitialize()
     temp_docx_path = None
     temp_pdf_path = None
     
@@ -76,17 +74,43 @@ def word_to_pdf(docx_bytes):
             
         temp_pdf_path = temp_docx_path.replace(".docx", ".pdf")
         
-        try:
-            convert(temp_docx_path, temp_pdf_path)
+        if platform.system() == "Windows":
+            import pythoncom
+            from docx2pdf import convert
             
-            with open(temp_pdf_path, "rb") as f:
-                pdf_bytes = f.read()
+            # Initialize COM for this thread
+            pythoncom.CoInitialize()
+            try:
+                convert(temp_docx_path, temp_pdf_path)
+            finally:
+                pythoncom.CoUninitialize()
                 
-            return io.BytesIO(pdf_bytes)
-    
-        except Exception as e:
-             raise Exception(f"Word to PDF conversion failed: {str(e)}")
+        else:
+            # Linux (Render) - Use LibreOffice
+            # --headless: no UI
+            # --convert-to pdf: target format
+            # --outdir: output directory (must be specified or it goes to home)
+            out_dir = os.path.dirname(temp_docx_path)
+            subprocess.run([
+                'libreoffice', 
+                '--headless', 
+                '--convert-to', 'pdf', 
+                temp_docx_path, 
+                '--outdir', out_dir
+            ], check=True)
+            
+        # Read result
+        if not os.path.exists(temp_pdf_path):
+             raise Exception("Conversion failed: Output PDF not created")
              
+        with open(temp_pdf_path, "rb") as f:
+            pdf_bytes = f.read()
+            
+        return io.BytesIO(pdf_bytes)
+    
+    except Exception as e:
+         raise Exception(f"Word to PDF conversion failed: {str(e)}")
+         
     finally:
         # Cleanup temp files
         if temp_docx_path and os.path.exists(temp_docx_path):
@@ -99,8 +123,6 @@ def word_to_pdf(docx_bytes):
                 os.remove(temp_pdf_path)
             except:
                 pass
-                
-        pythoncom.CoUninitialize()
 
 def verify_docx(docx_stream):
     """Verify that the DOCX stream contains a valid Word document"""
