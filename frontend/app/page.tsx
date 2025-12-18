@@ -17,7 +17,7 @@ export default function Home() {
               <FileText size={72} color="white" strokeWidth={1.5} />
             </div>
           </div>
-          <h1 className={styles.title}>Document Converter Pro</h1>
+          <h1 className={styles.title}>ILOVEPDFKIT</h1>
           <p className={styles.subtitle}>
             Transform your documents with pixel-perfect accuracy. Convert between PDF and Word formats while preserving images, fonts, and formatting.
           </p>
@@ -42,7 +42,7 @@ export default function Home() {
                 <li>✓ Maintain fonts and styles</li>
                 <li>✓ Keep page count intact</li>
               </ul>
-              <Link href="/pdf-to-word" className={styles.toolButton} target="_blank">
+              <Link href="/pdf-to-word" className={styles.toolButton}>
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -59,7 +59,7 @@ export default function Home() {
                 <li>✓ Keep images intact</li>
                 <li>✓ Maintain document structure</li>
               </ul>
-              <Link href="/word-to-pdf" className={styles.toolButton} target="_blank">
+              <Link href="/word-to-pdf" className={styles.toolButton}>
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -70,7 +70,7 @@ export default function Home() {
       {/* Why Choose Section */}
       <section className={styles.featuresSection}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>Why Choose Document Converter Pro?</h2>
+          <h2 className={styles.sectionTitle}>Why Choose ILOVEPDFKIT?</h2>
           <div className={styles.featuresGrid}>
             <div className={styles.featureItem}>
               <div className={styles.featureIcon} style={{ background: 'var(--primary-gradient)' }}>
@@ -106,7 +106,7 @@ export default function Home() {
             <Link href="/contact">Contact Us</Link>
           </div>
           <p className={styles.copyright}>
-            © 2025 Document Converter Pro. All rights reserved.
+            © 2025 ILOVEPDFKIT. All rights reserved.
             <br />
             Made with ❤️ for seamless document conversion
           </p>
