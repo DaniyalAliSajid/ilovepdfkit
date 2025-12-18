@@ -87,14 +87,21 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             }
 
             const blob = await response.blob();
+            console.log(`DEBUG: Received blob of size ${blob.size} bytes`);
 
-            // Magic Bytes Validation could be added here if needed, keeping it simple for now as requested
+            if (blob.size === 0) {
+                throw new Error("Received an empty file from the server.");
+            }
 
-            const lastDotIndex = file.name.lastIndexOf('.');
-            const baseName = lastDotIndex !== -1 ? file.name.substring(0, lastDotIndex) : file.name;
+            // More robust filename logic
+            const originalName = file.name;
+            const nameParts = originalName.split('.');
+            if (nameParts.length > 1) nameParts.pop(); // Remove extension
+            const baseName = nameParts.join('.');
             const extension = isPdfToWord ? '.docx' : '.pdf';
-            const outputFileName = baseName + extension;
+            const outputFileName = `${baseName}${extension}`;
 
+            console.log(`DEBUG: Saving as ${outputFileName}`);
             saveAs(blob, outputFileName);
 
             setMessage(`Conversion successful! Downloaded ${outputFileName}`);
@@ -182,7 +189,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                             {history.map((item) => (
                                 <div key={item.id} className={styles.historyItem}>
                                     <div>
-                                        <p className={styles.historyName}>{item.fileName}</p>
+                                        <p className={styles.historyName}>{item.outputFileName}</p>
                                         <p className={styles.historyMeta}>
                                             {item.type} • {item.timestamp}
                                         </p>
