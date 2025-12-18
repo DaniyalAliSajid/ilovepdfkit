@@ -1,12 +1,4 @@
-# Stage 1: Build Frontend
-FROM node:20-slim AS frontend-build
-WORKDIR /app
-COPY frontend/package*.json ./
-RUN npm install
-COPY frontend/ .
-RUN npm run build
-
-# Stage 2: Runtime
+# Runtime Stage
 FROM python:3.12-slim
 
 # Install system dependencies including LibreOffice and Java (required for LibreOffice)
@@ -22,12 +14,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy built frontend assets
-COPY --from=frontend-build /app/dist /app/static_build
-
-# Copy application code
+# Copy application code (excluding frontend via .dockerignore if possible, but copying all is fine)
 COPY . .
 
 # Expose port and run application
 EXPOSE 5000
-CMD sh -c "gunicorn --bind 0.0.0.0:${PORT:-5000} app:app"
+CMD sh -c "gunicorn --bind 0.0.0.0:${PORT:-10000} app:app"

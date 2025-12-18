@@ -29,6 +29,15 @@ MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 def serve(path):
     if path != "" and os.path.exists(app.static_folder + '/' + path):
         return app.send_static_file(path)
+    
+    # Fallback for production when frontend is hosted elsewhere (Netlify)
+    if not os.path.exists(os.path.join(app.static_folder, 'index.html')):
+        return jsonify({
+            "message": "ILOVEPDFKIT API is running",
+            "status": "healthy",
+            "frontend": "https://ilovepdfkit.com"
+        }), 200
+        
     return app.send_static_file('index.html')
 
 @app.route('/api/health', methods=['GET'])
