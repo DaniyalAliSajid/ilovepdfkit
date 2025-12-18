@@ -82,7 +82,9 @@ def convert_pdf_to_word():
             }), 413
         
         # Convert PDF to Word
+        print("DEBUG: Calling converter.pdf_to_word...")
         docx_stream = converter.pdf_to_word(pdf_bytes)
+        print("DEBUG: Converter returned. Verifying...")
         
         # Verify stream content with strict check
         if not converter.verify_docx(docx_stream):
