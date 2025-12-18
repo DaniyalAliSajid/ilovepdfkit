@@ -115,6 +115,7 @@
   background: rgba(255, 255, 255, 0.05);
   opacity: 0;
   transition: opacity 0.3s;
+  pointer-events: none;
 }
 
 .toolCard:hover {

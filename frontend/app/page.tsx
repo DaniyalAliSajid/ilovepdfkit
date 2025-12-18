@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { FileText, Zap, Lock, Target, TrendingUp, Users, Award, ArrowRight } from 'lucide-react';
+import { FileText, Zap, Lock, Target, ArrowRight } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -97,37 +97,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <div className={styles.statsGrid}>
-            <div className={`${styles.statCard} glass`}>
-              <TrendingUp size={28} color="#667eea" />
-              <div className={styles.statValue}>29,166+</div>
-              <div className={styles.statLabel}>Conversions</div>
-            </div>
-            <div className={`${styles.statCard} glass`}>
-              <Users size={28} color="#667eea" />
-              <div className={styles.statValue}>29,166+</div>
-              <div className={styles.statLabel}>Happy Users</div>
-            </div>
-            <div className={`${styles.statCard} glass`}>
-              <Award size={28} color="#667eea" />
-              <div className={styles.statValue}>29%</div>
-              <div className={styles.statLabel}>Accuracy</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Footer */}
       <footer className={styles.footer}>
         <div className={styles.container}>
-          <div className={styles.footerSocials}>
-            <div className={styles.socialIcon}><Users size={20} /></div>
-            <div className={styles.socialIcon}><TrendingUp size={20} /></div>
-            <div className={styles.socialIcon}><Award size={20} /></div>
-          </div>
           <div className={styles.footerLinks}>
             <Link href="/about">About Us</Link>
             <span>•</span>
