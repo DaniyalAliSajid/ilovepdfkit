@@ -1,0 +1,7 @@
+flask
+flask-cors
+PyMuPDF
+pdf2docx
+python-docx
+gunicorn
+# Exclude docx2pdf and pywin32 as they are Windows only

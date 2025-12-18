@@ -1,0 +1,358 @@
+.main {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 4rem;
+}
+
+.blob1 {
+  position: absolute;
+  top: -10%;
+  right: -5%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+  z-index: -1;
+}
+
+.blob2 {
+  position: absolute;
+  top: 30%;
+  left: -5%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(245, 87, 108, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+  z-index: -1;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section {
+  padding: 4rem 0;
+}
+
+/* Hero */
+.hero {
+  padding: 6rem 0 4rem;
+  text-align: center;
+}
+
+.heroIconWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+
+.heroIcon {
+  background: var(--primary-gradient);
+  padding: 24px;
+  border-radius: 28px;
+  box-shadow: 0 25px 60px -10px rgba(102, 126, 234, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #5a5a9a;
+  margin-bottom: 1.5rem;
+  letter-spacing: -1.5px;
+  line-height: 1.1;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: #64748b;
+  max-width: 650px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.heroDivider {
+  width: 80px;
+  height: 5px;
+  background: var(--primary-gradient);
+  margin: 0 auto;
+  border-radius: 10px;
+  opacity: 0.3;
+}
+
+/* Tool Cards */
+.toolsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2.5rem;
+  margin-top: 1rem;
+}
+
+.toolCard {
+  border-radius: 32px;
+  padding: 3.5rem 3rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: var(--medium-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.toolCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.05);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.toolCard:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.2);
+}
+
+.toolCard:hover::before {
+  opacity: 1;
+}
+
+.pdfToWordCard {
+  background: var(--primary-gradient);
+  box-shadow: 0 20px 40px -10px rgba(102, 126, 234, 0.4);
+}
+
+.wordToPdfCard {
+  background: var(--secondary-gradient);
+  box-shadow: 0 20px 40px -10px rgba(245, 87, 108, 0.4);
+}
+
+.toolIcon {
+  font-size: 4.5rem;
+  margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.2);
+  width: 90px;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.toolTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 1.2rem;
+}
+
+.toolDesc {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.toolFeatures {
+  list-style: none;
+  text-align: left;
+  margin-bottom: 3rem;
+  width: 100%;
+}
+
+.toolFeatures li {
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  font-size: 1rem;
+  opacity: 0.95;
+}
+
+.toolButton {
+  background: white;
+  padding: 14px 34px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.pdfToWordCard .toolButton {
+  color: var(--primary);
+}
+
+.wordToPdfCard .toolButton {
+  color: var(--secondary);
+}
+
+.toolButton:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Title */
+.sectionTitle {
+  font-size: 2.2rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 3.5rem;
+  color: #334155;
+}
+
+/* Features */
+.featuresSection {
+  padding: 6rem 0;
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 3rem;
+}
+
+.featureItem {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.featureIcon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.3);
+}
+
+.featureItem h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  color: #1e293b;
+}
+
+.featureItem p {
+  color: #64748b;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* Stats */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.statCard {
+  padding: 2.5rem;
+  border-radius: 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: var(--soft-shadow);
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.statValue {
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.statLabel {
+  color: #64748b;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Footer */
+.footer {
+  margin-top: 4rem;
+  padding: 6rem 0 3rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.footerSocials {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.socialIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+
+.socialIcon:hover {
+  background: white;
+  color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: var(--soft-shadow);
+}
+
+.footerLinks {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  font-weight: 700;
+  color: #64748b;
+}
+
+.footerLinks a:hover {
+  color: var(--primary);
+}
+
+.copyright {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.8rem;
+  }
+
+  .toolsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .toolCard {
+    padding: 2.5rem 2rem;
+  }
+}

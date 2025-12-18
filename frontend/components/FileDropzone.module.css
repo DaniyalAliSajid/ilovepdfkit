@@ -1,0 +1,117 @@
+.dropzone {
+    border: 2px dashed #e2e8f0;
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-color: #f8f9fa;
+    margin-bottom: 2rem;
+}
+
+.dropzone:hover,
+.active {
+    border-color: #667eea;
+    background-color: #edf2f7;
+}
+
+.icon {
+    color: #9ca3af;
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+}
+
+.dropzone:hover .icon,
+.active .icon {
+    color: #667eea;
+}
+
+.text {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary, #2d3748);
+}
+
+.subtext {
+    font-size: 0.875rem;
+    color: #718096;
+    margin-bottom: 1rem;
+}
+
+.badgeContainer {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #718096;
+}
+
+.selectedFile {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.fileInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.fileIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.fileName {
+    font-weight: 600;
+    color: #2d3748;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.fileSize {
+    font-size: 0.875rem;
+    color: #718096;
+}
+
+.removeButton {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #feb2b2;
+    color: #c53030;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.removeButton:hover {
+    background: #fc8181;
+    color: white;
+}
