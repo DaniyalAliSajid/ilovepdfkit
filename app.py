@@ -9,7 +9,12 @@ app = Flask(__name__, static_folder='static_build')
 # CORS configuration
 CORS(app, resources={
     r"/api/*": {
-        "origins": ["http://localhost:5173", "http://localhost:3000"],
+        "origins": [
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "https://ilovepdfkit.com",
+            "https://www.ilovepdfkit.com"
+        ],
         "methods": ["GET", "POST", "OPTIONS"],
         "allow_headers": ["Content-Type"],
         "expose_headers": ["Content-Disposition"]

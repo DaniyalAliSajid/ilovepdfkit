@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     output: 'export',
-    distDir: '../static_build',
     images: { unoptimized: true },
     // Use rewrites ONLY for local development to avoid CORS issues
     async rewrites() {
