@@ -5,14 +5,15 @@ import { Upload, FileCheck, X } from 'lucide-react';
 import styles from './FileDropzone.module.css';
 
 interface FileDropzoneProps {
-    onFileSelect: (file: File | null) => void;
+    onFileSelect: (file: File | File[] | null) => void;
     accept: string;
     type: string;
+    multiple?: boolean;
 }
 
-const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type }) => {
+const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type, multiple = false }) => {
     const [isDragging, setIsDragging] = useState(false);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
     const handleDragEnter = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -36,42 +37,54 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type 
         e.stopPropagation();
         setIsDragging(false);
 
-        const files = e.dataTransfer.files;
-        if (files && files.length > 0) {
-            handleFileSelection(files[0]);
+        const droppedFiles = Array.from(e.dataTransfer.files);
+        if (droppedFiles.length > 0) {
+            handleFileSelection(multiple ? droppedFiles : [droppedFiles[0]]);
         }
-    }, [accept]);
+    }, [accept, multiple]);
 
-    const handleFileSelection = (file: File) => {
-        const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
-        if (!accept.includes(fileExtension)) {
-            alert(`Invalid file type. Please select a ${accept} file.`);
-            return;
-        }
-
+    const handleFileSelection = (files: File[]) => {
+        const validFiles: File[] = [];
         const maxSize = 50 * 1024 * 1024;
-        if (file.size > maxSize) {
-            alert('File size exceeds 50MB limit.');
-            return;
+        const acceptedTypes = accept.split(',').map(t => t.trim().toLowerCase());
+
+        for (const file of files) {
+            const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+            if (!acceptedTypes.some(type => fileExtension.includes(type) || type === '.*')) {
+                alert(`Invalid file type: ${file.name}. Please select a ${accept} file.`);
+                continue;
+            }
+
+            if (file.size > maxSize) {
+                alert(`File too large: ${file.name}. Max size is 50MB.`);
+                continue;
+            }
+            validFiles.push(file);
         }
 
-        setSelectedFile(file);
-        onFileSelect(file);
+        if (validFiles.length > 0) {
+            const newFiles = multiple ? [...selectedFiles, ...validFiles] : [validFiles[0]];
+            setSelectedFiles(newFiles);
+            onFileSelect(multiple ? newFiles : newFiles[0]);
+        }
     };
 
     const handleFileInput = (e: ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files && files.length > 0) {
-            handleFileSelection(files[0]);
+            handleFileSelection(Array.from(files));
         }
     };
 
-    const handleRemoveFile = () => {
-        setSelectedFile(null);
-        onFileSelect(null);
-        // Reset file input
-        const input = document.getElementById(`file-input-${type}`) as HTMLInputElement;
-        if (input) input.value = '';
+    const handleRemoveFile = (index: number) => {
+        const newFiles = selectedFiles.filter((_, i) => i !== index);
+        setSelectedFiles(newFiles);
+        onFileSelect(newFiles.length > 0 ? (multiple ? newFiles : newFiles[0]) : null);
+
+        if (newFiles.length === 0) {
+            const input = document.getElementById(`file-input-${type}`) as HTMLInputElement;
+            if (input) input.value = '';
+        }
     };
 
     const formatFileSize = (bytes: number) => {
@@ -82,21 +95,33 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type 
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
-    if (selectedFile) {
+    if (selectedFiles.length > 0) {
         return (
-            <div className={styles.selectedFile}>
-                <div className={styles.fileInfo}>
-                    <div className={styles.fileIcon}>
-                        <FileCheck size={28} />
+            <div className={styles.selectedFilesContainer}>
+                {selectedFiles.map((file, idx) => (
+                    <div key={`${file.name}-${idx}`} className={styles.selectedFile}>
+                        <div className={styles.fileInfo}>
+                            <div className={styles.fileIcon}>
+                                <FileCheck size={24} />
+                            </div>
+                            <div className={styles.fileDetails}>
+                                <p className={styles.fileName}>{file.name}</p>
+                                <p className={styles.fileSize}>{formatFileSize(file.size)}</p>
+                            </div>
+                        </div>
+                        <button onClick={() => handleRemoveFile(idx)} className={styles.removeButton}>
+                            <X size={18} />
+                        </button>
                     </div>
-                    <div>
-                        <p className={styles.fileName}>{selectedFile.name}</p>
-                        <p className={styles.fileSize}>{formatFileSize(selectedFile.size)}</p>
-                    </div>
-                </div>
-                <button onClick={handleRemoveFile} className={styles.removeButton}>
-                    <X size={20} />
-                </button>
+                ))}
+                {multiple && (
+                    <button
+                        className={styles.addMoreButton}
+                        onClick={() => document.getElementById(`file-input-${type}`)?.click()}
+                    >
+                        + Add more images
+                    </button>
+                )}
             </div>
         );
     }
@@ -114,12 +139,13 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type 
                 id={`file-input-${type}`}
                 type="file"
                 accept={accept}
+                multiple={multiple}
                 onChange={handleFileInput}
                 style={{ display: 'none' }}
             />
             <Upload className={styles.icon} size={56} />
             <p className={styles.text}>
-                {isDragging ? 'Drop your file here!' : 'Drag & drop your file here'}
+                {isDragging ? 'Drop your files here!' : multiple ? 'Drag & drop your images here' : 'Drag & drop your file here'}
             </p>
             <p className={styles.subtext}>or click to browse</p>
             <div className={styles.badgeContainer}>
@@ -129,5 +155,6 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type 
         </div>
     );
 };
+
 
 export default FileDropzone;

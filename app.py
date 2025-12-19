@@ -3,6 +3,7 @@ from flask_cors import CORS
 import converter
 import io
 import os
+import zipfile
 
 app = Flask(__name__)
 
@@ -163,5 +164,121 @@ def convert_word_to_pdf():
             "details": str(e)
         }), 500
 
+
+@app.route('/api/convert/pdf-to-jpg', methods=['POST'])
+def convert_pdf_to_jpg():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+        
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        image_streams = converter.pdf_to_jpg(pdf_bytes)
+        
+        # Create a ZIP file in memory
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for i, img_stream in enumerate(image_streams):
+                img_stream.seek(0)
+                zip_file.writestr(f"page_{i+1}.jpg", img_stream.read())
+        
+        zip_buffer.seek(0)
+        return send_file(
+            zip_buffer,
+            as_attachment=True,
+            download_name=f"{file.filename.rsplit('.', 1)[0]}_images.zip",
+            mimetype='application/zip'
+        )
+    except Exception as e:
+        app.logger.error(f"PDF to JPG error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/jpg-to-pdf', methods=['POST'])
+def convert_jpg_to_pdf():
+    try:
+        if 'files' not in request.files:
+            return jsonify({"error": "No files provided"}), 400
+        
+        files = request.files.getlist('files')
+        image_bytes_list = []
+        for file in files:
+            if file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+                img_bytes = file.read()
+                validate_file_size(img_bytes)
+                image_bytes_list.append(img_bytes)
+        
+        if not image_bytes_list:
+            return jsonify({"error": "No valid images found"}), 400
+            
+        pdf_stream = converter.jpg_to_pdf(image_bytes_list)
+        
+        return send_file(
+            pdf_stream,
+            as_attachment=True,
+            download_name="images_to_pdf.pdf",
+            mimetype='application/pdf'
+        )
+    except Exception as e:
+        app.logger.error(f"JPG to PDF error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/rotate-pdf', methods=['POST'])
+def convert_rotate_pdf():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        angle = int(request.form.get('angle', 90))
+        
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        pdf_stream = converter.rotate_pdf(pdf_bytes, angle)
+        
+        return send_file(
+            pdf_stream,
+            as_attachment=True,
+            download_name=f"{file.filename.rsplit('.', 1)[0]}_rotated.pdf",
+            mimetype='application/pdf'
+        )
+    except Exception as e:
+        app.logger.error(f"Rotate PDF error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/ppt-to-pdf', methods=['POST'])
+def convert_ppt_to_pdf():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        ppt_bytes = file.read()
+        validate_file_size(ppt_bytes)
+        
+        pdf_stream = converter.ppt_to_pdf(ppt_bytes)
+        
+        return send_file(
+            pdf_stream,
+            as_attachment=True,
+            download_name=f"{file.filename.rsplit('.', 1)[0]}.pdf",
+            mimetype='application/pdf'
+        )
+    except Exception as e:
+        app.logger.error(f"PPT to PDF error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/excel-to-pdf', methods=['POST'])
+def convert_excel_to_pdf():
+    # Endpoint removed as per user request
+    return jsonify({"error": "Excel to PDF conversion is no longer supported"}), 410
+
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
+

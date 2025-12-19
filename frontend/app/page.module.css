@@ -137,6 +137,29 @@
   box-shadow: 0 20px 40px -10px rgba(245, 87, 108, 0.4);
 }
 
+.pdfToJpgCard {
+  background: linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%);
+  box-shadow: 0 20px 40px -10px rgba(255, 106, 136, 0.4);
+}
+
+.jpgToPdfCard {
+  background: linear-gradient(135deg, #00DBDE 0%, #FC00FF 100%);
+  box-shadow: 0 20px 40px -10px rgba(252, 0, 255, 0.4);
+}
+
+.pptToPdfCard {
+  background: linear-gradient(135deg, #FAD961 0%, #F76B1C 100%);
+  box-shadow: 0 20px 40px -10px rgba(247, 107, 28, 0.4);
+}
+
+.rotatePdfCard {
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  box-shadow: 0 20px 40px -10px rgba(239, 68, 68, 0.4);
+}
+
+
+
+
 .toolIcon {
   font-size: 4.5rem;
   margin-bottom: 2rem;
@@ -197,6 +220,24 @@
 .wordToPdfCard .toolButton {
   color: var(--secondary);
 }
+
+.pdfToJpgCard .toolButton {
+  color: #FF6A88;
+}
+
+.jpgToPdfCard .toolButton {
+  color: #FC00FF;
+}
+
+.pptToPdfCard .toolButton {
+  color: #F76B1C;
+}
+
+.rotatePdfCard .toolButton {
+  color: #ef4444;
+}
+
+
 
 .toolButton:hover {
   transform: scale(1.05);

@@ -9,6 +9,7 @@ import platform
 import subprocess
 import shutil
 import time
+from PIL import Image
 
 def pdf_to_word(pdf_bytes):
     """
@@ -49,16 +50,9 @@ def pdf_to_word(pdf_bytes):
         
     finally:
         # Cleanup temp files
-        if temp_pdf and os.path.exists(temp_pdf):
-            try:
-                os.remove(temp_pdf)
-            except:
-                pass
-        if temp_docx and os.path.exists(temp_docx):
-            try:
-                os.remove(temp_docx)
-            except:
-                pass
+        safe_remove(temp_pdf)
+        safe_remove(temp_docx)
+
 
 
 
@@ -171,18 +165,241 @@ def word_to_pdf_windows(docx_bytes):
              
     finally:
         # Cleanup temp files
-        if temp_docx_path and os.path.exists(temp_docx_path):
-            try:
-                os.remove(temp_docx_path)
-            except:
-                pass
-        if temp_pdf_path and os.path.exists(temp_pdf_path):
-            try:
-                os.remove(temp_pdf_path)
-            except:
-                pass
-                
         pythoncom.CoUninitialize()
+        safe_remove(temp_docx_path)
+        safe_remove(temp_pdf_path)
+
+
+
+def pdf_to_jpg(pdf_bytes):
+    """
+    Convert PDF pages to JPG images using PyMuPDF (fitz) for speed and accuracy
+    Returns a list of BytesIO objects, each containing a JPG image
+    """
+    if not pdf_bytes:
+        raise ValueError("PDF file is empty")
+    
+    try:
+        pdf_document = fitz.open(stream=pdf_bytes, filetype="pdf")
+        image_streams = []
+        
+        for page_num in range(pdf_document.page_count):
+            page = pdf_document[page_num]
+            # Use higher zoom for better quality (300 DPI)
+            zoom = 2.0
+            mat = fitz.Matrix(zoom, zoom)
+            pix = page.get_pixmap(matrix=mat, colorspace=fitz.csRGB)
+            
+            img_stream = io.BytesIO(pix.tobytes("jpg"))
+            image_streams.append(img_stream)
+            
+        pdf_document.close()
+        return image_streams
+        
+    except Exception as e:
+        raise Exception(f"PDF to JPG conversion failed: {str(e)}")
+
+def jpg_to_pdf(image_bytes_list):
+    """
+    Convert multiple JPG images into a single PDF using Pillow
+    """
+    if not image_bytes_list:
+        raise ValueError("No images provided")
+    
+    try:
+        images = []
+        for img_bytes in image_bytes_list:
+            img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+            images.append(img)
+            
+        if not images:
+            raise ValueError("Could not process images")
+            
+        pdf_stream = io.BytesIO()
+        images[0].save(pdf_stream, format="PDF", save_all=True, append_images=images[1:])
+        pdf_stream.seek(0)
+        return pdf_stream
+        
+    except Exception as e:
+        raise Exception(f"JPG to PDF conversion failed: {str(e)}")
+
+def office_to_pdf_linux(file_bytes, input_suffix):
+    """
+    Convert Office documents to PDF using LibreOffice on Linux
+    """
+    temp_dir = tempfile.mkdtemp()
+    temp_input_path = os.path.join(temp_dir, f"input{input_suffix}")
+    
+    try:
+        with open(temp_input_path, "wb") as f:
+            f.write(file_bytes)
+            
+        office_cmd = 'libreoffice'
+        if shutil.which('soffice'):
+            office_cmd = 'soffice'
+        elif shutil.which('lowriter'):
+            office_cmd = 'lowriter'
+
+        cmd = [
+            office_cmd, 
+            '--headless', 
+            '--convert-to', 
+            'pdf', 
+            '--outdir', 
+            temp_dir, 
+            temp_input_path
+        ]
+        
+        result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False)
+        
+        temp_pdf_path = temp_input_path.rsplit('.', 1)[0] + ".pdf"
+        
+        if not os.path.exists(temp_pdf_path):
+             error_msg = result.stderr.decode() if result.stderr else "Unknown error"
+             raise Exception(f"LibreOffice conversion failed. Error: {error_msg}")
+            
+        with open(temp_pdf_path, "rb") as f:
+            pdf_bytes = f.read()
+            
+        return io.BytesIO(pdf_bytes)
+        
+    except Exception as e:
+        raise Exception(f"Office to PDF conversion failed: {str(e)}")
+    finally:
+        if os.path.exists(temp_dir):
+            try:
+                shutil.rmtree(temp_dir)
+            except:
+                pass
+
+def ppt_to_pdf(ppt_bytes):
+    """
+    Convert PowerPoint to PDF
+    """
+    system = platform.system().lower()
+    if system == 'windows':
+        return ppt_to_pdf_windows(ppt_bytes)
+    else:
+        return office_to_pdf_linux(ppt_bytes, ".pptx")
+
+def safe_remove(file_path, retries=5, delay=0.5):
+    """Attempt to remove a file with retries to handle COM lazy handle release"""
+    if not file_path or not os.path.exists(file_path):
+        return
+    for i in range(retries):
+        try:
+            os.remove(file_path)
+            return
+        except OSError:
+            time.sleep(delay)
+
+def ppt_to_pdf_windows(ppt_bytes):
+    """
+    Convert PowerPoint to PDF using COM automation for 100% accuracy
+    """
+    import pythoncom
+    import win32com.client
+    
+    pythoncom.CoInitialize()
+    temp_ppt_path = None
+    temp_pdf_path = None
+    powerpoint = None
+    deck = None
+    
+    try:
+        suffix = ".pptx"
+        with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_ppt:
+            temp_ppt.write(ppt_bytes)
+            temp_ppt_path = temp_ppt.name
+            
+        temp_pdf_path = temp_ppt_path.replace(suffix, ".pdf")
+        
+        powerpoint = win32com.client.Dispatch("PowerPoint.Application")
+        # ppFixedFormatTypePDF = 32
+        deck = powerpoint.Presentations.Open(temp_ppt_path, WithWindow=False)
+        deck.SaveAs(temp_pdf_path, 32)
+        deck.Close()
+        powerpoint.Quit()
+        
+        # Explicitly release COM objects
+        del deck
+        del powerpoint
+        
+        with open(temp_pdf_path, "rb") as f:
+            pdf_bytes = f.read()
+            
+        return io.BytesIO(pdf_bytes)
+    except Exception as e:
+        raise Exception(f"PPT to PDF conversion failed: {str(e)}")
+    finally:
+        pythoncom.CoUninitialize()
+        safe_remove(temp_ppt_path)
+        safe_remove(temp_pdf_path)
+
+def excel_to_pdf(excel_bytes):
+    """
+    Excel conversion is currently disabled.
+
+    """
+    raise NotImplementedError("Excel to PDF conversion is no longer supported.")
+
+
+def com_retry(func, *args, **kwargs):
+    """Specific wrapper to handle 'Call was rejected by callee' COM errors"""
+    import time
+    import pywintypes
+    for i in range(20): # Try for 20 seconds
+        try:
+            return func(*args, **kwargs)
+        except pywintypes.com_error as e:
+            # -2147418111 is RPC_E_CALL_REJECTED
+            hr = getattr(e, 'hresult', None)
+            if hr is None and len(e.args) > 0:
+                hr = e.args[0]
+                
+            if hr == -2147418111:
+                print(f"DEBUG: COM callee rejected (busy). Retrying {i+1}/20...")
+                time.sleep(1)
+                continue
+            raise
+        except Exception as e:
+            # Catch standard exceptions if they wrap the COM error
+            error_str = str(e)
+            if "-2147418111" in error_str or "Call was rejected by callee" in error_str:
+                print(f"DEBUG: Caught busy error in string. Retrying {i+1}/20...")
+                time.sleep(1)
+                continue
+            raise
+
+def rotate_pdf(pdf_bytes, angle=90):
+    """
+    Rotate PDF pages by a specific angle (90, 180, 270)
+    This is highly accurate as it only modifies PDF metadata for rotation
+    """
+    if not pdf_bytes:
+        raise ValueError("PDF file is empty")
+        
+    try:
+        pdf_document = fitz.open(stream=pdf_bytes, filetype="pdf")
+        
+        for page_num in range(pdf_document.page_count):
+            page = pdf_document[page_num]
+            # Get current rotation and add the new angle
+            current_rotation = page.rotation
+            new_rotation = (current_rotation + angle) % 360
+            page.set_rotation(new_rotation)
+            
+        # Save to memory
+        output_stream = io.BytesIO()
+        pdf_document.save(output_stream)
+        pdf_document.close()
+        
+        output_stream.seek(0)
+        return output_stream
+        
+    except Exception as e:
+        raise Exception(f"Rotate PDF failed: {str(e)}")
+
 
 def verify_docx(docx_stream):
     """Verify that the DOCX stream contains a valid Word document"""
@@ -209,3 +426,4 @@ def verify_pdf(pdf_stream):
     except Exception as e:
         print(f"PDF Validation Error: {e}")
         return False
+
