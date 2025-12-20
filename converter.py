@@ -140,20 +140,19 @@ def word_to_pdf_windows(docx_bytes):
         from docx2pdf import convert
         
         pythoncom.CoInitialize()
-        try:
-            import win32com.client
-            word = win32com.client.Dispatch("Word.Application")
-            word.Visible = False
+        import win32com.client
+        word = win32com.client.Dispatch("Word.Application")
+        word.Visible = False
+        
+        doc = word.Documents.Open(temp_docx_path)
+        # wdExportFormatPDF = 17
+        doc.ExportAsFixedFormat(temp_pdf_path, 17)
+        doc.Close()
+        word.Quit()
+        
+        with open(temp_pdf_path, "rb") as f:
+            pdf_bytes = f.read()
             
-            doc = word.Documents.Open(temp_docx_path)
-            # wdExportFormatPDF = 17
-            doc.ExportAsFixedFormat(temp_pdf_path, 17)
-            doc.Close()
-            word.Quit()
-            
-            with open(temp_pdf_path, "rb") as f:
-                pdf_bytes = f.read()
-                
         if not os.path.exists(temp_pdf_path):
              raise Exception("Conversion failed: Output PDF not created")
              
