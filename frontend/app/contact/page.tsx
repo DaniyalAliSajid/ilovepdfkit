@@ -39,15 +39,6 @@ export default function ContactPage() {
                         </div>
                     </div>
 
-                    <div className={styles.inTouchCard}>
-                        <div className={styles.iconWrapper} style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-                            <MessageCircle size={24} />
-                        </div>
-                        <div>
-                            <h6 className={styles.cardTitle}>Live Chat</h6>
-                            <p style={{ margin: 0, color: '#718096' }}>Available 24/7</p>
-                        </div>
-                    </div>
                 </div>
 
                 {/* Form */}

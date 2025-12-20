@@ -1,6 +1,21 @@
 import Link from 'next/link';
-import { FileText, Zap, Lock, Target, ArrowRight } from 'lucide-react';
+import {
+  ArrowRight,
+  FileText,
+  Settings,
+  Zap,
+  Lock,
+  Target,
+  FileType,
+  Presentation,
+  RotateCw,
+  FileImage,
+  Images,
+  MonitorPlay
+} from 'lucide-react';
+
 import styles from './page.module.css';
+
 
 export default function Home() {
   return (
@@ -19,7 +34,7 @@ export default function Home() {
           </div>
           <h1 className={styles.title}>ILOVEPDFKIT</h1>
           <p className={styles.subtitle}>
-            Transform your documents with pixel-perfect accuracy. Convert between PDF and Word formats while preserving images, fonts, and formatting.
+            Transform your documents with pixel-perfect accuracy. Convert between PDF, Word, PowerPoint, Excel, and Image formats while preserving images, fonts, and formatting.
           </p>
           <div className={styles.heroDivider}></div>
         </div>
@@ -31,8 +46,8 @@ export default function Home() {
           <h2 className={styles.sectionTitle}>Choose Your Conversion Tool</h2>
           <div className={styles.toolsGrid}>
             {/* PDF to Word */}
-            <div className={`${styles.toolCard} ${styles.pdfToWordCard}`}>
-              <div className={styles.toolIcon}>📄</div>
+            <div className={`${styles.toolCard} ${styles.pdfToWordCard} `}>
+              <div className={styles.toolIcon}><FileText size={48} /></div>
               <h3 className={styles.toolTitle}>PDF to Word</h3>
               <p className={styles.toolDesc}>
                 Convert PDF documents to editable Word files with perfect formatting preservation
@@ -48,9 +63,10 @@ export default function Home() {
             </div>
 
             {/* Word to PDF */}
-            <div className={`${styles.toolCard} ${styles.wordToPdfCard}`}>
-              <div className={styles.toolIcon}>📝</div>
+            <div className={`${styles.toolCard} ${styles.wordToPdfCard} `}>
+              <div className={styles.toolIcon}><FileType size={48} /></div>
               <h3 className={styles.toolTitle}>Word to PDF</h3>
+
               <p className={styles.toolDesc}>
                 Convert Word documents to professional PDF files with complete fidelity
               </p>
@@ -63,6 +79,78 @@ export default function Home() {
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
+            {/* PDF to JPG */}
+            <div className={`${styles.toolCard} ${styles.pdfToJpgCard} `}>
+              <div className={styles.toolIcon}><FileImage size={48} /></div>
+              <h3 className={styles.toolTitle}>PDF to JPG</h3>
+
+              <p className={styles.toolDesc}>
+                Extract images or convert PDF pages into high-quality JPG images
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ High resolution output</li>
+                <li>✓ Batch extraction</li>
+                <li>✓ Preservation of colors</li>
+              </ul>
+              <Link href="/pdf-to-jpg" className={styles.toolButton} target="_blank">
+                Start Converting <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* JPG to PDF */}
+            <div className={`${styles.toolCard} ${styles.jpgToPdfCard} `}>
+              <div className={styles.toolIcon}><Images size={48} /></div>
+              <h3 className={styles.toolTitle}>JPG to PDF</h3>
+
+              <p className={styles.toolDesc}>
+                Combine multiple images into a single professional PDF document
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Merge multiple images</li>
+                <li>✓ Auto-alignment</li>
+                <li>✓ Compressed output</li>
+              </ul>
+              <Link href="/jpg-to-pdf" className={styles.toolButton} target="_blank">
+                Start Converting <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* PPT to PDF */}
+            <div className={`${styles.toolCard} ${styles.pptToPdfCard} `}>
+              <div className={styles.toolIcon}><MonitorPlay size={48} /></div>
+              <h3 className={styles.toolTitle}>PPT to PDF</h3>
+
+              <p className={styles.toolDesc}>
+                Convert PowerPoint presentations to PDF while keeping animations and layout
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ 100% layout accuracy</li>
+                <li>✓ Crystal clear text</li>
+                <li>✓ Fast processing</li>
+              </ul>
+              <Link href="/ppt-to-pdf" className={styles.toolButton} target="_blank">
+                Start Converting <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Rotate PDF */}
+            <div className={`${styles.toolCard} ${styles.rotatePdfCard} `}>
+              <div className={styles.toolIcon}><RotateCw size={48} /></div>
+              <h3 className={styles.toolTitle}>Rotate PDF</h3>
+
+              <p className={styles.toolDesc}>
+                Rotate your PDF pages clockwise by 90, 180, or 270 degrees easily
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Multi-angle support</li>
+                <li>✓ Instant processing</li>
+                <li>✓ High quality output</li>
+              </ul>
+              <Link href="/rotate-pdf" className={styles.toolButton} target="_blank">
+                Start Rotating <ArrowRight size={18} />
+              </Link>
+            </div>
+
           </div>
         </div>
       </section>
