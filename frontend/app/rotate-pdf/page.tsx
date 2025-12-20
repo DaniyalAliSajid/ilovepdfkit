@@ -2,7 +2,7 @@ import Converter from "@/components/Converter";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Rotate PDF - Document Converter Pro',
+    title: 'Rotate PDF Document - ILOVEPDFKIT',
     description: 'Rotate your PDF documents clockwise by 90, 180, or 270 degrees easily.',
 };
 

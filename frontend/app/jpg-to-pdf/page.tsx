@@ -2,7 +2,7 @@ import Converter from "@/components/Converter";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'JPG to PDF Converter - Document Converter Pro',
+    title: 'JPG to PDF Converter - ILOVEPDFKIT',
     description: 'Combine multiple images into a single professional PDF document.',
 };
 

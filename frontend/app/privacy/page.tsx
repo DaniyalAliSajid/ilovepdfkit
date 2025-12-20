@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
                         Our Commitment to Privacy
                     </h2>
                     <p className={styles.text}>
-                        At DocConverter Pro, we take your privacy seriously. This Policy explains how we handle your data when you use our services. Our core principle is: <strong>Your files are your business, not ours.</strong>
+                        At ILOVEPDFKIT, we take your privacy seriously. This Policy explains how we handle your data when you use our services. Our core principle is: <strong>Your files are your business, not ours.</strong>
                     </p>
                 </section>
 

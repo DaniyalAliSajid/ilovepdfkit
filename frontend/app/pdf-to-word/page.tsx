@@ -2,7 +2,7 @@ import Converter from "@/components/Converter";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'PDF to Word Converter - Document Converter Pro',
+    title: 'PDF to Word Converter - ILOVEPDFKIT',
     description: 'Convert PDF files to editable Word documents instantly.',
 };
 

@@ -14,7 +14,7 @@ const Navbar = () => {
         <div className={styles.brandIcon}>
           <FileText size={24} />
         </div>
-        <span>DocConverter Pro</span>
+        <span>ILOVEPDFKIT</span>
       </Link>
       <div className={styles.navLinks}>
         <Link

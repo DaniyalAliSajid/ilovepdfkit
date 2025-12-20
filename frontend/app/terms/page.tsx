@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
                         Agreement to Terms
                     </h2>
                     <p className={styles.text}>
-                        By accessing or using DocConverter Pro, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you must not use our services.
+                        By accessing or using ILOVEPDFKIT, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you must not use our services.
                     </p>
                 </section>
 
@@ -51,7 +51,7 @@ export default function TermsAndConditions() {
                         Disclaimer of Liability
                     </h2>
                     <p className={styles.text}>
-                        DocConverter Pro provides its services "as is" without any warranty. While we strive for "Pixel Perfect" results:
+                        ILOVEPDFKIT provides its services "as is" without any warranty. While we strive for "Pixel Perfect" results:
                     </p>
                     <ul className={styles.list}>
                         <li className={styles.listItem}>We do not guarantee 100% accuracy for all document types.</li>
@@ -66,7 +66,7 @@ export default function TermsAndConditions() {
                         Intellectual Property
                     </h2>
                     <p className={styles.text}>
-                        The content, logo, and technology behind DocConverter Pro are protected by copyright and intellectual property laws. You may not reproduce or distribute any part of the service without our permission.
+                        The content, logo, and technology behind ILOVEPDFKIT are protected by copyright and intellectual property laws. You may not reproduce or distribute any part of the service without our permission.
                     </p>
                 </section>
 

@@ -3,7 +3,7 @@ import { Target, Zap, Users, Award, ArrowLeft } from 'lucide-react';
 import styles from './page.module.css';
 
 export const metadata = {
-    title: 'About Us - Document Converter Pro',
+    title: 'About Us - ILOVEPDFKIT',
 };
 
 export default function AboutPage() {
@@ -24,7 +24,7 @@ export default function AboutPage() {
                 <div className={styles.card}>
                     <h2 className={styles.sectionTitle}>Our Story</h2>
                     <p className={styles.text}>
-                        Document Converter Pro was born from a simple idea: document conversion should be effortless.
+                        ILOVEPDFKIT was born from a simple idea: document conversion should be effortless.
                         We noticed that many existing tools either compromised on quality or were too complex to use.
                         That's why we built a solution that combines pixel-perfect accuracy with an intuitive, beautiful interface.
                     </p>

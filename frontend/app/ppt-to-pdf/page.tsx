@@ -2,7 +2,7 @@ import Converter from "@/components/Converter";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'PPT to PDF Converter - Document Converter Pro',
+    title: 'PowerPoint to PDF Converter - ILOVEPDFKIT',
     description: 'Convert PowerPoint presentations to PDF while keeping animations and layout.',
 };
 
