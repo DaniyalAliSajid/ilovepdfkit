@@ -157,11 +157,12 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                 throw new Error("Received an empty file from the server.");
             }
 
-            const originalName = file?.name || 'document';
+            const originalFile = config.multi ? files[0] : file;
+            const originalName = originalFile?.name || 'document';
             const nameParts = originalName.split('.');
             if (nameParts.length > 1) nameParts.pop();
             const baseName = nameParts.join('.');
-            const outputFileName = config.multi ? `converted_images.pdf` : `${baseName}${config.extension}`;
+            const outputFileName = `${baseName}${config.extension}`;
 
             saveAs(blob, outputFileName);
             setMessage(`Conversion successful! Downloaded ${outputFileName}`);

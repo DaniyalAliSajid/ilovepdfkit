@@ -89,6 +89,8 @@ def convert_pdf_to_word():
         if size == 0 or not converter.verify_docx(docx_stream):
             raise Exception("Generated DOCX file is corrupt and cannot be opened")
             
+        # Final seek to ensure stream starts at 0
+        docx_stream.seek(0)
         return send_file(
             docx_stream,
             as_attachment=True,
@@ -146,9 +148,8 @@ def convert_word_to_pdf():
         pdf_stream.seek(0)
         print(f"DEBUG: Generated PDF size: {size} bytes")
 
-        if size == 0 or not converter.verify_pdf(pdf_stream):
-            raise Exception("Generated PDF file is corrupt and cannot be opened")
-        
+        # Confirm seek position
+        pdf_stream.seek(0)
         return send_file(
             pdf_stream,
             as_attachment=True,

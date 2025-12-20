@@ -155,17 +155,26 @@ def word_to_pdf_windows(docx_bytes):
         
         try:
             import win32com.client
-            word = win32com.client.Dispatch("Word.Application")
+            # Use DispatchEx for a clean, independent instance
+            word = win32com.client.DispatchEx("Word.Application")
             word.Visible = False
+            word.DisplayAlerts = 0 # wdAlertsNone
             
-            doc = word.Documents.Open(temp_docx_path)
+            doc = word.Documents.Open(temp_docx_path, ReadOnly=True)
             # wdExportFormatPDF = 17
             doc.ExportAsFixedFormat(temp_pdf_path, 17)
-            doc.Close()
+            doc.Close(False) # wdDoNotSaveChanges
             word.Quit()
             
+            # Small delay to ensure Word releases the file
+            import time
+            time.sleep(0.5)
+
             with open(temp_pdf_path, "rb") as f:
                 pdf_bytes = f.read()
+            
+            if len(pdf_bytes) == 0:
+                raise Exception("Generated PDF is empty")
                 
             return io.BytesIO(pdf_bytes)
     
@@ -323,12 +332,16 @@ def ppt_to_pdf_windows(ppt_bytes):
             
         temp_pdf_path = temp_ppt_path.replace(suffix, ".pdf")
         
-        powerpoint = win32com.client.Dispatch("PowerPoint.Application")
+        powerpoint = win32com.client.DispatchEx("PowerPoint.Application")
         # ppFixedFormatTypePDF = 32
-        deck = powerpoint.Presentations.Open(temp_ppt_path, WithWindow=False)
+        deck = powerpoint.Presentations.Open(temp_ppt_path, WithWindow=False, ReadOnly=True)
         deck.SaveAs(temp_pdf_path, 32)
         deck.Close()
         powerpoint.Quit()
+        
+        # Small delay
+        import time
+        time.sleep(0.5)
         
         # Explicitly release COM objects
         del deck
