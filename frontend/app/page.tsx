@@ -192,6 +192,10 @@ export default function Home() {
             <Link href="/about">About Us</Link>
             <span>•</span>
             <Link href="/contact">Contact Us</Link>
+            <span>•</span>
+            <Link href="/privacy">Privacy Policy</Link>
+            <span>•</span>
+            <Link href="/terms">Terms & Conditions</Link>
           </div>
           <p className={styles.copyright}>
             © 2025 Document Converter Pro. All rights reserved.
