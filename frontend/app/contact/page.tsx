@@ -1,20 +1,61 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, MessageCircle, Send, ArrowLeft } from 'lucide-react';
+import { Mail, Send, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import styles from './page.module.css';
 
-
 export default function ContactPage() {
-    const handleSubmit = (e: React.FormEvent) => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+    });
+    const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        alert('Thank you for your message! We will get back to you soon.');
+        setStatus('sending');
+        setErrorMessage('');
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setStatus('success');
+                setFormData({ name: '', email: '', subject: '', message: '' });
+                setTimeout(() => setStatus('idle'), 5000);
+            } else {
+                setStatus('error');
+                setErrorMessage(data.error || 'Failed to send message. Please try again.');
+            }
+        } catch (error) {
+            setStatus('error');
+            setErrorMessage('Network error. Please check your connection and try again.');
+        }
     };
 
     return (
         <div className={styles.container}>
-            <Link href="/" style={{ color: '#667eea', textDecoration: 'none', display: 'flex', alignItems: 'center', marginBottom: '2rem' }}>
-                <ArrowLeft size={20} style={{ marginRight: '0.5rem' }} /> Back to Home
+            <Link href="/" className={styles.backLink}>
+                <ArrowLeft size={20} /> Back to Home
             </Link>
 
             <div className={styles.header}>
@@ -27,45 +68,111 @@ export default function ContactPage() {
             <div className={styles.grid}>
                 {/* Contact Info */}
                 <div>
-                    <h3 className={styles.sectionTitle} style={{ marginBottom: '1.5rem', fontWeight: 700, fontSize: '1.5rem' }}>Get in Touch</h3>
+                    <h3 className={styles.sectionTitle}>Get in Touch</h3>
 
                     <div className={styles.inTouchCard}>
-                        <div className={styles.iconWrapper} style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                        <div className={styles.iconWrapper}>
                             <Mail size={24} />
                         </div>
                         <div>
                             <h6 className={styles.cardTitle}>Email</h6>
-                            <a href="mailto:support@ilovepdfkit.com" className={styles.cardLink}>support@ilovepdfkit.com</a>
+                            <a href="mailto:support@ilovepdfkit.com" className={styles.cardLink}>
+                                support@ilovepdfkit.com
+                            </a>
                         </div>
                     </div>
-
                 </div>
 
                 {/* Form */}
                 <div>
                     <div className={styles.formCard}>
                         <h3 className={styles.formTitle}>Send us a Message</h3>
+
+                        {status === 'success' && (
+                            <div className={styles.successMessage}>
+                                <CheckCircle size={20} />
+                                <span>Message sent successfully! We'll get back to you soon.</span>
+                            </div>
+                        )}
+
+                        {status === 'error' && (
+                            <div className={styles.errorMessage}>
+                                <AlertCircle size={20} />
+                                <span>{errorMessage}</span>
+                            </div>
+                        )}
+
                         <form onSubmit={handleSubmit}>
                             <div className={styles.formGrid}>
                                 <div className={styles.formGroup}>
                                     <label className={styles.label}>Name</label>
-                                    <input type="text" className={styles.input} placeholder="Your name" required />
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        className={styles.input}
+                                        placeholder="Your name"
+                                        required
+                                        disabled={status === 'sending'}
+                                    />
                                 </div>
                                 <div className={styles.formGroup}>
                                     <label className={styles.label}>Email</label>
-                                    <input type="email" className={styles.input} placeholder="your.email@example.com" required />
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        className={styles.input}
+                                        placeholder="your.email@example.com"
+                                        required
+                                        disabled={status === 'sending'}
+                                    />
                                 </div>
                                 <div className={`${styles.formGroup} ${styles.fullWidth}`}>
                                     <label className={styles.label}>Subject</label>
-                                    <input type="text" className={styles.input} placeholder="How can we help?" required />
+                                    <input
+                                        type="text"
+                                        name="subject"
+                                        value={formData.subject}
+                                        onChange={handleChange}
+                                        className={styles.input}
+                                        placeholder="How can we help?"
+                                        required
+                                        disabled={status === 'sending'}
+                                    />
                                 </div>
                                 <div className={`${styles.formGroup} ${styles.fullWidth}`}>
                                     <label className={styles.label}>Message</label>
-                                    <textarea className={styles.textarea} rows={6} placeholder="Tell us more about your inquiry..." required></textarea>
+                                    <textarea
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleChange}
+                                        className={styles.textarea}
+                                        rows={6}
+                                        placeholder="Tell us more about your inquiry..."
+                                        required
+                                        disabled={status === 'sending'}
+                                    />
                                 </div>
                                 <div className={`${styles.formGroup} ${styles.fullWidth}`}>
-                                    <button type="submit" className={styles.submitButton}>
-                                        <Send size={20} /> Send Message
+                                    <button
+                                        type="submit"
+                                        className={styles.submitButton}
+                                        disabled={status === 'sending'}
+                                    >
+                                        {status === 'sending' ? (
+                                            <>
+                                                <span className={styles.spinner}></span>
+                                                Sending...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Send size={20} />
+                                                Send Message
+                                            </>
+                                        )}
                                     </button>
                                 </div>
                             </div>
