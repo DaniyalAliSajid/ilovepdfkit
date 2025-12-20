@@ -29,9 +29,10 @@ def pdf_to_word(pdf_bytes):
             
         temp_docx = temp_pdf.replace(".pdf", ".docx")
         
-        # Convert using pdf2docx
+        # Convert using pdf2docx with multiprocessing for speed
+        cpu_count = os.cpu_count() or 4
         cv = Converter(temp_pdf)
-        cv.convert(temp_docx)
+        cv.convert(temp_docx, multi_processing=True, cpu_count=cpu_count)
         cv.close()
         
         # Read the generated DOCX
@@ -153,7 +154,15 @@ def word_to_pdf_windows(docx_bytes):
         temp_pdf_path = temp_docx_path.replace(".docx", ".pdf")
         
         try:
-            convert(temp_docx_path, temp_pdf_path)
+            import win32com.client
+            word = win32com.client.Dispatch("Word.Application")
+            word.Visible = False
+            
+            doc = word.Documents.Open(temp_docx_path)
+            # wdExportFormatPDF = 17
+            doc.ExportAsFixedFormat(temp_pdf_path, 17)
+            doc.Close()
+            word.Quit()
             
             with open(temp_pdf_path, "rb") as f:
                 pdf_bytes = f.read()
@@ -216,7 +225,7 @@ def jpg_to_pdf(image_bytes_list):
             raise ValueError("Could not process images")
             
         pdf_stream = io.BytesIO()
-        images[0].save(pdf_stream, format="PDF", save_all=True, append_images=images[1:])
+        images[0].save(pdf_stream, format="PDF", save_all=True, append_images=images[1:], optimize=True)
         pdf_stream.seek(0)
         return pdf_stream
         
@@ -389,9 +398,9 @@ def rotate_pdf(pdf_bytes, angle=90):
             new_rotation = (current_rotation + angle) % 360
             page.set_rotation(new_rotation)
             
-        # Save to memory
+        # Save to memory with optimizations
         output_stream = io.BytesIO()
-        pdf_document.save(output_stream)
+        pdf_document.save(output_stream, garbage=3, deflate=True)
         pdf_document.close()
         
         output_stream.seek(0)
