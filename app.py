@@ -91,11 +91,13 @@ def convert_pdf_to_word():
             
         # Final seek to ensure stream starts at 0
         docx_stream.seek(0)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}.docx"
         return send_file(
             docx_stream,
+            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             as_attachment=True,
-            download_name=f"{file.filename.rsplit('.', 1)[0]}.docx",
-            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            download_name=filename
         )
         
     except Exception as e:
@@ -150,11 +152,13 @@ def convert_word_to_pdf():
 
         # Confirm seek position
         pdf_stream.seek(0)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}.pdf"
         return send_file(
             pdf_stream,
+            mimetype='application/pdf',
             as_attachment=True,
-            download_name=f"{file.filename.rsplit('.', 1)[0]}.pdf",
-            mimetype='application/pdf'
+            download_name=filename
         )
         
     except Exception as e:
@@ -189,11 +193,13 @@ def convert_pdf_to_jpg():
                 zip_file.writestr(f"page_{i+1}.jpg", img_stream.read())
         
         zip_buffer.seek(0)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}_images.zip"
         return send_file(
             zip_buffer,
+            mimetype='application/zip',
             as_attachment=True,
-            download_name=f"{file.filename.rsplit('.', 1)[0]}_images.zip",
-            mimetype='application/zip'
+            download_name=filename
         )
     except Exception as e:
         app.logger.error(f"PDF to JPG error: {str(e)}")
@@ -218,11 +224,19 @@ def convert_jpg_to_pdf():
             
         pdf_stream = converter.jpg_to_pdf(image_bytes_list)
         
+        if pdf_stream:
+            pdf_stream.seek(0)
+        
+        # Use first file's name for output
+        first_filename = files[0].filename if files else "images"
+        base_name = first_filename.rsplit('.', 1)[0] if '.' in first_filename else first_filename
+        filename = f"{base_name}.pdf"
+        
         return send_file(
             pdf_stream,
+            mimetype='application/pdf',
             as_attachment=True,
-            download_name="images_to_pdf.pdf",
-            mimetype='application/pdf'
+            download_name=filename
         )
     except Exception as e:
         app.logger.error(f"JPG to PDF error: {str(e)}")
@@ -242,11 +256,15 @@ def convert_rotate_pdf():
         
         pdf_stream = converter.rotate_pdf(pdf_bytes, angle)
         
+        if pdf_stream:
+            pdf_stream.seek(0)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}_rotated.pdf"
         return send_file(
             pdf_stream,
+            mimetype='application/pdf',
             as_attachment=True,
-            download_name=f"{file.filename.rsplit('.', 1)[0]}_rotated.pdf",
-            mimetype='application/pdf'
+            download_name=filename
         )
     except Exception as e:
         app.logger.error(f"Rotate PDF error: {str(e)}")
@@ -264,11 +282,15 @@ def convert_ppt_to_pdf():
         
         pdf_stream = converter.ppt_to_pdf(ppt_bytes)
         
+        if pdf_stream:
+            pdf_stream.seek(0)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}.pdf"
         return send_file(
             pdf_stream,
+            mimetype='application/pdf',
             as_attachment=True,
-            download_name=f"{file.filename.rsplit('.', 1)[0]}.pdf",
-            mimetype='application/pdf'
+            download_name=filename
         )
     except Exception as e:
         app.logger.error(f"PPT to PDF error: {str(e)}")
