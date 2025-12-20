@@ -13,12 +13,28 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Create transporter (using Gmail as example - you'll need to configure this)
-        const transporter = nodemailer.createTransporter({
+        // Check if credentials are set
+        const hasCredentials = process.env.EMAIL_USER && process.env.EMAIL_PASSWORD;
+
+        if (!hasCredentials) {
+            console.log('--- LOCAL DEVELOPMENT: Email content ---');
+            console.log('To: support@ilovepdfkit.com');
+            console.log('Subject:', subject);
+            console.log('Content:', message);
+            console.log('---------------------------------------');
+
+            return NextResponse.json(
+                { success: true, message: 'Message logged to console (Local Dev Mode)' },
+                { status: 200 }
+            );
+        }
+
+        // Create transporter
+        const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.EMAIL_USER || 'your-email@gmail.com',
-                pass: process.env.EMAIL_PASSWORD || 'your-app-password',
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD,
             },
         });
 
