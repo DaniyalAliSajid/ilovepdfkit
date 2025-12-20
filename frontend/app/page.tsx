@@ -29,7 +29,7 @@ export default function Home() {
         <div className={styles.container}>
           <div className={styles.heroIconWrapper}>
             <div className={styles.heroIcon}>
-              <FileText size={72} color="white" strokeWidth={1.5} />
+              <FileText size={64} color="white" strokeWidth={1.5} />
             </div>
           </div>
           <h1 className={styles.title}>ILOVEPDFKIT</h1>
@@ -41,7 +41,7 @@ export default function Home() {
       </section>
 
       {/* Tools Section */}
-      <section className={styles.section}>
+      <section id="tools-section" className={styles.section}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Choose Your Conversion Tool</h2>
           <div className={styles.toolsGrid}>
@@ -92,7 +92,7 @@ export default function Home() {
                 <li>✓ Batch extraction</li>
                 <li>✓ Preservation of colors</li>
               </ul>
-              <Link href="/pdf-to-jpg" className={styles.toolButton} target="_blank">
+              <Link href="/pdf-to-jpg" className={styles.toolButton}>
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -110,7 +110,7 @@ export default function Home() {
                 <li>✓ Auto-alignment</li>
                 <li>✓ Compressed output</li>
               </ul>
-              <Link href="/jpg-to-pdf" className={styles.toolButton} target="_blank">
+              <Link href="/jpg-to-pdf" className={styles.toolButton}>
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -128,7 +128,7 @@ export default function Home() {
                 <li>✓ Crystal clear text</li>
                 <li>✓ Fast processing</li>
               </ul>
-              <Link href="/ppt-to-pdf" className={styles.toolButton} target="_blank">
+              <Link href="/ppt-to-pdf" className={styles.toolButton}>
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -146,7 +146,7 @@ export default function Home() {
                 <li>✓ Instant processing</li>
                 <li>✓ High quality output</li>
               </ul>
-              <Link href="/rotate-pdf" className={styles.toolButton} target="_blank">
+              <Link href="/rotate-pdf" className={styles.toolButton}>
                 Start Rotating <ArrowRight size={18} />
               </Link>
             </div>
@@ -161,21 +161,21 @@ export default function Home() {
           <h2 className={styles.sectionTitle}>Why Choose ILOVEPDFKIT?</h2>
           <div className={styles.featuresGrid}>
             <div className={styles.featureItem}>
-              <div className={styles.featureIcon} style={{ background: 'var(--primary-gradient)' }}>
+              <div className={styles.featureIcon} style={{ background: 'var(--gradient-primary)' }}>
                 <Zap size={30} />
               </div>
               <h3>Lightning Fast</h3>
               <p>Convert documents in seconds with our optimized conversion engine</p>
             </div>
             <div className={styles.featureItem}>
-              <div className={styles.featureIcon} style={{ background: 'var(--secondary-gradient)' }}>
+              <div className={styles.featureIcon} style={{ background: 'var(--gradient-accent)' }}>
                 <Lock size={30} />
               </div>
               <h3>Secure & Private</h3>
               <p>Your files are processed securely and never stored on our servers</p>
             </div>
             <div className={styles.featureItem}>
-              <div className={styles.featureIcon} style={{ background: 'var(--primary-gradient)' }}>
+              <div className={styles.featureIcon} style={{ background: 'var(--gradient-primary)' }}>
                 <Target size={30} />
               </div>
               <h3>Pixel Perfect</h3>
@@ -192,6 +192,10 @@ export default function Home() {
             <Link href="/about">About Us</Link>
             <span>•</span>
             <Link href="/contact">Contact Us</Link>
+            <span>•</span>
+            <Link href="/privacy-policy">Privacy Policy</Link>
+            <span>•</span>
+            <Link href="/terms-and-conditions">Terms & Conditions</Link>
           </div>
           <p className={styles.copyright}>
             © 2025 ILOVEPDFKIT. All rights reserved.

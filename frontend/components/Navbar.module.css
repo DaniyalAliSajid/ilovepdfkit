@@ -2,19 +2,23 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem 4rem;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  padding: var(--space-4) var(--space-16);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   position: fixed;
-  top: 1.5rem;
+  top: var(--space-6);
   left: 5%;
   right: 5%;
   z-index: 1000;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--gray-200);
+  box-shadow: var(--shadow-lg);
+  transition: all var(--transition-base);
+}
+
+.navbar:hover {
+  box-shadow: var(--shadow-xl);
 }
 
 .brand {
@@ -22,87 +26,268 @@
   align-items: center;
   text-decoration: none;
   font-weight: 800;
-  font-size: 1.4rem;
-  color: #4a4a8a;
-  gap: 12px;
+  font-size: 1.25rem;
+  color: var(--gray-900);
+  gap: var(--space-3);
+  transition: color var(--transition-fast);
+}
+
+.brand:hover {
+  color: var(--primary-600);
 }
 
 .brandIcon {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--primary-gradient);
+  background: var(--gradient-primary);
   color: white;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-colored);
+  transition: transform var(--transition-base);
+}
+
+.brand:hover .brandIcon {
+  transform: scale(1.05);
 }
 
 .navLinks {
   display: flex;
-  gap: 2.5rem;
+  gap: var(--space-10);
   align-items: center;
 }
 
 .navLink {
   text-decoration: none;
   font-weight: 600;
-  color: #5a5a7a;
-  font-size: 1rem;
-  transition: all 0.2s;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  transition: all var(--transition-fast);
   position: relative;
   font-family: 'Inter', sans-serif;
 }
 
-.navLink:hover,
+.navLink:hover {
+  color: var(--primary-600);
+}
+
 .activeNavLink {
-  color: var(--primary);
+  color: var(--primary-600);
 }
 
 .activeNavLink::after {
   content: '';
   position: absolute;
-  bottom: -6px;
-  left: 20%;
-  width: 60%;
-  height: 3px;
-  background-color: var(--primary);
-  border-radius: 10px;
+  bottom: -8px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gradient-primary);
+  border-radius: var(--radius-full);
 }
 
 .ctaButton {
-  background: var(--primary-gradient);
+  background: var(--primary-600);
   color: white;
-  padding: 12px 28px;
-  border-radius: 14px;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-lg);
   text-decoration: none;
-  font-weight: 700;
-  border: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border: 2px solid var(--primary-600);
   cursor: pointer;
-  box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.4);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
 }
 
 .ctaButton:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 15px 30px -5px rgba(102, 126, 234, 0.5);
+  background: white;
+  color: var(--primary-600);
+  border-color: var(--primary-600);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
+.ctaButton:active {
+  transform: translateY(0);
+}
+
+/* Responsive Design */
 @media (max-width: 992px) {
   .navbar {
-    padding: 0.75rem 1.5rem;
+    padding: var(--space-3) var(--space-6);
     left: 2%;
     right: 2%;
   }
 
   .navLinks {
-    gap: 1.5rem;
+    gap: var(--space-6);
+  }
+
+  .brand {
+    font-size: 1.125rem;
+  }
+
+  .brandIcon {
+    width: 36px;
+    height: 36px;
   }
 }
 
 @media (max-width: 768px) {
+  .navbar {
+    top: var(--space-4);
+    padding: var(--space-3) var(--space-5);
+  }
+
   .navLinks {
     display: none;
+  }
+
+  .brand {
+    font-size: 1rem;
+  }
+}/* Mobile Menu Button */
+.mobileMenuButton {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--gray-900);
+  cursor: pointer;
+  padding: var(--space-2);
+  transition: color var(--transition-fast);
+}
+
+.mobileMenuButton:hover {
+  color: var(--primary-600);
+}
+
+/* Mobile Drawer */
+.drawerBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  animation: fadeIn var(--transition-base);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 280px;
+  background: white;
+  z-index: 1200;
+  box-shadow: var(--shadow-2xl);
+  animation: slideIn var(--transition-slow);
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.drawerBrand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-weight: 800;
+  font-size: 1.125rem;
+  color: var(--gray-900);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--gray-600);
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.closeButton:hover {
+  background: var(--gray-100);
+  color: var(--gray-900);
+}
+
+.drawerLinks {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4) 0;
+  overflow-y: auto;
+}
+
+.drawerLink {
+  padding: var(--space-4) var(--space-6);
+  color: var(--gray-700);
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+  border-left: 3px solid transparent;
+}
+
+.drawerLink:hover {
+  background: var(--gray-50);
+  color: var(--primary-600);
+  border-left-color: var(--primary-600);
+}
+
+.activeDrawerLink {
+  background: var(--primary-50);
+  color: var(--primary-600);
+  border-left-color: var(--primary-600);
+  font-weight: 600;
+}
+
+.drawerCtaButton {
+  margin: var(--space-4) var(--space-6);
+  padding: var(--space-3) var(--space-6);
+  background: var(--primary-600);
+  color: white;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  text-align: center;
+  transition: all var(--transition-base);
+  border: 2px solid var(--primary-600);
+}
+
+.drawerCtaButton:hover {
+  background: white;
+  color: var(--primary-600);
+}
+
+@media (max-width: 768px) {
+  .mobileMenuButton {
+    display: block;
   }
 }

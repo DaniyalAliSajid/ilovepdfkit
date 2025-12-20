@@ -1,107 +1,118 @@
 .dropzone {
-    border: 2px dashed #e2e8f0;
-    border-radius: 16px;
-    padding: 3rem 2rem;
+    border: 2px dashed var(--gray-300);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-12) var(--space-8);
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s ease;
-    background-color: #f8f9fa;
-    margin-bottom: 2rem;
+    transition: all var(--transition-base);
+    background-color: var(--gray-50);
+    margin-bottom: var(--space-8);
 }
 
 .dropzone:hover,
 .active {
-    border-color: #667eea;
-    background-color: #edf2f7;
+    border-color: var(--primary-500);
+    background-color: var(--primary-50);
 }
 
 .icon {
-    color: #9ca3af;
-    margin-bottom: 1rem;
-    transition: color 0.2s;
+    color: var(--gray-400);
+    margin-bottom: var(--space-4);
+    transition: color var(--transition-base);
 }
 
 .dropzone:hover .icon,
 .active .icon {
-    color: #667eea;
+    color: var(--primary-600);
 }
 
 .text {
     font-size: 1.125rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary, #2d3748);
+    margin-bottom: var(--space-2);
+    color: var(--gray-900);
 }
 
 .subtext {
     font-size: 0.875rem;
-    color: #718096;
-    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
 }
 
 .badgeContainer {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
+    gap: var(--space-2);
     flex-wrap: wrap;
 }
 
 .badge {
     background: white;
-    border: 1px solid #e2e8f0;
-    padding: 4px 10px;
-    border-radius: 20px;
+    border: 1px solid var(--gray-200);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
     font-size: 0.75rem;
     font-weight: 500;
-    color: #718096;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
 }
 
+.badge:hover {
+    border-color: var(--primary-300);
+    color: var(--primary-700);
+}
+
+/* Selected Files */
 .selectedFilesContainer {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--space-3);
     max-height: 300px;
     overflow-y: auto;
-    padding: 0.5rem;
-    margin-bottom: 2rem;
-    background: #f8fafc;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
+    padding: var(--space-2);
+    margin-bottom: var(--space-8);
+    background: var(--gray-50);
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--gray-200);
 }
 
 .selectedFile {
-    padding: 0.75rem 1rem;
+    padding: var(--space-3) var(--space-4);
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: transform 0.2s;
+    transition: all var(--transition-base);
+    border: 1px solid var(--gray-200);
 }
 
 .selectedFile:hover {
     transform: translateX(4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-200);
 }
 
 .fileInfo {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--space-3);
     flex: 1;
     min-width: 0;
 }
 
 .fileIcon {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    border-radius: 10px;
-    background: var(--primary-gradient);
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: var(--radius-lg);
+    background: var(--gradient-primary);
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
+    box-shadow: var(--shadow-colored);
 }
 
 .fileDetails {
@@ -112,7 +123,7 @@
 .fileName {
     font-weight: 600;
     font-size: 0.9rem;
-    color: #2d3748;
+    color: var(--gray-900);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -120,44 +131,46 @@
 
 .fileSize {
     font-size: 0.75rem;
-    color: #718096;
+    color: var(--text-secondary);
+    font-weight: 500;
 }
 
 .removeButton {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    border-radius: var(--radius-full);
     border: none;
-    background: #fee2e2;
-    color: #ef4444;
+    background: #fef2f2;
+    color: var(--accent-red);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
-    margin-left: 0.5rem;
+    transition: all var(--transition-base);
+    margin-left: var(--space-2);
 }
 
 .removeButton:hover {
-    background: #ef4444;
+    background: var(--accent-red);
     color: white;
+    transform: scale(1.1);
 }
 
 .addMoreButton {
-    background: #f1f5f9;
-    color: #64748b;
-    border: 2px dashed #cbd5e1;
-    padding: 0.75rem;
-    border-radius: 12px;
+    background: white;
+    color: var(--text-secondary);
+    border: 2px dashed var(--gray-300);
+    padding: var(--space-3);
+    border-radius: var(--radius-xl);
     font-weight: 600;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all var(--transition-base);
 }
 
 .addMoreButton:hover {
-    background: #e2e8f0;
-    color: #475569;
-    border-color: #94a3b8;
+    background: var(--gray-50);
+    color: var(--primary-600);
+    border-color: var(--primary-400);
 }
