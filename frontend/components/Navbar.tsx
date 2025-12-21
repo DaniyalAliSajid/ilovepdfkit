@@ -131,6 +131,13 @@ const Navbar = () => {
               >
                 Terms & Conditions
               </Link>
+              <Link
+                href="/advertise-with-us"
+                className={`${styles.drawerLink} ${pathname === '/advertise-with-us' ? styles.activeDrawerLink : ''}`}
+                onClick={closeMenu}
+              >
+                Advertise with us
+              </Link>
 
               <a
                 href="#tools-section"

@@ -4,6 +4,9 @@ import converter
 import io
 import os
 import zipfile
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__, static_folder='static_build')
 
@@ -62,6 +65,78 @@ def validate_file_size(file_bytes):
         max_mb = MAX_FILE_SIZE / (1024 * 1024)
         raise ValueError(f"File size ({size_mb:.2f}MB) exceeds maximum allowed size ({max_mb}MB)")
     return size
+
+@app.route('/api/contact', methods=['POST'])
+def contact():
+    try:
+        data = request.json
+        name = data.get('name')
+        email = data.get('email')
+        subject = data.get('subject')
+        message = data.get('message')
+
+        if not all([name, email, subject, message]):
+            return jsonify({"error": "All fields are required"}), 400
+
+        # Email configuration
+        email_user = os.environ.get('EMAIL_USER')
+        email_password = os.environ.get('EMAIL_PASSWORD')
+        support_email = 'support@ilovepdfkit.com'
+
+        if not email_user or not email_password:
+            app.logger.warning("Email credentials not set. Logging message to console.")
+            print(f"--- CONTACT FORM SUBMISSION ---")
+            print(f"From: {name} ({email})")
+            print(f"Subject: {subject}")
+            print(f"Message: {message}")
+            print(f"-------------------------------")
+            return jsonify({
+                "success": True, 
+                "message": "Message received (Dev Mode: Credentials not set)"
+            }), 200
+
+        # Create email
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = f"Contact Form: {subject}"
+        msg['From'] = email_user
+        msg['To'] = support_email
+        msg['Reply-To'] = email
+
+        # Plain text version
+        text = f"New message from {name} ({email}):\n\nSubject: {subject}\n\n{message}"
+        
+        # HTML version
+        html = f"""
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #9333ea;">New Contact Form Submission</h2>
+            <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <p><strong>Name:</strong> {name}</p>
+                <p><strong>Email:</strong> {email}</p>
+                <p><strong>Subject:</strong> {subject}</p>
+            </div>
+            <div style="background: white; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
+                <h3 style="color: #374151; margin-top: 0;">Message:</h3>
+                <p style="color: #6b7280; line-height: 1.6;">{message}</p>
+            </div>
+            <p style="color: #9ca3af; font-size: 12px; margin-top: 20px;">
+                Sent from ILOVEPDFKIT contact form.
+            </p>
+        </div>
+        """
+
+        msg.attach(MIMEText(text, 'plain'))
+        msg.attach(MIMEText(html, 'html'))
+
+        # Send email via Gmail SMTP
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
+            server.login(email_user, email_password)
+            server.sendmail(email_user, support_email, msg.as_string())
+
+        return jsonify({"success": True, "message": "Email sent successfully"}), 200
+
+    except Exception as e:
+        app.logger.error(f"Contact form error: {str(e)}")
+        return jsonify({"error": "Failed to send message. Please try again later."}), 500
 
 @app.route('/api/convert/pdf-to-word', methods=['POST'])
 def convert_pdf_to_word():
