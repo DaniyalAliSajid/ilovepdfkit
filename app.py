@@ -73,10 +73,17 @@ def contact():
         name = data.get('name')
         email = data.get('email')
         subject = data.get('subject')
+        company = data.get('company')
         message = data.get('message')
 
-        if not all([name, email, subject, message]):
+        if not all([name, email, message]):
             return jsonify({"error": "All fields are required"}), 400
+
+        if not subject:
+            if company:
+                subject = f"Advertising Inquiry: {company}"
+            else:
+                subject = "New Contact Form Submission"
 
         # Email configuration
         email_user = os.environ.get('EMAIL_USER')
