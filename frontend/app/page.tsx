@@ -196,6 +196,8 @@ export default function Home() {
             <Link href="/privacy-policy">Privacy Policy</Link>
             <span>•</span>
             <Link href="/terms-and-conditions">Terms & Conditions</Link>
+            <span>•</span>
+            <Link href="/advertise-with-us">Advertise with us</Link>
           </div>
           <p className={styles.copyright}>
             © 2025 ILOVEPDFKIT. All rights reserved.
