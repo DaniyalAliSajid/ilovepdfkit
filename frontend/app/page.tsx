@@ -172,23 +172,7 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Compress PDF */}
-            <div className={`${styles.toolCard} ${styles.compressPdfCard} `}>
-              <div className={styles.toolIcon}><Minimize2 size={48} /></div>
-              <h3 className={styles.toolTitle}>Compress PDF</h3>
 
-              <p className={styles.toolDesc}>
-                Reduce file size while optimizing for maximal quality
-              </p>
-              <ul className={styles.toolFeatures}>
-                <li>✓ Significant reduction</li>
-                <li>✓ Preserves quality</li>
-                <li>✓ Web optimization</li>
-              </ul>
-              <Link href="/compress-pdf" className={styles.toolButton}>
-                Start Compressing <ArrowRight size={18} />
-              </Link>
-            </div>
 
             {/* PDF to PPT */}
             <div className={`${styles.toolCard} ${styles.pdfToPptCard} `}>

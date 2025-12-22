@@ -95,46 +95,8 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type,
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
-    if (selectedFiles.length > 0) {
-        return (
-            <div className={styles.selectedFilesContainer}>
-                {selectedFiles.map((file, idx) => (
-                    <div key={`${file.name}-${idx}`} className={styles.selectedFile}>
-                        <div className={styles.fileInfo}>
-                            <div className={styles.fileIcon}>
-                                <FileCheck size={24} />
-                            </div>
-                            <div className={styles.fileDetails}>
-                                <p className={styles.fileName}>{file.name}</p>
-                                <p className={styles.fileSize}>{formatFileSize(file.size)}</p>
-                            </div>
-                        </div>
-                        <button onClick={() => handleRemoveFile(idx)} className={styles.removeButton}>
-                            <X size={18} />
-                        </button>
-                    </div>
-                ))}
-                {multiple && (
-                    <button
-                        className={styles.addMoreButton}
-                        onClick={() => document.getElementById(`file-input-${type}`)?.click()}
-                    >
-                        + Add more images
-                    </button>
-                )}
-            </div>
-        );
-    }
-
     return (
-        <div
-            className={`${styles.dropzone} ${isDragging ? styles.active : ''}`}
-            onDragEnter={handleDragEnter}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => document.getElementById(`file-input-${type}`)?.click()}
-        >
+        <>
             <input
                 id={`file-input-${type}`}
                 type="file"
@@ -143,16 +105,55 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type,
                 onChange={handleFileInput}
                 style={{ display: 'none' }}
             />
-            <Upload className={styles.icon} size={56} />
-            <p className={styles.text}>
-                {isDragging ? 'Drop your files here!' : multiple ? 'Drag & drop your images here' : 'Drag & drop your file here'}
-            </p>
-            <p className={styles.subtext}>or click to browse</p>
-            <div className={styles.badgeContainer}>
-                <span className={styles.badge}>{accept}</span>
-                <span className={styles.badge}>Max 50MB</span>
-            </div>
-        </div>
+
+            {selectedFiles.length > 0 ? (
+                <div className={styles.selectedFilesContainer}>
+                    {selectedFiles.map((file, idx) => (
+                        <div key={`${file.name}-${idx}`} className={styles.selectedFile}>
+                            <div className={styles.fileInfo}>
+                                <div className={styles.fileIcon}>
+                                    <FileCheck size={24} />
+                                </div>
+                                <div className={styles.fileDetails}>
+                                    <p className={styles.fileName}>{file.name}</p>
+                                    <p className={styles.fileSize}>{formatFileSize(file.size)}</p>
+                                </div>
+                            </div>
+                            <button onClick={() => handleRemoveFile(idx)} className={styles.removeButton}>
+                                <X size={18} />
+                            </button>
+                        </div>
+                    ))}
+                    {multiple && (
+                        <button
+                            className={styles.addMoreButton}
+                            onClick={() => document.getElementById(`file-input-${type}`)?.click()}
+                        >
+                            + Add more files
+                        </button>
+                    )}
+                </div>
+            ) : (
+                <div
+                    className={`${styles.dropzone} ${isDragging ? styles.active : ''}`}
+                    onDragEnter={handleDragEnter}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={() => document.getElementById(`file-input-${type}`)?.click()}
+                >
+                    <Upload className={styles.icon} size={56} />
+                    <p className={styles.text}>
+                        {isDragging ? 'Drop your files here!' : multiple ? 'Drag & drop your files here' : 'Drag & drop your file here'}
+                    </p>
+                    <p className={styles.subtext}>or click to browse</p>
+                    <div className={styles.badgeContainer}>
+                        <span className={styles.badge}>{accept}</span>
+                        <span className={styles.badge}>Max 50MB</span>
+                    </div>
+                </div>
+            )}
+        </>
     );
 };
 

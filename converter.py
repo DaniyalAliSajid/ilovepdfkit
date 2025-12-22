@@ -401,9 +401,10 @@ def rotate_pdf(pdf_bytes, angle=90):
     except Exception as e:
         raise Exception(f"Rotate PDF failed: {str(e)}")
 
-def compress_pdf(pdf_bytes):
+def compress_pdf(pdf_bytes, level="recommended"):
     """
     Compress PDF using PyMuPDF (fitz) with image downsampling and garbage collection.
+    Levels: 'extreme', 'recommended', 'less'
     """
     if not pdf_bytes:
         raise ValueError("PDF file is empty")
@@ -411,22 +412,67 @@ def compress_pdf(pdf_bytes):
     try:
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
         
-        # Optimize images (downsample to 150 DPI if higher)
-        # This is destructive but effective for "compression"
+        # Settings based on level
+        # Default: Recommended (150 DPI, 75 quality)
+        dpi = 150
+        quality = 75
+        
+        if level == "extreme":
+            dpi = 72
+            quality = 50
+        elif level == "less":
+            dpi = 200 # Higher DPI
+            quality = 90
+            
+        # Optimize images
         for page in doc:
             for img in page.get_images():
                 xref = img[0]
                 pix = fitz.Pixmap(doc, xref)
-                # Check if image is large enough to downsample
-                if pix.width > 1000 or pix.height > 1000:
-                    # shrink by half? or re-encode
-                    pass # PyMuPDF optimization is complex, relying on 'deflate' below is safer for general use
-                    # but user said "not reducing size".
-                    # Let's try to verify if we can re-compress images.
-                    
+                
+                # If image is larger than target DPI relative to page size? 
+                # Simplified: check pixel dimensions vs simple threshold or just blindly re-compress large images
+                if pix.width > 600 or pix.height > 600:
+                    try:
+                        # Create new pixmap with reduced size/quality if needed
+                        # Ideally we resample. PyMuPDF 'pix.shrink' or similar is option.
+                        # We'll use PIL for better control over efficient JPEG re-encoding
+                        
+                        # Existing logic was empty. Let's do a robust approach:
+                        # 1. Extract image bytes
+                        if pix.n - pix.alpha < 4:       # GRAY or RGB
+                            img_bytes = pix.tobytes("ppm")
+                        else:                           # PMAP: CMYK
+                            img_bytes = pix.tobytes("pam")
+                            
+                        # 2. Open in PIL
+                        from PIL import Image
+                        pil_img = Image.open(io.BytesIO(img_bytes))
+                        
+                        # 3. Resize if too big
+                        # Calculate target max dimension based on DPI (approx)
+                        # Let's say max dimension 1000px for extreme, 2000 for recommended
+                        max_dim = 2000
+                        if level == "extreme": max_dim = 1000
+                        elif level == "less": max_dim = 3000
+                        
+                        if pil_img.width > max_dim or pil_img.height > max_dim:
+                            pil_img.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+                            
+                        # 4. Save to buffer as JPEG
+                        new_img_stream = io.BytesIO()
+                        pil_img.save(new_img_stream, format="JPEG", quality=quality, optimize=True)
+                        new_img_stream.seek(0)
+                        
+                        # 5. Update (replace) image in PDF
+                        doc.update_stream(xref, new_img_stream.read())
+                        
+                    except Exception as img_err:
+                        print(f"DEBUG: Image compression failed for xref {xref}: {img_err}")
+                        pass
+
         output_stream = io.BytesIO()
         # garbage=4: dedup images, fonts, etc. deflate=True: compress streams
-        # clean=True: clean content streams
         doc.save(output_stream, garbage=4, deflate=True, clean=True)
         doc.close()
         
@@ -435,9 +481,9 @@ def compress_pdf(pdf_bytes):
         # Check if size actually reduced
         original_size = len(pdf_bytes)
         compressed_size = output_stream.getbuffer().nbytes
-        print(f"DEBUG: Compression. Original: {original_size}, New: {compressed_size}")
+        print(f"DEBUG: Compression ({level}). Original: {original_size}, New: {compressed_size}")
         
-        if compressed_size >= original_size:
+        if compressed_size >= original_size and level != "less":
              # If fitz didn't help, maybe it's already compressed. 
              # Return original to ensure no quality loss for no gain.
              print("DEBUG: Compressed size larger or equal. Returning original.")

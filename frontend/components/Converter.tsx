@@ -7,7 +7,7 @@ import FileDropzone from './FileDropzone';
 import styles from './Converter.module.css';
 
 interface ConverterProps {
-    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'compress-pdf' | 'pdf-to-ppt';
+    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt';
 }
 
 
@@ -88,14 +88,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             extension: '.pdf',
             multi: true
         },
-        'compress-pdf': {
-            title: 'Compress PDF File',
-            accept: '.pdf',
-            endpoint: '/api/convert/compress-pdf',
-            gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', // Emerald
-            extension: '.pdf',
-            multi: false
-        },
+
         'pdf-to-ppt': {
             title: 'PDF to PowerPoint Converter',
             accept: '.pdf',
@@ -107,7 +100,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
     }[type];
 
     const [angle, setAngle] = useState(0);
-
+    const [compressionLevel, setCompressionLevel] = useState<string>('recommended');
 
 
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
@@ -126,11 +119,17 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
         setMessage(null);
         setError(null);
         setProgress(0);
+        setCompressionLevel('recommended');
     };
 
     const handleConvert = async () => {
         if (!file && files.length === 0) {
             setError('Please select at least one file.');
+            return;
+        }
+
+        if (type === 'merge-pdf' && files.length < 2) {
+            setError('Please select at least two PDF files to merge.');
             return;
         }
 
@@ -149,6 +148,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
         if (type === 'rotate-pdf') {
             formData.append('angle', angle.toString());
         }
+
+
 
 
         try {
@@ -185,7 +186,14 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             const nameParts = originalName.split('.');
             if (nameParts.length > 1) nameParts.pop();
             const baseName = nameParts.join('.');
-            const outputFileName = config.multi ? `converted_images.pdf` : `${baseName}${config.extension}`;
+            let outputFileName;
+            if (type === 'merge-pdf') {
+                outputFileName = 'merged.pdf';
+            } else if (config.multi) {
+                outputFileName = `converted_images.pdf`;
+            } else {
+                outputFileName = `${baseName}${config.extension}`;
+            }
 
             saveAs(blob, outputFileName);
             setMessage(`Conversion successful! Downloaded ${outputFileName}`);
@@ -289,6 +297,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                         </div>
                     </div>
                 )}
+
+
 
                 <button
                     className={styles.convertButton}

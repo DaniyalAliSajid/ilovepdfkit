@@ -412,10 +412,15 @@ def convert_compress_pdf():
             return jsonify({"error": "No file provided"}), 400
             
         file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+
+        level = request.form.get('level', 'recommended')
+        
         pdf_bytes = file.read()
         validate_file_size(pdf_bytes)
         
-        compressed_stream = converter.compress_pdf(pdf_bytes)
+        compressed_stream = converter.compress_pdf(pdf_bytes, level=level)
         
         filename = f"{file.filename.rsplit('.', 1)[0]}_compressed.pdf"
         return send_file(
