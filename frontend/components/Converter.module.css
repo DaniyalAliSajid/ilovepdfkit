@@ -313,6 +313,114 @@
     box-shadow: 0 0 0 4px var(--primary-100);
 }
 
+/* Page Number Options */
+.optionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+}
+
+.optionSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.optionLabel {
+    font-weight: 600;
+    color: var(--gray-700);
+    font-size: 0.9rem;
+}
+
+.pageModeGroup {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.pageModeOption {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--gray-700);
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--gray-700);
+    margin-top: var(--space-2);
+}
+
+.gridContainer {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: var(--space-6);
+}
+
+.positionGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 4px;
+    width: 100px;
+    height: 100px;
+    background: var(--gray-100);
+    padding: 4px;
+    border-radius: var(--radius-lg);
+}
+
+.positionCell {
+    background: white;
+    border: 1px solid var(--gray-300);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.positionCell:hover {
+    background: var(--gray-50);
+}
+
+.positionCell.selected {
+    background: var(--accent-red);
+    border-color: var(--accent-red);
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.selectInput,
+.numberInput {
+    padding: var(--space-3);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.numberInput {
+    width: 80px;
+}
+
+.paginationInput {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    border: 1px solid var(--gray-300);
+    padding: var(--space-2);
+    border-radius: var(--radius-lg);
+    width: fit-content;
+}
+
 .optionInfo h4 {
     font-size: 1rem;
     font-weight: 600;

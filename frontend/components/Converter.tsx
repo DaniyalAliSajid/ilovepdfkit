@@ -7,10 +7,8 @@ import FileDropzone from './FileDropzone';
 import styles from './Converter.module.css';
 
 interface ConverterProps {
-    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt';
+    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers';
 }
-
-
 
 interface HistoryItem {
     id: number;
@@ -28,8 +26,6 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [history, setHistory] = useState<HistoryItem[]>([]);
-
-
 
     const config = {
         'pdf-to-word': {
@@ -88,7 +84,6 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             extension: '.pdf',
             multi: true
         },
-
         'pdf-to-ppt': {
             title: 'PDF to PowerPoint Converter',
             accept: '.pdf',
@@ -96,11 +91,26 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             gradient: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)', // Orange/Red for PPT
             extension: '.pptx',
             multi: false
+        },
+        'add-page-numbers': {
+            title: 'Add Page Numbers to PDF',
+            accept: '.pdf',
+            endpoint: '/api/convert/add-page-numbers',
+            gradient: 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)', // Red/Rose
+            extension: '.pdf',
+            multi: false
         }
     }[type];
 
     const [angle, setAngle] = useState(0);
     const [compressionLevel, setCompressionLevel] = useState<string>('recommended');
+
+    // Page Number State
+    const [pageNumberPosition, setPageNumberPosition] = useState<string>('bottom-center');
+    const [pageNumberMargin, setPageNumberMargin] = useState<string>('recommended');
+    const [firstNumber, setFirstNumber] = useState<number>(1);
+    const [pageMode, setPageMode] = useState<string>('single');
+    const [isCoverPage, setIsCoverPage] = useState<boolean>(false);
 
 
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
@@ -120,6 +130,12 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
         setError(null);
         setProgress(0);
         setCompressionLevel('recommended');
+        // Reset page number options
+        setPageNumberPosition('bottom-center');
+        setPageNumberMargin('recommended');
+        setFirstNumber(1);
+        setPageMode('single');
+        setIsCoverPage(false);
     };
 
     const handleConvert = async () => {
@@ -147,6 +163,14 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
 
         if (type === 'rotate-pdf') {
             formData.append('angle', angle.toString());
+        }
+
+        if (type === 'add-page-numbers') {
+            formData.append('position', pageNumberPosition);
+            formData.append('margin', pageNumberMargin);
+            formData.append('firstNumber', firstNumber.toString());
+            formData.append('pageMode', pageMode);
+            formData.append('isCoverPage', isCoverPage.toString());
         }
 
 
@@ -293,6 +317,92 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                                 style={{ transform: `rotate(${angle}deg)` }}
                             >
                                 <FileCheck size={64} />
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {type === 'add-page-numbers' && (
+                    <div className={styles.optionsContainer}>
+                        <div className={styles.optionSection}>
+                            <p className={styles.optionLabel}>Page mode</p>
+                            <div className={styles.pageModeGroup}>
+                                <label className={styles.pageModeOption}>
+                                    <input
+                                        type="radio"
+                                        name="pageMode"
+                                        value="single"
+                                        checked={pageMode === 'single'}
+                                        onChange={(e) => setPageMode(e.target.value)}
+                                    />
+                                    Single page
+                                </label>
+                                <label className={styles.pageModeOption}>
+                                    <input
+                                        type="radio"
+                                        name="pageMode"
+                                        value="facing"
+                                        checked={pageMode === 'facing'}
+                                        onChange={(e) => setPageMode(e.target.value)}
+                                    />
+                                    Facing pages
+                                </label>
+                            </div>
+                            <label className={styles.checkboxLabel}>
+                                <input
+                                    type="checkbox"
+                                    checked={isCoverPage}
+                                    onChange={(e) => setIsCoverPage(e.target.checked)}
+                                />
+                                First page is cover page
+                            </label>
+                        </div>
+
+                        <div className={styles.gridContainer}>
+                            <div className={styles.formGroup}>
+                                <p className={styles.optionLabel}>Position:</p>
+                                <div className={styles.positionGrid}>
+                                    {['top-left', 'top-center', 'top-right',
+                                        'middle-left', 'middle-center', 'middle-right',
+                                        'bottom-left', 'bottom-center', 'bottom-right'].map((pos) => {
+                                            if (pos.includes('middle')) return <div key={pos} style={{ visibility: 'hidden' }} />;
+                                            const isActive = pageNumberPosition === pos;
+                                            return (
+                                                <div
+                                                    key={pos}
+                                                    className={`${styles.positionCell} ${isActive ? styles.selected : ''}`}
+                                                    onClick={() => setPageNumberPosition(pos)}
+                                                />
+                                            );
+                                        })}
+                                </div>
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <p className={styles.optionLabel}>Margin:</p>
+                                <select
+                                    className={styles.selectInput}
+                                    value={pageNumberMargin}
+                                    onChange={(e) => setPageNumberMargin(e.target.value)}
+                                >
+                                    <option value="small">Small</option>
+                                    <option value="recommended">Recommended</option>
+                                    <option value="big">Big</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className={styles.optionSection}>
+                            <p className={styles.optionLabel}>Pages</p>
+                            <div className={styles.paginationInput}>
+                                <span>First number:</span>
+                                <input
+                                    type="number"
+                                    className={styles.numberInput}
+                                    value={firstNumber}
+                                    min="1"
+                                    onChange={(e) => setFirstNumber(parseInt(e.target.value) || 1)}
+                                />
                             </div>
                         </div>
                     </div>

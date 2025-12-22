@@ -14,7 +14,8 @@ import {
   MonitorPlay,
   Files,
   Minimize2,
-  Table
+  Table,
+  Hash
 } from 'lucide-react';
 
 import styles from './page.module.css';
@@ -189,6 +190,24 @@ export default function Home() {
               </ul>
               <Link href="/pdf-to-ppt" className={styles.toolButton}>
                 Start Converting <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Add Page Numbers */}
+            <div className={`${styles.toolCard} ${styles.addPageNumbersCard} `}>
+              <div className={styles.toolIcon}><Hash size={48} /></div>
+              <h3 className={styles.toolTitle}>Add Page Numbers</h3>
+
+              <p className={styles.toolDesc}>
+                Add page numbers to your PDF documents with custom positioning
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Custom position</li>
+                <li>✓ Formatting options</li>
+                <li>✓ Batch processing</li>
+              </ul>
+              <Link href="/add-page-numbers" className={styles.toolButton}>
+                Start Adding <ArrowRight size={18} />
               </Link>
             </div>
 

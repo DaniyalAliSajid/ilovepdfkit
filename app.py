@@ -456,6 +456,41 @@ def convert_pdf_to_ppt():
         app.logger.error(f"PDF to PPT error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/convert/add-page-numbers', methods=['POST'])
+def convert_add_page_numbers():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+            
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+            
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        # Parse options
+        options = {
+            'position': request.form.get('position', 'bottom-center'),
+            'margin': request.form.get('margin', 'recommended'),
+            'first_number': request.form.get('firstNumber', 1),
+            'page_mode': request.form.get('pageMode', 'single'),
+            'cover_page': request.form.get('isCoverPage', 'false')
+        }
+        
+        pdf_stream = converter.add_page_numbers(pdf_bytes, options)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}_numbered.pdf"
+        return send_file(
+            pdf_stream,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        app.logger.error(f"Add Page Numbers error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

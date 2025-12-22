@@ -170,6 +170,172 @@ def word_to_pdf_windows(docx_bytes):
         safe_remove(temp_docx_path)
         safe_remove(temp_pdf_path)
 
+def excel_to_pdf_windows(excel_bytes):
+    """
+    Convert Excel to PDF using Excel COM automation
+    """
+    # Get a temporary file path for the input Excel
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as temp_input:
+        temp_input.write(excel_bytes)
+        temp_input_path = temp_input.name
+
+    # Prepare output PDF path
+    output_pdf_path = temp_input_path.replace(".xlsx", ".pdf")
+
+    excel = None
+    wb = None
+    try:
+        # Import win32com.client inside the function to avoid issues on non-Windows
+        import win32com.client
+        
+        # Initialize Excel application
+        excel = win32com.client.Dispatch("Excel.Application")
+        excel.Visible = False
+        excel.DisplayAlerts = False
+        
+        # Open the workbook
+        wb = excel.Workbooks.Open(temp_input_path)
+        
+        # 0 corresponds to xlTypePDF
+        wb.ExportAsFixedFormat(0, output_pdf_path)
+        
+        # Read the generated PDF
+        if os.path.exists(output_pdf_path):
+            with open(output_pdf_path, "rb") as pdf_file:
+                pdf_bytes = pdf_file.read()
+            return io.BytesIO(pdf_bytes)
+        else:
+            raise Exception("PDF output file was not created by Excel.")
+            
+    except Exception as e:
+        print(f"Excel COM conversion error: {e}")
+        # If COM fails or not on Windows, raise error
+        raise e
+        
+    finally:
+        # Cleanup
+        if wb:
+            try:
+                wb.Close(SaveChanges=False)
+            except:
+                pass
+        if excel:
+            try:
+                excel.Quit()
+            except:
+                pass
+                
+        safe_remove(temp_input_path)
+        safe_remove(output_pdf_path)
+
+
+def add_page_numbers(pdf_bytes, options):
+    """
+    Add page numbers to PDF with flexible positioning and styling.
+    options: {
+        'position': 'bottom-center' (default), top-left, top-center, top-right, bottom-left, bottom-right
+        'margin': 'recommended' (default), small, big
+        'first_number': 1 (default)
+        'page_mode': 'single' (default), facing
+        'cover_page': False (default)
+    }
+    """
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    
+    position = options.get('position', 'bottom-center')
+    margin_type = options.get('margin', 'recommended')
+    start_number = int(options.get('first_number', 1))
+    page_mode = options.get('page_mode', 'single')
+    is_cover = options.get('cover_page', False) == 'true' or options.get('cover_page') is True
+
+    # Define margins (in points, 72 pts = 1 inch)
+    # A4 is approx 595 x 842 points
+    margin_map = {
+        'small': 20,
+        'recommended': 40,
+        'big': 72
+    }
+    margin = margin_map.get(margin_type, 40)
+    
+    font_size = 12
+    font_color = (0, 0, 0) # Black
+
+    for i, page in enumerate(doc):
+        # Skip cover page if requested
+        if is_cover and i == 0:
+            continue
+            
+        page_num = start_number + (i - 1 if is_cover else i)
+        text = str(page_num)
+        
+        # Determine position
+        rect = page.rect
+        width = rect.width
+        height = rect.height
+        
+        # Calculate x, y coordinates
+        # Text alignment adjustment (approximate width of text)
+        text_width = fitz.get_text_length(text, fontname="helv", fontsize=font_size)
+        text_height = font_size
+        
+        pos_x = 0
+        pos_y = 0
+        
+        # Facing pages logic: Mirror Left/Right if facing
+        # If facing: 
+        #   Even pages (0, 2, 4...): Left side is outer, Right side is inner? 
+        #   Usually: Page 1 (Right), Page 2 (Left), Page 3 (Right)...
+        #   But 'i' is 0-indexed.
+        current_pos = position
+        
+        if page_mode == 'facing':
+            # Assuming standard book layout:
+            # i=0 (Page 1 in PDF viewer) is usually Recto (Right)
+            # i=1 (Page 2) is Verso (Left)
+            # But let's check widely used logic.
+            # Usually users expect flip-flopping.
+            # If position is "Bottom-Right", on Left page it should be "Bottom-Left".
+            
+            # Simple facing logic:
+            # If Right side requested (Top-Right, Bottom-Right):
+            #   Page i (Even) -> Right
+            #   Page i (Odd) -> Left 
+            # Wait, usually page 1 is on the right. 
+            # If strictly physical pages:
+            # Page 1 (Right): margin on right.
+            # Page 2 (Left): margin on left.
+            
+            is_right_page = (i % 2 == 0) # 0, 2, 4... are on the right in 2-up view normally (if cover is separate)
+            # Actually simplest is: 
+            # If user selected "Right", they want it on the outside corner.
+            # Outside corner: Right for Right Page, Left for Left Page.
+            
+            if "right" in position.lower():
+                current_pos = position if is_right_page else position.replace("right", "left")
+            elif "left" in position.lower():
+                current_pos = position if not is_right_page else position.replace("left", "right")
+        
+        # Determine coordinates based on current_pos and margin
+        if "top" in current_pos:
+            pos_y = margin + text_height
+        else: # bottom
+            pos_y = height - margin
+            
+        if "left" in current_pos:
+            pos_x = margin
+        elif "right" in current_pos:
+            pos_x = width - margin - text_width
+        else: # center
+            pos_x = (width - text_width) / 2
+            
+        # Draw text
+        page.insert_text((pos_x, pos_y), text, fontsize=font_size, fontname="helv", color=font_color)
+
+    output_stream = io.BytesIO()
+    doc.save(output_stream)
+    doc.close()
+    output_stream.seek(0)
+    return output_stream
 
 
 def pdf_to_jpg(pdf_bytes):

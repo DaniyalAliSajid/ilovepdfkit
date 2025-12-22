@@ -663,3 +663,29 @@
     font-size: 1.25rem;
   }
 }
+
+/* Add Page Numbers Card */
+.addPageNumbersCard::before {
+  background: linear-gradient(135deg, #E11D48 0%, #BE123C 100%);
+}
+
+.addPageNumbersCard .toolIcon {
+  color: #E11D48;
+  background: #fff1f2;
+  /* Rose-50 */
+}
+
+.addPageNumbersCard .toolButton {
+  background: #E11D48;
+  border-color: #E11D48;
+}
+
+.addPageNumbersCard .toolButton:hover {
+  background: white;
+  color: #E11D48;
+  border-color: #E11D48;
+}
+
+.addPageNumbersCard .toolFeatures li::before {
+  color: #E11D48;
+}
