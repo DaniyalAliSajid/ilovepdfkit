@@ -376,10 +376,80 @@ def convert_ppt_to_pdf():
         app.logger.error(f"PPT to PDF error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/convert/excel-to-pdf', methods=['POST'])
-def convert_excel_to_pdf():
-    # Endpoint removed as per user request
-    return jsonify({"error": "Excel to PDF conversion is no longer supported"}), 410
+@app.route('/api/convert/merge-pdf', methods=['POST'])
+def convert_merge_pdf():
+    try:
+        if 'files' not in request.files:
+            return jsonify({"error": "No files provided"}), 400
+        
+        files = request.files.getlist('files')
+        pdf_bytes_list = []
+        for file in files:
+            if file.filename.lower().endswith('.pdf'):
+                pdf_bytes = file.read()
+                pdf_bytes_list.append(pdf_bytes)
+        
+        if not pdf_bytes_list:
+            return jsonify({"error": "No valid PDF files found"}), 400
+            
+        pdf_stream = converter.merge_pdf(pdf_bytes_list)
+        
+        filename = "merged_document.pdf"
+        return send_file(
+            pdf_stream,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        app.logger.error(f"Merge PDF error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/compress-pdf', methods=['POST'])
+def convert_compress_pdf():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+            
+        file = request.files['file']
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        compressed_stream = converter.compress_pdf(pdf_bytes)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}_compressed.pdf"
+        return send_file(
+            compressed_stream,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        app.logger.error(f"Compress PDF error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/pdf-to-ppt', methods=['POST'])
+def convert_pdf_to_ppt():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+            
+        file = request.files['file']
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        ppt_stream = converter.pdf_to_ppt(pdf_bytes)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}.pptx"
+        return send_file(
+            ppt_stream,
+            mimetype='application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        app.logger.error(f"PDF to PPT error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == '__main__':

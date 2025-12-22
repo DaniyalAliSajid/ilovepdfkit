@@ -54,6 +54,12 @@ const Navbar = () => {
             About Us
           </Link>
           <Link
+            href="/advertise-with-us"
+            className={`${styles.navLink} ${pathname === '/advertise-with-us' ? styles.activeNavLink : ''}`}
+          >
+            Advertise with Us
+          </Link>
+          <Link
             href="/contact"
             className={`${styles.navLink} ${pathname === '/contact' ? styles.activeNavLink : ''}`}
           >

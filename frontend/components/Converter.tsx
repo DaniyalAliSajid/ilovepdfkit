@@ -7,7 +7,7 @@ import FileDropzone from './FileDropzone';
 import styles from './Converter.module.css';
 
 interface ConverterProps {
-    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf';
+    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'compress-pdf' | 'pdf-to-ppt';
 }
 
 
@@ -79,6 +79,30 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             gradient: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
             extension: '.pdf',
             multi: false
+        },
+        'merge-pdf': {
+            title: 'Merge PDF Files',
+            accept: '.pdf',
+            endpoint: '/api/convert/merge-pdf',
+            gradient: 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)', // Violet
+            extension: '.pdf',
+            multi: true
+        },
+        'compress-pdf': {
+            title: 'Compress PDF File',
+            accept: '.pdf',
+            endpoint: '/api/convert/compress-pdf',
+            gradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)', // Emerald
+            extension: '.pdf',
+            multi: false
+        },
+        'pdf-to-ppt': {
+            title: 'PDF to PowerPoint Converter',
+            accept: '.pdf',
+            endpoint: '/api/convert/pdf-to-ppt',
+            gradient: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)', // Orange/Red for PPT
+            extension: '.pptx',
+            multi: false
         }
     }[type];
 
@@ -86,7 +110,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
 
 
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
     if (!config) return null;
     const endpoint = `${baseUrl}${config.endpoint}`;
 

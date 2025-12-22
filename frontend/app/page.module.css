@@ -214,6 +214,21 @@
   background: #fef2f2;
 }
 
+.mergePdfCard .toolIcon {
+  color: #8B5CF6;
+  background: #f5f3ff;
+}
+
+.compressPdfCard .toolIcon {
+  color: #10B981;
+  background: #d1fae5;
+}
+
+.pdfToPptCard .toolIcon {
+  color: #F97316;
+  background: #ffedd5;
+}
+
 .toolCard:hover .toolIcon {
   transform: scale(1.1);
 }

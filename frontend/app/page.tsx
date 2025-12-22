@@ -11,7 +11,10 @@ import {
   RotateCw,
   FileImage,
   Images,
-  MonitorPlay
+  MonitorPlay,
+  Files,
+  Minimize2,
+  Table
 } from 'lucide-react';
 
 import styles from './page.module.css';
@@ -151,6 +154,60 @@ export default function Home() {
               </Link>
             </div>
 
+            {/* Merge PDF */}
+            <div className={`${styles.toolCard} ${styles.mergePdfCard} `}>
+              <div className={styles.toolIcon}><Files size={48} /></div>
+              <h3 className={styles.toolTitle}>Merge PDF</h3>
+
+              <p className={styles.toolDesc}>
+                Combine multiple PDF files into one single document
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Merge unlimited files</li>
+                <li>✓ Preserve order</li>
+                <li>✓ Fast processing</li>
+              </ul>
+              <Link href="/merge-pdf" className={styles.toolButton}>
+                Start Merging <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Compress PDF */}
+            <div className={`${styles.toolCard} ${styles.compressPdfCard} `}>
+              <div className={styles.toolIcon}><Minimize2 size={48} /></div>
+              <h3 className={styles.toolTitle}>Compress PDF</h3>
+
+              <p className={styles.toolDesc}>
+                Reduce file size while optimizing for maximal quality
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Significant reduction</li>
+                <li>✓ Preserves quality</li>
+                <li>✓ Web optimization</li>
+              </ul>
+              <Link href="/compress-pdf" className={styles.toolButton}>
+                Start Compressing <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* PDF to PPT */}
+            <div className={`${styles.toolCard} ${styles.pdfToPptCard} `}>
+              <div className={styles.toolIcon}><MonitorPlay size={48} /></div>
+              <h3 className={styles.toolTitle}>PDF to PPT</h3>
+
+              <p className={styles.toolDesc}>
+                Convert PDF documents to PowerPoint presentations easily
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Visual fidelity</li>
+                <li>✓ Edit slides</li>
+                <li>✓ Fast conversion</li>
+              </ul>
+              <Link href="/pdf-to-ppt" className={styles.toolButton}>
+                Start Converting <ArrowRight size={18} />
+              </Link>
+            </div>
+
           </div>
         </div>
       </section>
@@ -185,27 +242,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className={styles.footer}>
-        <div className={styles.container}>
-          <div className={styles.footerLinks}>
-            <Link href="/about">About Us</Link>
-            <span>•</span>
-            <Link href="/contact">Contact Us</Link>
-            <span>•</span>
-            <Link href="/privacy-policy">Privacy Policy</Link>
-            <span>•</span>
-            <Link href="/terms-and-conditions">Terms & Conditions</Link>
-            <span>•</span>
-            <Link href="/advertise-with-us">Advertise with us</Link>
-          </div>
-          <p className={styles.copyright}>
-            © 2025 ILOVEPDFKIT. All rights reserved.
-            <br />
-            Made with ❤️ for seamless document conversion
-          </p>
-        </div>
-      </footer>
     </main>
   );
 }
