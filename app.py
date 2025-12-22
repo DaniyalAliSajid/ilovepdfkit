@@ -26,7 +26,7 @@ CORS(app, resources={
 })
 
 # Configuration
-MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
+MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
