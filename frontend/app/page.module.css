@@ -384,6 +384,78 @@
   border-color: var(--accent-red);
 }
 
+.mergePdfCard .toolButton {
+  background: #8B5CF6;
+  /* Violet */
+  border-color: #8B5CF6;
+}
+
+.mergePdfCard .toolButton:hover {
+  background: white;
+  color: #8B5CF6;
+  border-color: #8B5CF6;
+}
+
+.compressPdfCard .toolButton {
+  background: #10B981;
+  /* Emerald */
+  border-color: #10B981;
+}
+
+.compressPdfCard .toolButton:hover {
+  background: white;
+  color: #10B981;
+  border-color: #10B981;
+}
+
+.pdfToPptCard .toolButton {
+  background: #F97316;
+  /* Orange */
+  border-color: #F97316;
+}
+
+.pdfToPptCard .toolButton:hover {
+  background: white;
+  color: #F97316;
+  border-color: #F97316;
+}
+
+.mergePdfCard .toolButton {
+  background: #8B5CF6;
+  /* Violet */
+  border-color: #8B5CF6;
+}
+
+.mergePdfCard .toolButton:hover {
+  background: white;
+  color: #8B5CF6;
+  border-color: #8B5CF6;
+}
+
+.compressPdfCard .toolButton {
+  background: #10B981;
+  /* Emerald */
+  border-color: #10B981;
+}
+
+.compressPdfCard .toolButton:hover {
+  background: white;
+  color: #10B981;
+  border-color: #10B981;
+}
+
+.pdfToPptCard .toolButton {
+  background: #F97316;
+  /* Orange */
+  border-color: #F97316;
+}
+
+.pdfToPptCard .toolButton:hover {
+  background: white;
+  color: #F97316;
+  border-color: #F97316;
+}
+
 /* Features Section */
 .featuresSection {
   padding: var(--space-20) 0;

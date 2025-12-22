@@ -439,14 +439,38 @@ def compress_pdf(pdf_bytes):
         
         if compressed_size >= original_size:
              # If fitz didn't help, maybe it's already compressed. 
-             # Return original to ensure no quality loss for no gain?
-             # Or return compressed anyway as it might have cleaned structure?
-             pass
+             # Return original to ensure no quality loss for no gain.
+             print("DEBUG: Compressed size larger or equal. Returning original.")
+             return io.BytesIO(pdf_bytes)
 
         return output_stream
         
     except Exception as e:
         raise Exception(f"Compress PDF failed: {str(e)}")
+
+def merge_pdf(pdf_bytes_list):
+    """
+    Merge multiple PDF files into one using PyMuPDF (fitz) which is more robust
+    """
+    if not pdf_bytes_list:
+        raise ValueError("No PDF files provided")
+        
+    try:
+        merged_doc = fitz.open()
+        
+        for pdf_bytes in pdf_bytes_list:
+             with fitz.open(stream=pdf_bytes, filetype="pdf") as doc:
+                 merged_doc.insert_pdf(doc)
+            
+        output_stream = io.BytesIO()
+        merged_doc.save(output_stream, garbage=3, deflate=True)
+        merged_doc.close()
+            
+        output_stream.seek(0)
+        return output_stream
+        
+    except Exception as e:
+        raise Exception(f"Merge PDF failed: {str(e)}")
 
 def pdf_to_ppt(pdf_bytes):
     """
