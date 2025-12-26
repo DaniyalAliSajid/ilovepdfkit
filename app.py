@@ -134,24 +134,16 @@ def contact():
         msg.attach(MIMEText(text, 'plain'))
         msg.attach(MIMEText(html, 'html'))
 
-    #     # Send email via Gmail SMTP
-    #     with smtplib.SMTP_SSL('mail.ilovepdfkit.com', 465) as server:
-    #         server.login(email_user, email_password)
-    #         server.sendmail(email_user, support_email, msg.as_string())
+        # Send email via Namecheap/cPanel SMTP (SSL)
+        with smtplib.SMTP_SSL('mail.ilovepdfkit.com', 465, timeout=10) as server:
+            server.login(email_user, email_password)
+            server.sendmail(email_user, support_email, msg.as_string())
 
-    #     return jsonify({"success": True, "message": "Email sent successfully"}), 200
+        return jsonify({"success": True, "message": "Email sent successfully"}), 200
 
-    # except Exception as e:
-    #     app.logger.error(f"Contact form error: {str(e)}")
-    #     return jsonify({"error": "Failed to send message. Please try again later."}), 500
-
-
-    # Send email via Namecheap/cPanel SMTP (SSL)
-with smtplib.SMTP_SSL('mail.ilovepdfkit.com', 465, timeout=10) as server:
-    server.login(email_user, email_password)
-    server.sendmail(email_user, support_email, msg.as_string())
-
-return jsonify({"success": True, "message": "Email sent successfully"}), 200
+    except Exception as e:
+        app.logger.error(f"Contact form error: {str(e)}")
+        return jsonify({"error": "Failed to send message. Please try again later."}), 500
 
 
 @app.route('/api/convert/pdf-to-word', methods=['POST'])
