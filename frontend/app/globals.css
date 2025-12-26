@@ -1,5 +1,4 @@
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap');
+/* Google Fonts are optimized and loaded via Next.js font optimization in layout.tsx */
 
 :root {
   /* Refined Color Palette - Subtle Professional Tones */
@@ -7,7 +6,7 @@
   --foreground: #1e293b;
   --text-secondary: #64748b;
   --text-muted: #94a3b8;
-  
+
   /* Primary Purple Palette - Softer, More Professional */
   --primary-50: #faf5ff;
   --primary-100: #f3e8ff;
@@ -19,7 +18,7 @@
   --primary-700: #7e22ce;
   --primary-800: #6b21a8;
   --primary-900: #581c87;
-  
+
   /* Accent Colors */
   --accent-purple: #8b5cf6;
   --accent-blue: #3b82f6;
@@ -27,7 +26,7 @@
   --accent-orange: #f97316;
   --accent-green: #10b981;
   --accent-red: #ef4444;
-  
+
   /* Neutral Grays */
   --gray-50: #f8fafc;
   --gray-100: #f1f5f9;
@@ -39,12 +38,12 @@
   --gray-700: #334155;
   --gray-800: #1e293b;
   --gray-900: #0f172a;
-  
+
   /* Subtle Gradients */
   --gradient-primary: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
   --gradient-accent: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
   --gradient-subtle: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  
+
   /* Refined Shadows - Soft and Layered */
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
@@ -53,7 +52,7 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   --shadow-colored: 0 10px 25px -5px rgba(139, 92, 246, 0.15);
-  
+
   /* Spacing Scale */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -67,7 +66,7 @@
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
-  
+
   /* Border Radius */
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -76,7 +75,7 @@
   --radius-2xl: 1.5rem;
   --radius-3xl: 2rem;
   --radius-full: 9999px;
-  
+
   /* Transitions */
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);

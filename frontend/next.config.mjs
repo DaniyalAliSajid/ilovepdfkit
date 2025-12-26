@@ -2,6 +2,11 @@
 const nextConfig = {
     output: 'export',
     images: { unoptimized: true },
+    // Performance optimizations
+    compress: true,
+    poweredByHeader: false,
+    reactStrictMode: true,
+    swcMinify: true,
     // Use rewrites ONLY for local development to avoid CORS issues
     async rewrites() {
         return process.env.NODE_ENV === 'development' ? [

@@ -19,6 +19,8 @@ import {
 } from 'lucide-react';
 
 import styles from './page.module.css';
+import FAQ from '@/components/FAQ';
+
 
 
 export default function Home() {
@@ -244,6 +246,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <FAQ />
 
     </main>
   );

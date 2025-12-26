@@ -1,7 +1,7 @@
 .main {
   position: relative;
   overflow: hidden;
-  padding-bottom: var(--space-16);
+  padding-bottom: var(--space-8);
 }
 
 /* Subtle Background Elements */
@@ -566,7 +566,7 @@
 
 /* Footer */
 .footer {
-  margin-top: var(--space-16);
+  margin-top: var(--space-8);
   padding: var(--space-20) 0 var(--space-12);
   border-top: 1px solid var(--gray-200);
   text-align: center;
@@ -641,7 +641,12 @@
   }
 
   .featuresSection {
-    padding: var(--space-16) 0;
+    padding: var(--space-12) 0;
+  }
+
+  .footer {
+    margin-top: var(--space-6);
+    padding: var(--space-12) 0 var(--space-8);
   }
 }
 
