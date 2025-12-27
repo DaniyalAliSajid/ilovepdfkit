@@ -32,7 +32,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             title: 'PDF to Word Converter',
             accept: '.pdf',
             endpoint: '/api/convert/pdf-to-word',
-            gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            gradient: 'linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%)',
+            color: '#6d28d9',
             extension: '.docx',
             multi: false
         },
@@ -40,7 +41,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             title: 'Word to PDF Converter',
             accept: '.docx',
             endpoint: '/api/convert/word-to-pdf',
-            gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            gradient: 'linear-gradient(135deg, #be123c 0%, #881337 100%)',
+            color: '#be123c',
             extension: '.pdf',
             multi: false
         },
@@ -48,7 +50,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             title: 'PDF to JPG Converter',
             accept: '.pdf',
             endpoint: '/api/convert/pdf-to-jpg',
-            gradient: 'linear-gradient(135deg, #FF9A8B 0%, #FF6A88 55%, #FF99AC 100%)',
+            gradient: 'linear-gradient(135deg, #c2410c 0%, #9a3412 100%)',
+            color: '#c2410c',
             extension: '.zip',
             multi: false
         },
@@ -56,7 +59,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             title: 'JPG to PDF Converter',
             accept: '.jpg,.jpeg,.png',
             endpoint: '/api/convert/jpg-to-pdf',
-            gradient: 'linear-gradient(135deg, #00DBDE 0%, #FC00FF 100%)',
+            gradient: 'linear-gradient(135deg, #1e40af 0%, #1e3a8a 100%)',
+            color: '#1e40af',
             extension: '.pdf',
             multi: true
         },
@@ -64,7 +68,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             title: 'PowerPoint to PDF Converter',
             accept: '.ppt,.pptx',
             endpoint: '/api/convert/ppt-to-pdf',
-            gradient: 'linear-gradient(135deg, #ff8c00 0%, #e67e22 100%)',
+            gradient: 'linear-gradient(135deg, #a16207 0%, #854d0e 100%)',
+            color: '#a16207',
             extension: '.pdf',
             multi: false
         },
@@ -72,7 +77,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             title: 'Rotate PDF Document',
             accept: '.pdf',
             endpoint: '/api/convert/rotate-pdf',
-            gradient: 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
+            gradient: 'linear-gradient(135deg, #b91c1c 0%, #991b1b 100%)',
+            color: '#b91c1c',
             extension: '.pdf',
             multi: false
         },
@@ -80,7 +86,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             title: 'Merge PDF Files',
             accept: '.pdf',
             endpoint: '/api/convert/merge-pdf',
-            gradient: 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)', // Violet
+            gradient: 'linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%)',
+            color: '#6d28d9',
             extension: '.pdf',
             multi: true
         },
@@ -88,7 +95,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             title: 'PDF to PowerPoint Converter',
             accept: '.pdf',
             endpoint: '/api/convert/pdf-to-ppt',
-            gradient: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)', // Orange/Red for PPT
+            gradient: 'linear-gradient(135deg, #c2410c 0%, #9a3412 100%)',
+            color: '#c2410c',
             extension: '.pptx',
             multi: false
         },
@@ -96,7 +104,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             title: 'Add Page Numbers to PDF',
             accept: '.pdf',
             endpoint: '/api/convert/add-page-numbers',
-            gradient: 'linear-gradient(135deg, #E11D48 0%, #BE123C 100%)', // Red/Rose
+            gradient: 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)',
+            color: '#e11d48',
             extension: '.pdf',
             multi: false
         }
@@ -250,6 +259,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                     onFileSelect={handleFileSelect}
                     accept={config.accept}
                     type={type}
+                    themeColor={config.color}
+                    themeGradient={config.gradient}
                     multiple={config.multi}
                 />
 
@@ -285,7 +296,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                     <div className={styles.rotationContainer}>
                         <div className={styles.rotationHeader}>
                             <p className={styles.optionsTitle}>Rotation</p>
-                            <button className={styles.resetButton} onClick={() => setAngle(0)}>Reset all</button>
+                            <button className={styles.resetButton} style={{ color: config.color }} onClick={() => setAngle(0)}>Reset all</button>
                         </div>
 
                         <div className={styles.rotationControls}>
@@ -293,20 +304,20 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                                 className={`${styles.rotateBox} ${styles.rotateRight}`}
                                 onClick={() => setAngle((prev) => (prev + 90) % 360)}
                             >
-                                <div className={styles.rotateIconBox}>
+                                <div className={styles.rotateIconBox} style={{ background: config.color }}>
                                     <RotateCw size={24} />
                                 </div>
-                                <span>RIGHT</span>
+                                <span style={{ color: config.color }}>RIGHT</span>
                             </button>
 
                             <button
                                 className={`${styles.rotateBox} ${styles.rotateLeft}`}
                                 onClick={() => setAngle((prev) => (prev + 270) % 360)}
                             >
-                                <div className={styles.rotateIconBox}>
+                                <div className={styles.rotateIconBox} style={{ background: config.color, filter: 'brightness(0.9)' }}>
                                     <RotateCcw size={24} />
                                 </div>
-                                <span>LEFT</span>
+                                <span style={{ color: config.color, filter: 'brightness(0.9)' }}>LEFT</span>
                             </button>
                         </div>
 
@@ -314,7 +325,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                             <p className={styles.previewLabel}>Current Rotation: {angle}°</p>
                             <div
                                 className={styles.pdfPreview}
-                                style={{ transform: `rotate(${angle}deg)` }}
+                                style={{ transform: `rotate(${angle}deg)`, color: config.color }}
                             >
                                 <FileCheck size={64} />
                             </div>
@@ -371,6 +382,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                                                 <div
                                                     key={pos}
                                                     className={`${styles.positionCell} ${isActive ? styles.selected : ''}`}
+                                                    style={isActive ? { background: config.color, borderColor: config.color } : {}}
                                                     onClick={() => setPageNumberPosition(pos)}
                                                 />
                                             );

@@ -8,10 +8,12 @@ interface FileDropzoneProps {
     onFileSelect: (file: File | File[] | null) => void;
     accept: string;
     type: string;
+    themeColor: string;
+    themeGradient: string;
     multiple?: boolean;
 }
 
-const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type, multiple = false }) => {
+const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type, themeColor, themeGradient, multiple = false }) => {
     const [isDragging, setIsDragging] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
@@ -111,7 +113,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type,
                     {selectedFiles.map((file, idx) => (
                         <div key={`${file.name}-${idx}`} className={styles.selectedFile}>
                             <div className={styles.fileInfo}>
-                                <div className={styles.fileIcon}>
+                                <div className={styles.fileIcon} style={{ background: themeGradient }}>
                                     <FileCheck size={24} />
                                 </div>
                                 <div className={styles.fileDetails}>
@@ -127,6 +129,7 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type,
                     {multiple && (
                         <button
                             className={styles.addMoreButton}
+                            style={{ borderColor: `${themeColor}40`, color: themeColor }}
                             onClick={() => document.getElementById(`file-input-${type}`)?.click()}
                         >
                             + Add more files
@@ -136,13 +139,14 @@ const FileDropzone: React.FC<FileDropzoneProps> = ({ onFileSelect, accept, type,
             ) : (
                 <div
                     className={`${styles.dropzone} ${isDragging ? styles.active : ''}`}
+                    style={isDragging ? { borderColor: themeColor, background: `${themeColor}08` } : {}}
                     onDragEnter={handleDragEnter}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={() => document.getElementById(`file-input-${type}`)?.click()}
                 >
-                    <Upload className={styles.icon} size={56} />
+                    <Upload className={styles.icon} style={isDragging ? { color: themeColor } : {}} size={56} />
                     <p className={styles.text}>
                         {isDragging ? 'Drop your files here!' : multiple ? 'Drag & drop your files here' : 'Drag & drop your file here'}
                     </p>
