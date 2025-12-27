@@ -37,10 +37,26 @@ function FAQItem({ question, answer, isOpen, onClick }: FAQItemProps) {
     );
 }
 
-export default function FAQ() {
+
+interface FAQData {
+    question: string;
+    answer: string;
+}
+
+interface FAQProps {
+    customFaqs?: FAQData[];
+    title?: string;
+    subtitle?: string;
+}
+
+export default function FAQ({
+    customFaqs,
+    title = "Frequently Asked Questions",
+    subtitle = "Everything you need to know about ILOVEPDFKIT"
+}: FAQProps) {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-    const faqs = [
+    const defaultFaqs: FAQData[] = [
         {
             question: 'Is my data secure when using ILOVEPDFKIT?',
             answer: 'Yes, absolutely. Your files are processed securely and are never stored on our servers. All conversions happen in real-time, and files are automatically deleted after processing. We prioritize your privacy and data security.'
@@ -75,6 +91,8 @@ export default function FAQ() {
         }
     ];
 
+    const faqs = customFaqs || defaultFaqs;
+
     const handleToggle = (index: number) => {
         setOpenIndex(openIndex === index ? null : index);
     };
@@ -83,10 +101,8 @@ export default function FAQ() {
         <>
             <section className={styles.faqSection}>
                 <div className={styles.container}>
-                    <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
-                    <p className={styles.sectionSubtitle}>
-                        Everything you need to know about ILOVEPDFKIT
-                    </p>
+                    <h2 className={styles.sectionTitle}>{title}</h2>
+                    <p className={styles.sectionSubtitle}>{subtitle}</p>
                     <div className={styles.faqGrid}>
                         {faqs.map((faq, index) => (
                             <FAQItem
@@ -103,7 +119,7 @@ export default function FAQ() {
 
             {/* Schema.org JSON-LD for SEO */}
             <Script
-                id="faq-schema"
+                id={`faq-schema-${title.replace(/\s+/g, '-').toLowerCase()}`}
                 type="application/ld+json"
                 strategy="afterInteractive"
                 dangerouslySetInnerHTML={{

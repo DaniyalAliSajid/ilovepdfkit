@@ -33,10 +33,9 @@ const Navbar = () => {
     <>
       <nav className={styles.navbar}>
         <Link href="/" className={styles.brand}>
-          <div className={styles.brandIcon}>
-            <FileText size={24} />
+          <div className={styles.brandLogo}>
+            <img src="/logo.png" alt="ILOVEPDFKIT" style={{ height: '60px', width: 'auto', objectFit: 'contain' }} />
           </div>
-          <span>ILOVEPDFKIT</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -87,10 +86,7 @@ const Navbar = () => {
           <div className={styles.drawer}>
             <div className={styles.drawerHeader}>
               <div className={styles.drawerBrand}>
-                <div className={styles.brandIcon}>
-                  <FileText size={24} />
-                </div>
-                <span>ILOVEPDFKIT</span>
+                <img src="/logo.png" alt="ILOVEPDFKIT" style={{ height: '40px', width: 'auto' }} />
               </div>
               <button
                 className={styles.closeButton}

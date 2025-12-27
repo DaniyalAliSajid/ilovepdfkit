@@ -50,14 +50,16 @@
 }
 
 .heroIcon {
-  background: var(--gradient-primary);
+  background: white;
   padding: var(--space-5);
   border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-colored);
+  box-shadow: var(--shadow-lg);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform var(--transition-slow);
+  width: 120px;
+  height: 120px;
 }
 
 .heroIcon:hover {
@@ -695,4 +697,124 @@
 
 .addPageNumbersCard .toolFeatures li::before {
   color: #E11D48;
+}
+
+/* Tool Content Section (Zig-Zag Layout) */
+.toolContentWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-4);
+}
+
+.contentHeader {
+  text-align: center;
+  margin-bottom: var(--space-12);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.contentHeader h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.contentHeader p {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.zigZagContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.zigZagRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.rowNormal {
+  flex-direction: row;
+}
+
+.rowReverse {
+  flex-direction: row-reverse;
+}
+
+.textContent {
+  flex: 1;
+}
+
+.textContent h3 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: var(--space-4);
+  color: var(--text-primary);
+}
+
+.textBody {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.textBody ul,
+.textBody ol {
+  margin-left: var(--space-5);
+  margin-top: var(--space-2);
+}
+
+.textBody li {
+  margin-bottom: var(--space-2);
+}
+
+.visualContent {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.visualCard {
+  width: 100%;
+  max-width: 400px;
+  aspect-ratio: 4/3;
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  color: var(--primary);
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(59, 130, 246, 0.05) 100%);
+}
+
+@media (max-width: 768px) {
+
+  .zigZagRow,
+  .rowNormal,
+  .rowReverse {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-8);
+  }
+
+  .textContent h3 {
+    font-size: 1.5rem;
+  }
+
+  .textBody ol,
+  .textBody ul {
+    text-align: left;
+    display: inline-block;
+  }
 }

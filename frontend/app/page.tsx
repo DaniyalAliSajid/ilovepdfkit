@@ -35,7 +35,7 @@ export default function Home() {
         <div className={styles.container}>
           <div className={styles.heroIconWrapper}>
             <div className={styles.heroIcon}>
-              <FileText size={64} color="white" strokeWidth={1.5} />
+              <img src="/icon.png" alt="Logo" style={{ width: '80px', height: '80px', objectFit: 'contain' }} />
             </div>
           </div>
           <h1 className={styles.title}>Free Online PDF Converter & Tools - ILOVEPDFKIT</h1>
