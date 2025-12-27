@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -20,11 +20,15 @@ export const metadata: Metadata = {
   description: "Transform your documents with pixel-perfect accuracy. Convert between PDF, Word, PowerPoint, and images. Free, secure, and fast document conversion tools. No registration required.",
   keywords: "PDF converter, PDF to Word, Word to PDF, PDF tools, document conversion, free PDF converter, online PDF tools, edit PDF, merge PDF, split PDF",
   authors: [{ name: "ILOVEPDFKIT" }],
-  viewport: "width=device-width, initial-scale=1",
-  themeColor: "#8b5cf6",
   alternates: {
     canonical: './',
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#8b5cf6",
 };
 
 export default function RootLayout({
