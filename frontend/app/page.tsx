@@ -35,7 +35,7 @@ export default function Home() {
         <div className={styles.container}>
           <div className={styles.heroIconWrapper}>
             <div className={styles.heroIcon}>
-              <img src="/icon.png" alt="Logo" style={{ width: '80px', height: '80px', objectFit: 'contain' }} />
+              <img src="/icon.png" alt="ILOVEPDFKIT Logo" width="80" height="80" style={{ objectFit: 'contain' }} />
             </div>
           </div>
           <h1 className={styles.title}>Free Online PDF Converter & Tools - ILOVEPDFKIT</h1>
@@ -63,7 +63,7 @@ export default function Home() {
                 <li>✓ Maintain fonts and styles</li>
                 <li>✓ Keep page count intact</li>
               </ul>
-              <Link href="/pdf-to-word" className={styles.toolButton}>
+              <Link href="/pdf-to-word" className={styles.toolButton} aria-label="Start Converting PDF to Word">
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -81,7 +81,7 @@ export default function Home() {
                 <li>✓ Keep images intact</li>
                 <li>✓ Maintain document structure</li>
               </ul>
-              <Link href="/word-to-pdf" className={styles.toolButton}>
+              <Link href="/word-to-pdf" className={styles.toolButton} aria-label="Start Converting Word to PDF">
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -98,7 +98,7 @@ export default function Home() {
                 <li>✓ Batch extraction</li>
                 <li>✓ Preservation of colors</li>
               </ul>
-              <Link href="/pdf-to-jpg" className={styles.toolButton}>
+              <Link href="/pdf-to-jpg" className={styles.toolButton} aria-label="Start Converting PDF to JPG">
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -116,7 +116,7 @@ export default function Home() {
                 <li>✓ Auto-alignment</li>
                 <li>✓ Compressed output</li>
               </ul>
-              <Link href="/jpg-to-pdf" className={styles.toolButton}>
+              <Link href="/jpg-to-pdf" className={styles.toolButton} aria-label="Start Converting JPG to PDF">
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -134,7 +134,7 @@ export default function Home() {
                 <li>✓ Crystal clear text</li>
                 <li>✓ Fast processing</li>
               </ul>
-              <Link href="/ppt-to-pdf" className={styles.toolButton}>
+              <Link href="/ppt-to-pdf" className={styles.toolButton} aria-label="Start Converting PowerPoint to PDF">
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -152,7 +152,7 @@ export default function Home() {
                 <li>✓ Instant processing</li>
                 <li>✓ High quality output</li>
               </ul>
-              <Link href="/rotate-pdf" className={styles.toolButton}>
+              <Link href="/rotate-pdf" className={styles.toolButton} aria-label="Start Rotating PDF Pages">
                 Start Rotating <ArrowRight size={18} />
               </Link>
             </div>
@@ -170,7 +170,7 @@ export default function Home() {
                 <li>✓ Preserve order</li>
                 <li>✓ Fast processing</li>
               </ul>
-              <Link href="/merge-pdf" className={styles.toolButton}>
+              <Link href="/merge-pdf" className={styles.toolButton} aria-label="Start Merging PDF Files">
                 Start Merging <ArrowRight size={18} />
               </Link>
             </div>
@@ -190,7 +190,7 @@ export default function Home() {
                 <li>✓ Edit slides</li>
                 <li>✓ Fast conversion</li>
               </ul>
-              <Link href="/pdf-to-ppt" className={styles.toolButton}>
+              <Link href="/pdf-to-ppt" className={styles.toolButton} aria-label="Start Converting PDF to PowerPoint">
                 Start Converting <ArrowRight size={18} />
               </Link>
             </div>
@@ -208,7 +208,7 @@ export default function Home() {
                 <li>✓ Formatting options</li>
                 <li>✓ Batch processing</li>
               </ul>
-              <Link href="/add-page-numbers" className={styles.toolButton}>
+              <Link href="/add-page-numbers" className={styles.toolButton} aria-label="Start Adding Page Numbers to PDF">
                 Start Adding <ArrowRight size={18} />
               </Link>
             </div>

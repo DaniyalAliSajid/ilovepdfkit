@@ -329,63 +329,63 @@
 }
 
 .pdfToWordCard .toolButton {
-  background: var(--accent-purple);
-  border-color: var(--accent-purple);
+  background: #6D28D9;
+  border-color: #6D28D9;
 }
 
 .pdfToWordCard .toolButton:hover {
   background: white;
-  color: var(--accent-purple);
-  border-color: var(--accent-purple);
+  color: #6D28D9;
+  border-color: #6D28D9;
 }
 
 .wordToPdfCard .toolButton {
-  background: var(--accent-pink);
-  border-color: var(--accent-pink);
+  background: #BE123C;
+  border-color: #BE123C;
 }
 
 .wordToPdfCard .toolButton:hover {
   background: white;
-  color: var(--accent-pink);
-  border-color: var(--accent-pink);
+  color: #BE123C;
+  border-color: #BE123C;
 }
 
 .pdfToJpgCard .toolButton {
-  background: var(--accent-orange);
-  border-color: var(--accent-orange);
+  background: #C2410C;
+  border-color: #C2410C;
 }
 
 .pdfToJpgCard .toolButton:hover {
   background: white;
-  color: var(--accent-orange);
-  border-color: var(--accent-orange);
+  color: #C2410C;
+  border-color: #C2410C;
 }
 
 .jpgToPdfCard .toolButton {
-  background: var(--accent-blue);
-  border-color: var(--accent-blue);
+  background: #1E40AF;
+  border-color: #1E40AF;
 }
 
 .jpgToPdfCard .toolButton:hover {
   background: white;
-  color: var(--accent-blue);
-  border-color: var(--accent-blue);
+  color: #1E40AF;
+  border-color: #1E40AF;
 }
 
 .pptToPdfCard .toolButton {
-  background: #eab308;
-  border-color: #eab308;
+  background: #A16207;
+  border-color: #A16207;
 }
 
 .pptToPdfCard .toolButton:hover {
   background: white;
-  color: #eab308;
-  border-color: #eab308;
+  color: #A16207;
+  border-color: #A16207;
 }
 
 .rotatePdfCard .toolButton {
-  background: var(--accent-red);
-  border-color: var(--accent-red);
+  background: #B91C1C;
+  border-color: #B91C1C;
 }
 
 /* Compression Options */
@@ -460,34 +460,32 @@
 
 .rotatePdfCard .toolButton:hover {
   background: white;
-  color: var(--accent-red);
-  border-color: var(--accent-red);
+  color: #B91C1C;
+  border-color: #B91C1C;
 }
 
 .mergePdfCard .toolButton {
-  background: #8B5CF6;
-  /* Violet */
-  border-color: #8B5CF6;
+  background: #6D28D9;
+  border-color: #6D28D9;
 }
 
 .mergePdfCard .toolButton:hover {
   background: white;
-  color: #8B5CF6;
-  border-color: #8B5CF6;
+  color: #6D28D9;
+  border-color: #6D28D9;
 }
 
 
 
 .pdfToPptCard .toolButton {
-  background: #F97316;
-  /* Orange */
-  border-color: #F97316;
+  background: #C2410C;
+  border-color: #C2410C;
 }
 
 .pdfToPptCard .toolButton:hover {
   background: white;
-  color: #F97316;
-  border-color: #F97316;
+  color: #C2410C;
+  border-color: #C2410C;
 }
 
 .mergePdfCard .toolButton {
@@ -579,11 +577,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: var(--space-4) var(--space-8);
+  gap: var(--space-6);
   margin-bottom: var(--space-8);
   font-weight: 600;
-  color: var(--text-secondary);
+  color: #475569;
   font-size: 0.9375rem;
   padding: 0 var(--space-4);
 }
@@ -601,7 +598,7 @@
 }
 
 .copyright {
-  color: var(--text-muted);
+  color: #475569;
   font-size: 0.875rem;
   line-height: 1.8;
   font-weight: 400;
