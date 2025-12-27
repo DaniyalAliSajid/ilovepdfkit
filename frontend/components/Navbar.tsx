@@ -34,7 +34,7 @@ const Navbar = () => {
       <nav className={styles.navbar}>
         <Link href="/" className={styles.brand}>
           <div className={styles.brandLogo}>
-            <img src="/logo.png" alt="ILOVEPDFKIT" style={{ height: '60px', width: 'auto', objectFit: 'contain' }} />
+            <img src="/logo.png" alt="ILOVEPDFKIT" width="420" height="105" style={{ height: '60px', width: 'auto', objectFit: 'contain' }} />
           </div>
         </Link>
 
@@ -86,7 +86,7 @@ const Navbar = () => {
           <div className={styles.drawer}>
             <div className={styles.drawerHeader}>
               <div className={styles.drawerBrand}>
-                <img src="/logo.png" alt="ILOVEPDFKIT" style={{ height: '40px', width: 'auto' }} />
+                <img src="/logo.png" alt="ILOVEPDFKIT" width="280" height="70" style={{ height: '40px', width: 'auto' }} />
               </div>
               <button
                 className={styles.closeButton}

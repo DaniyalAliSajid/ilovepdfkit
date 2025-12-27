@@ -4,23 +4,26 @@
   /* Refined Color Palette - Subtle Professional Tones */
   --background: #fafbfc;
   --foreground: #1e293b;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
+  --text-secondary: #475569;
+  /* Slate 600 - Meets 4.5:1 contrast ratio */
+  --text-muted: #526176;
+  /* Meets 4.5:1 contrast ratio */
 
   /* Primary Purple Palette - Softer, More Professional */
   --primary-50: #faf5ff;
-  --primary-100: #f3e8ff;
-  --primary-200: #e9d5ff;
-  --primary-300: #d8b4fe;
-  --primary-400: #c084fc;
-  --primary-500: #a855f7;
-  --primary-600: #9333ea;
-  --primary-700: #7e22ce;
-  --primary-800: #6b21a8;
-  --primary-900: #581c87;
+  --primary-100: #f5f3ff;
+  --primary-200: #ede9fe;
+  --primary-300: #ddd6fe;
+  --primary-400: #c4b5fd;
+  --primary-500: #8b5cf6;
+  --primary-600: #6d28d9;
+  --primary-700: #5b21b6;
+  --primary-800: #4c1d95;
+  --primary-900: #2e1065;
 
   /* Accent Colors */
-  --accent-purple: #8b5cf6;
+  --accent-purple: #6d28d9;
+  /* Darker purple for better contrast */
   --accent-blue: #3b82f6;
   --accent-pink: #ec4899;
   --accent-orange: #f97316;
@@ -39,9 +42,9 @@
   --gray-800: #1e293b;
   --gray-900: #0f172a;
 
-  /* Subtle Gradients */
-  --gradient-primary: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
-  --gradient-accent: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+  /* Subtle Gradients - Darkened for better accessibility contrast with white icons */
+  --gradient-primary: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+  --gradient-accent: linear-gradient(135deg, #be123c 0%, #881337 100%);
   --gradient-subtle: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 
   /* Refined Shadows - Soft and Layered */
