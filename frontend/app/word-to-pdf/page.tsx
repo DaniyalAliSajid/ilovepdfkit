@@ -2,8 +2,8 @@ import Converter from "@/components/Converter";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Word to PDF Converter - ILOVEPDFKIT',
-    description: 'Convert Word documents to professional PDF files instantly.',
+    title: 'Word to PDF Converter - Convert DOCX to PDF Online | ILOVEPDFKIT',
+    description: 'Turn Microsoft Word documents into PDF files instantly. Preserve original formatting, fonts, and layout. 100% Free and Secure.',
 };
 
 export default function WordToPdfPage() {

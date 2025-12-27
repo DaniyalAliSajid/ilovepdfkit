@@ -38,9 +38,9 @@ export default function Home() {
               <FileText size={64} color="white" strokeWidth={1.5} />
             </div>
           </div>
-          <h1 className={styles.title}>ILOVEPDFKIT</h1>
+          <h1 className={styles.title}>Free Online PDF Converter & Tools - ILOVEPDFKIT</h1>
           <p className={styles.subtitle}>
-            Transform your documents with pixel-perfect accuracy. Convert between PDF, Word, PowerPoint, Excel, and Image formats while preserving images, fonts, and formatting.
+            Transform your documents with pixel-perfect accuracy. Convert between PDF, Word, PowerPoint, Excel, and Image formats while preserving images, fonts, and formatting. 100% Free, Secure, and No Registration Required.
           </p>
           <div className={styles.heroDivider}></div>
         </div>

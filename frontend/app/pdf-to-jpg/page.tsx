@@ -2,8 +2,9 @@ import Converter from "@/components/Converter";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'PDF to JPG Converter - Document Converter Pro',
-    description: 'Extract images or convert PDF pages into high-quality JPG images.',
+    title: 'PDF to JPG Converter - High Quality Images | ILOVEPDFKIT',
+    description: 'Convert PDF pages to high-resolution JPG images. Download as individual files or ZIP archive. Fast, free, and secure.',
+    keywords: ['PDF to JPG', 'convert PDF to JPG', 'PDF to image', 'PDF converter', 'JPG converter', 'high quality JPG', 'free PDF to JPG', 'online PDF to JPG'],
 };
 
 export default function PdfToJpgPage() {

@@ -9,13 +9,9 @@ export default function Footer() {
             <div className={styles.container}>
                 <div className={styles.footerLinks}>
                     <Link href="/about">About Us</Link>
-                    <span>•</span>
                     <Link href="/contact">Contact Us</Link>
-                    <span>•</span>
                     <Link href="/advertise-with-us">Advertise with Us</Link>
-                    <span>•</span>
                     <Link href="/privacy-policy">Privacy Policy</Link>
-                    <span>•</span>
                     <Link href="/terms-and-conditions">Terms & Conditions</Link>
                 </div>
                 <p className={styles.copyright}>

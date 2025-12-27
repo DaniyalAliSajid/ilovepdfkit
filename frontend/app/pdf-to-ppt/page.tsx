@@ -3,8 +3,8 @@ import { Metadata } from 'next';
 import styles from '../page.module.css';
 
 export const metadata: Metadata = {
-    title: 'PDF to PPT Converter - ILOVEPDFKIT',
-    description: 'Convert PDF documents to PowerPoint presentations.',
+    title: 'PDF to PPT - Convert PDF to PowerPoint Online | ILOVEPDFKIT',
+    description: 'Convert PDF to editable PowerPoint slides (PPTX). Turn your PDF documents into presentations instantly.',
 };
 
 export default function PdfToPptPage() {

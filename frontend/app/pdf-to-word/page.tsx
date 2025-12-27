@@ -2,8 +2,8 @@ import Converter from "@/components/Converter";
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'PDF to Word Converter - ILOVEPDFKIT',
-    description: 'Convert PDF files to editable Word documents instantly.',
+    title: 'PDF to Word Converter - 100% Free & Editable | ILOVEPDFKIT',
+    description: 'Convert PDF files to editable Word documents (DOCX) instantly. Best free online PDF to Word converter with OCR. No signup required.',
 };
 
 export default function PdfToWordPage() {
