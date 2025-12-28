@@ -4,9 +4,7 @@ import converter
 import io
 import os
 import zipfile
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+import requests
 
 app = Flask(__name__, static_folder='static_build')
 
@@ -85,15 +83,11 @@ def contact():
             else:
                 subject = "New Contact Form Submission"
 
-        # Email configuration from environment variables
-        smtp_server = os.environ.get('SMTP_SERVER', 'ilovepdfkit.com')
-        smtp_port = int(os.environ.get('SMTP_PORT', '465'))
-        email_user = os.environ.get('EMAIL_USER')
-        email_password = os.environ.get('EMAIL_PASSWORD')
+        resend_api_key = os.environ.get('RESEND_API_KEY')
         support_email = 'support@ilovepdfkit.com'
 
-        if not email_user or not email_password:
-            app.logger.warning("Email credentials not set. Logging message to console.")
+        if not resend_api_key:
+            app.logger.warning("RESEND_API_KEY not set. Logging message to console.")
             print(f"--- CONTACT FORM SUBMISSION ---")
             print(f"From: {name} ({email})")
             print(f"Subject: {subject}")
@@ -101,21 +95,11 @@ def contact():
             print(f"-------------------------------")
             return jsonify({
                 "success": True, 
-                "message": "Message received (Dev Mode: Credentials not set)"
+                "message": "Message received (API Key not set)"
             }), 200
 
-        # Create email
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = f"Contact Form: {subject}"
-        msg['From'] = email_user
-        msg['To'] = support_email
-        msg['Reply-To'] = email
-
-        # Plain text version
-        text = f"New message from {name} ({email}):\n\nSubject: {subject}\n\n{message}"
-        
         # HTML version
-        html = f"""
+        html_content = f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #9333ea;">New Contact Form Submission</h2>
             <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -133,33 +117,35 @@ def contact():
         </div>
         """
 
-        msg.attach(MIMEText(text, 'plain'))
-        msg.attach(MIMEText(html, 'html'))
-
-        # Send email via SMTP with STARTTLS (port 587)
+        app.logger.info(f"Sending email via Resend API to {support_email}")
+        
         try:
-            app.logger.info(f"Attempting SMTP connection to {smtp_server}:{smtp_port}")
-            with smtplib.SMTP(smtp_server, smtp_port, timeout=30) as server:
-                server.set_debuglevel(1)  # Enable debug output
-                app.logger.info("SMTP connection established, starting TLS...")
-                server.starttls()  # Upgrade to TLS
-                app.logger.info("TLS started, attempting login...")
-                server.login(email_user, email_password)
-                app.logger.info("Login successful, sending email...")
-                server.sendmail(email_user, support_email, msg.as_string())
-                app.logger.info("Email sent successfully")
-        except smtplib.SMTPAuthenticationError as e:
-            app.logger.error(f"SMTP Authentication failed: {str(e)}")
-            raise Exception(f"Email authentication failed. Please check credentials.")
-        except smtplib.SMTPConnectError as e:
-            app.logger.error(f"SMTP Connection failed: {str(e)}")
-            raise Exception(f"Could not connect to email server {smtp_server}:{smtp_port}")
-        except smtplib.SMTPException as e:
-            app.logger.error(f"SMTP Error: {str(e)}")
-            raise Exception(f"Email server error: {str(e)}")
-        except Exception as e:
-            app.logger.error(f"Unexpected error: {str(e)}")
-            raise
+            response = requests.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {resend_api_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "from": "ILOVEPDFKIT <onboarding@resend.dev>",
+                    "to": support_email,
+                    "reply_to": email,
+                    "subject": f"Contact Form: {subject}",
+                    "html": html_content
+                },
+                timeout=10
+            )
+
+            if response.status_code in [200, 201]:
+                app.logger.info("Email sent successfully via Resend")
+                return jsonify({"success": True, "message": "Email sent successfully"}), 200
+            else:
+                app.logger.error(f"Resend API error: {response.status_code} - {response.text}")
+                return jsonify({"error": f"Email API error: {response.status_code}"}), 500
+
+        except requests.exceptions.RequestException as e:
+            app.logger.error(f"Resend connection error: {str(e)}")
+            return jsonify({"error": "Failed to connect to email API"}), 500
 
 
         return jsonify({"success": True, "message": "Email sent successfully"}), 200
