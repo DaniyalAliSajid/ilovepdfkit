@@ -156,7 +156,8 @@ def contact():
             raise Exception(f"Could not connect to email server {smtp_server}:{smtp_port}")
         except smtplib.SMTPException as e:
             app.logger.error(f"SMTP Error: {str(e)}")
-            raise Exception(f"Email server error: {str(e)}") except Exception as e:
+            raise Exception(f"Email server error: {str(e)}")
+        except Exception as e:
             app.logger.error(f"Unexpected error: {str(e)}")
             raise
 
