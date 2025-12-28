@@ -28,8 +28,9 @@ export default function ContactPage() {
         setErrorMessage('');
 
         try {
-            // Call frontend API route (not backend)
-            const response = await fetch('/api/contact', {
+            // Call backend Flask API
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ilovepdfkit-api.onrender.com';
+            const response = await fetch(`${baseUrl}/api/contact`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
