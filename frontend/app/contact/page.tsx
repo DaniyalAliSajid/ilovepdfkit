@@ -28,8 +28,8 @@ export default function ContactPage() {
         setErrorMessage('');
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-            const response = await fetch(`${baseUrl}/api/contact`, {
+            // Call frontend API route (not backend)
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

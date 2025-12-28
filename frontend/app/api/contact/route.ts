@@ -21,16 +21,19 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // ✅ cPanel/Namecheap SMTP (your config says SMTP 465 SSL)
+        // ✅ cPanel/Namecheap SMTP Configuration
         const transporter = nodemailer.createTransport({
-            host: "ilovepdfkit.com",
+            host: "mail.ilovepdfkit.com",
             port: 465,
-            secure: false,
-            requireTLS: true,
+            secure: true, // true for port 465 (SSL)
             auth: {
                 user: EMAIL_USER,
                 pass: EMAIL_PASSWORD,
             },
+            // Additional options for better reliability
+            tls: {
+                rejectUnauthorized: false // Accept self-signed certificates (common with cPanel)
+            }
         });
 
         await transporter.verify();
