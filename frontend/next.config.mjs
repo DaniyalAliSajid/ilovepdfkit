@@ -7,6 +7,14 @@ const nextConfig = {
     poweredByHeader: false,
     reactStrictMode: true,
     swcMinify: true,
+    // Compiler optimizations
+    compiler: {
+        removeConsole: process.env.NODE_ENV === 'production',
+    },
+    // Modern browser targeting to reduce polyfills
+    experimental: {
+        modern: true,
+    },
     // Use rewrites ONLY for local development to avoid CORS issues
     async rewrites() {
         return process.env.NODE_ENV === 'development' ? [
