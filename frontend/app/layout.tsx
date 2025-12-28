@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: './',
   },
+  icons: {
+    icon: '/favicon.webp',
+    shortcut: '/favicon.webp',
+    apple: '/favicon.webp',
+  },
 };
 
 export const viewport: Viewport = {

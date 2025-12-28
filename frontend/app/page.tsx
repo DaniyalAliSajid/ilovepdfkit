@@ -33,16 +33,10 @@ export default function Home() {
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.container}>
-          <div className={styles.heroIconWrapper}>
-            <div className={styles.heroIcon}>
-              <img src="/icon.png" alt="ILOVEPDFKIT Logo" width="80" height="80" style={{ objectFit: 'contain' }} />
-            </div>
-          </div>
           <h1 className={styles.title}>Free Online PDF Converter & Tools - ILOVEPDFKIT</h1>
           <p className={styles.subtitle}>
             Transform your documents with pixel-perfect accuracy. Convert between PDF, Word, PowerPoint, Excel, and Image formats while preserving images, fonts, and formatting. 100% Free, Secure, and No Registration Required.
           </p>
-          <div className={styles.heroDivider}></div>
         </div>
       </section>
 

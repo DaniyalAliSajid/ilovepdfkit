@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { FileText, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import styles from './Navbar.module.css';
 
@@ -34,7 +35,14 @@ const Navbar = () => {
       <nav className={styles.navbar}>
         <Link href="/" className={styles.brand}>
           <div className={styles.brandLogo}>
-            <img src="/logo.png" alt="ILOVEPDFKIT" width="420" height="105" style={{ height: '60px', width: 'auto', objectFit: 'contain' }} />
+            <Image
+              src="/logo.webp"
+              alt="ILOVEPDFKIT"
+              width={220}
+              height={60}
+              priority
+              style={{ objectFit: 'contain' }}
+            />
           </div>
         </Link>
 
@@ -86,7 +94,13 @@ const Navbar = () => {
           <div className={styles.drawer}>
             <div className={styles.drawerHeader}>
               <div className={styles.drawerBrand}>
-                <img src="/logo.png" alt="ILOVEPDFKIT" width="280" height="70" style={{ height: '40px', width: 'auto' }} />
+                <Image
+                  src="/logo.webp"
+                  alt="ILOVEPDFKIT"
+                  width={150}
+                  height={40}
+                  style={{ objectFit: 'contain' }}
+                />
               </div>
               <button
                 className={styles.closeButton}
