@@ -85,7 +85,9 @@ def contact():
             else:
                 subject = "New Contact Form Submission"
 
-        # Email configuration
+        # Email configuration from environment variables
+        smtp_server = os.environ.get('SMTP_SERVER', 'ilovepdfkit.com')
+        smtp_port = int(os.environ.get('SMTP_PORT', '465'))
         email_user = os.environ.get('EMAIL_USER')
         email_password = os.environ.get('EMAIL_PASSWORD')
         support_email = 'support@ilovepdfkit.com'
@@ -134,10 +136,24 @@ def contact():
         msg.attach(MIMEText(text, 'plain'))
         msg.attach(MIMEText(html, 'html'))
 
-        # Send email via Namecheap/cPanel SMTP (SSL)
-        with smtplib.SMTP_SSL('mail.ilovepdfkit.com', 465, timeout=10) as server:
-            server.login(email_user, email_password)
-            server.sendmail(email_user, support_email, msg.as_string())
+        # Send email via SMTP with SSL
+        try:
+            app.logger.info(f"Attempting SMTP connection to {smtp_server}:{smtp_port}")
+            with smtplib.SMTP_SSL(smtp_server, smtp_port, timeout=30) as server:
+                app.logger.info("SMTP connection established, attempting login...")
+                server.login(email_user, email_password)
+                app.logger.info("Login successful, sending email...")
+                server.sendmail(email_user, support_email, msg.as_string())
+                app.logger.info("Email sent successfully")
+        except smtplib.SMTPAuthenticationError as e:
+            app.logger.error(f"SMTP Authentication failed: {str(e)}")
+            raise Exception(f"Email authentication failed. Please check credentials.")
+        except smtplib.SMTPConnectError as e:
+            app.logger.error(f"SMTP Connection failed: {str(e)}")
+            raise Exception(f"Could not connect to email server {smtp_server}:{smtp_port}")
+        except smtplib.SMTPException as e:
+            app.logger.error(f"SMTP Error: {str(e)}")
+            raise Exception(f"Email server error: {str(e)}")
 
         return jsonify({"success": True, "message": "Email sent successfully"}), 200
 
