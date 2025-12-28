@@ -127,7 +127,7 @@ def contact():
                     "Content-Type": "application/json"
                 },
                 json={
-                    "from": "ILOVEPDFKIT <onboarding@resend.dev>",
+                    "from": "ILOVEPDFKIT <support@ilovepdfkit.com>",
                     "to": support_email,
                     "reply_to": email,
                     "subject": f"Contact Form: {subject}",
