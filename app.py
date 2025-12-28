@@ -102,19 +102,18 @@ def contact():
         company_info = f"<p><strong>Company:</strong> {company}</p>" if company else ""
         html_content = f"""
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #9333ea;">New {("Advertising" if company else "Contact")} Submission</h2>
+            <h2 style="color: #9333ea;">New Message: {subject}</h2>
             <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <p><strong>Name:</strong> {name}</p>
                 <p><strong>Email:</strong> {email}</p>
                 {company_info}
-                <p><strong>Subject:</strong> {subject}</p>
             </div>
             <div style="background: white; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
                 <h3 style="color: #374151; margin-top: 0;">Message:</h3>
                 <p style="color: #6b7280; line-height: 1.6;">{message}</p>
             </div>
             <p style="color: #9ca3af; font-size: 12px; margin-top: 20px;">
-                Sent from ILOVEPDFKIT {("Advertising" if company else "Contact")} form.
+                Sent from ILOVEPDFKIT Platform.
             </p>
         </div>
         """
@@ -132,7 +131,7 @@ def contact():
                     "from": "ILOVEPDFKIT <support@ilovepdfkit.com>",
                     "to": support_email,
                     "reply_to": email,
-                    "subject": f"Contact Form: {subject}",
+                    "subject": f"Contact: {subject}",
                     "html": html_content
                 },
                 timeout=10
