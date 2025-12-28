@@ -136,11 +136,14 @@ def contact():
         msg.attach(MIMEText(text, 'plain'))
         msg.attach(MIMEText(html, 'html'))
 
-        # Send email via SMTP with SSL
+        # Send email via SMTP with STARTTLS (port 587)
         try:
             app.logger.info(f"Attempting SMTP connection to {smtp_server}:{smtp_port}")
-            with smtplib.SMTP_SSL(smtp_server, smtp_port, timeout=30) as server:
-                app.logger.info("SMTP connection established, attempting login...")
+            with smtplib.SMTP(smtp_server, smtp_port, timeout=30) as server:
+                server.set_debuglevel(1)  # Enable debug output
+                app.logger.info("SMTP connection established, starting TLS...")
+                server.starttls()  # Upgrade to TLS
+                app.logger.info("TLS started, attempting login...")
                 server.login(email_user, email_password)
                 app.logger.info("Login successful, sending email...")
                 server.sendmail(email_user, support_email, msg.as_string())
@@ -153,7 +156,10 @@ def contact():
             raise Exception(f"Could not connect to email server {smtp_server}:{smtp_port}")
         except smtplib.SMTPException as e:
             app.logger.error(f"SMTP Error: {str(e)}")
-            raise Exception(f"Email server error: {str(e)}")
+            raise Exception(f"Email server error: {str(e)}") except Exception as e:
+            app.logger.error(f"Unexpected error: {str(e)}")
+            raise
+
 
         return jsonify({"success": True, "message": "Email sent successfully"}), 200
 
