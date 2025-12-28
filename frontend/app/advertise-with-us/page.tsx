@@ -38,7 +38,7 @@ export default function AdvertisePage() {
         setErrorMessage('');
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ilovepdfkit-api.onrender.com';
             const payload = {
                 ...formData,
                 subject: `Advertise Inquiry: ${formData.company || 'New Partner'}`
