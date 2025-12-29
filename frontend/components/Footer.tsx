@@ -15,7 +15,7 @@ export default function Footer() {
                     <Link href="/terms-and-conditions">Terms & Conditions</Link>
                 </div>
                 <p className={styles.copyright}>
-                    © 2025 ILOVEPDFKIT. All rights reserved.
+                    © 2025 iLovePDFKit. All rights reserved.
                     <br />
                     Made with ❤️ for seamless document conversion
                 </p>

@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 import { Table, Zap, Shield, Database } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'PDF to Excel Converter - Extract Tables Free | ILOVEPDFKIT',
+    title: 'PDF to Excel Converter - Extract Tables Free | iLovePDFKit',
     description: 'Convert PDF files to Excel spreadsheets (XLSX) instantly. Best free online PDF to Excel converter with table extraction. No signup required.',
     keywords: ['pdf to excel', 'convert pdf to excel', 'pdf to xlsx', 'extract tables from pdf', 'pdf table extractor', 'free pdf converter'],
 };

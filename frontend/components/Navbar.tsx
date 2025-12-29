@@ -37,7 +37,7 @@ const Navbar = () => {
           <div className={styles.brandLogo}>
             <Image
               src="/logo.webp"
-              alt="ILOVEPDFKIT"
+              alt="iLovePDFKit"
               width={220}
               height={60}
               priority

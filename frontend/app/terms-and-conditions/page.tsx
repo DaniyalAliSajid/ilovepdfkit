@@ -3,8 +3,8 @@ import { FileText } from 'lucide-react';
 import styles from '../privacy-policy/privacy.module.css';
 
 export const metadata = {
-    title: 'Terms and Conditions - ILOVEPDFKIT',
-    description: 'Read the terms and conditions for using ILOVEPDFKIT document conversion services.',
+    title: 'Terms and Conditions - iLovePDFKit',
+    description: 'Read the terms and conditions for using iLovePDFKit document conversion services.',
 };
 
 export default function TermsAndConditions() {
@@ -23,7 +23,7 @@ export default function TermsAndConditions() {
                     <section>
                         <h2>1. Acceptance of Terms</h2>
                         <p>
-                            By accessing and using ILOVEPDFKIT ("the Service"), you accept and agree to be bound by these
+                            By accessing and using iLovePDFKit ("the Service"), you accept and agree to be bound by these
                             Terms and Conditions. If you do not agree to these terms, please do not use our Service.
                         </p>
                     </section>
@@ -31,7 +31,7 @@ export default function TermsAndConditions() {
                     <section>
                         <h2>2. Description of Service</h2>
                         <p>
-                            ILOVEPDFKIT provides online document conversion services, including but not limited to:
+                            iLovePDFKit provides online document conversion services, including but not limited to:
                         </p>
                         <ul>
                             <li>PDF to Word conversion</li>
@@ -96,7 +96,7 @@ export default function TermsAndConditions() {
                         <h2>6. Intellectual Property</h2>
                         <p>
                             All content, features, and functionality of the Service, including but not limited to text, graphics,
-                            logos, and software, are owned by ILOVEPDFKIT and protected by copyright and trademark laws.
+                            logos, and software, are owned by iLovePDFKit and protected by copyright and trademark laws.
                         </p>
                     </section>
 
@@ -116,7 +116,7 @@ export default function TermsAndConditions() {
                     <section>
                         <h2>8. Limitation of Liability</h2>
                         <p>
-                            To the maximum extent permitted by law, ILOVEPDFKIT shall not be liable for any indirect, incidental,
+                            To the maximum extent permitted by law, iLovePDFKit shall not be liable for any indirect, incidental,
                             special, consequential, or punitive damages, including but not limited to:
                         </p>
                         <ul>
@@ -130,7 +130,7 @@ export default function TermsAndConditions() {
                     <section>
                         <h2>9. Indemnification</h2>
                         <p>
-                            You agree to indemnify and hold harmless ILOVEPDFKIT from any claims, damages, losses, liabilities,
+                            You agree to indemnify and hold harmless iLovePDFKit from any claims, damages, losses, liabilities,
                             and expenses arising from:
                         </p>
                         <ul>

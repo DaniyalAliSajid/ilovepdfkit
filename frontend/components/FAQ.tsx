@@ -52,30 +52,30 @@ interface FAQProps {
 export default function FAQ({
     customFaqs,
     title = "Frequently Asked Questions",
-    subtitle = "Everything you need to know about ILOVEPDFKIT"
+    subtitle = "Everything you need to know about iLovePDFKit"
 }: FAQProps) {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
 
     const defaultFaqs: FAQData[] = [
         {
-            question: 'Is my data secure when using ILOVEPDFKIT?',
+            question: 'Is my data secure when using iLovePDFKit?',
             answer: 'Yes, absolutely. Your files are processed securely and are never stored on our servers. All conversions happen in real-time, and files are automatically deleted after processing. We prioritize your privacy and data security.'
         },
         {
-            question: 'What file formats does ILOVEPDFKIT support?',
-            answer: 'ILOVEPDFKIT supports a wide range of formats including PDF, Word (DOC/DOCX), PowerPoint (PPT/PPTX), and images (JPG/JPEG). You can convert between these formats seamlessly while maintaining formatting and quality.'
+            question: 'What file formats does iLovePDFKit support?',
+            answer: 'iLovePDFKit supports a wide range of formats including PDF, Word (DOC/DOCX), PowerPoint (PPT/PPTX), and images (JPG/JPEG). You can convert between these formats seamlessly while maintaining formatting and quality.'
         },
         {
             question: 'Will my document formatting be preserved after conversion?',
-            answer: 'Yes! ILOVEPDFKIT uses advanced conversion algorithms to maintain pixel-perfect accuracy. Your fonts, images, layouts, page counts, and formatting will be preserved exactly as they appear in the original document.'
+            answer: 'Yes! iLovePDFKit uses advanced conversion algorithms to maintain pixel-perfect accuracy. Your fonts, images, layouts, page counts, and formatting will be preserved exactly as they appear in the original document.'
         },
         {
             question: 'Is there a file size limit for conversions?',
             answer: 'Currently, we support files up to 50MB for optimal performance. For larger files, we recommend splitting them into smaller documents or compressing them before conversion.'
         },
         {
-            question: 'Do I need to create an account to use ILOVEPDFKIT?',
-            answer: 'No account is required! ILOVEPDFKIT is completely free to use without any registration. Simply upload your file, choose your conversion format, and download the converted document instantly.'
+            question: 'Do I need to create an account to use iLovePDFKit?',
+            answer: 'No account is required! iLovePDFKit is completely free to use without any registration. Simply upload your file, choose your conversion format, and download the converted document instantly.'
         },
         {
             question: 'How long does the conversion process take?',
@@ -87,7 +87,7 @@ export default function FAQ({
         },
         {
             question: 'What browsers are supported?',
-            answer: 'ILOVEPDFKIT works on all modern browsers including Google Chrome, Mozilla Firefox, Microsoft Edge, and Safari. We recommend using the latest version of your browser for the best experience.'
+            answer: 'iLovePDFKit works on all modern browsers including Google Chrome, Mozilla Firefox, Microsoft Edge, and Safari. We recommend using the latest version of your browser for the best experience.'
         }
     ];
 

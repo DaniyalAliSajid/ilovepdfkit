@@ -3,8 +3,8 @@ import { Shield } from 'lucide-react';
 import styles from './privacy.module.css';
 
 export const metadata = {
-    title: 'Privacy Policy - ILOVEPDFKIT',
-    description: 'Learn how ILOVEPDFKIT protects your privacy and handles your data during document conversion.',
+    title: 'Privacy Policy - iLovePDFKit',
+    description: 'Learn how iLovePDFKit protects your privacy and handles your data during document conversion.',
 };
 
 export default function PrivacyPolicy() {
@@ -23,7 +23,7 @@ export default function PrivacyPolicy() {
                     <section>
                         <h2>1. Introduction</h2>
                         <p>
-                            Welcome to ILOVEPDFKIT. We respect your privacy and are committed to protecting your personal data.
+                            Welcome to iLovePDFKit. We respect your privacy and are committed to protecting your personal data.
                             This privacy policy explains how we handle your information when you use our document conversion services.
                         </p>
                     </section>

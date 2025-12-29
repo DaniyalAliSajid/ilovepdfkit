@@ -5,7 +5,7 @@ import { Images, Maximize, Settings, Shield } from 'lucide-react';
 import FAQ from "@/components/FAQ";
 
 export const metadata: Metadata = {
-    title: 'JPG to PDF Converter - Combine Images to PDF | ILOVEPDFKIT',
+    title: 'JPG to PDF Converter - Combine Images to PDF | iLovePDFKit',
     description: 'Convert JPG, PNG, and other images to PDF. Merge multiple photos into one PDF file. Auto-alignment and compression included.',
     keywords: ['jpg to pdf', 'image to pdf', 'png to pdf', 'photos to pdf', 'combine images', 'merge jpg'],
 };

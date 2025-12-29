@@ -7,7 +7,7 @@ import FileDropzone from './FileDropzone';
 import styles from './Converter.module.css';
 
 interface ConverterProps {
-    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers' | 'pdf-to-excel' | 'excel-to-pdf' | 'delete-pdf-pages';
+    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers' | 'pdf-to-excel' | 'excel-to-pdf' | 'delete-pdf-pages' | 'protect-pdf' | 'pdf-to-png' | 'png-to-pdf';
 }
 
 interface HistoryItem {
@@ -135,11 +135,40 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             color: '#ef4444',
             extension: '.pdf',
             multi: false
+        },
+        'protect-pdf': {
+            title: 'Protect PDF File',
+            accept: '.pdf',
+            endpoint: '/api/convert/protect-pdf',
+            gradient: '#1e3a8a',
+            color: '#1e3a8a',
+            extension: '.pdf',
+            multi: false
+        },
+        'pdf-to-png': {
+            title: 'PDF to PNG Converter',
+            accept: '.pdf',
+            endpoint: '/api/convert/pdf-to-png',
+            gradient: '#DB2777',
+            color: '#DB2777',
+            extension: '.zip',
+            multi: false
+        },
+        'png-to-pdf': {
+            title: 'PNG to PDF Converter',
+            accept: '.png',
+            endpoint: '/api/convert/png-to-pdf',
+            gradient: '#2563EB',
+            color: '#2563EB',
+            extension: '.pdf',
+            multi: true
         }
     }[type];
 
     const [angle, setAngle] = useState(0);
     const [compressionLevel, setCompressionLevel] = useState<string>('recommended');
+    const [password, setPassword] = useState<string>('');
+    const [confirmPassword, setConfirmPassword] = useState<string>('');
 
     // Page Number State
     const [pageNumberPosition, setPageNumberPosition] = useState<string>('bottom-center');
@@ -149,7 +178,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
     const [isCoverPage, setIsCoverPage] = useState<boolean>(false);
 
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+    const baseUrl = 'http://127.0.0.1:5000';
     if (!config) return null;
     const endpoint = `${baseUrl}${config.endpoint}`;
 
@@ -207,6 +236,32 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             formData.append('firstNumber', firstNumber.toString());
             formData.append('pageMode', pageMode);
             formData.append('isCoverPage', isCoverPage.toString());
+        }
+
+        if (type === 'protect-pdf') {
+            if (!password) {
+                setError('Please enter a password.');
+                setLoading(false);
+                return;
+            }
+            if (password !== confirmPassword) {
+                setError('Passwords do not match.');
+                setLoading(false);
+                return;
+            }
+
+            // Password complexity check: letters, numbers, and special characters
+            const hasLetter = /[a-zA-Z]/.test(password);
+            const hasNumber = /[0-9]/.test(password);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+            if (!hasLetter || !hasNumber || !hasSpecial) {
+                setError('Password must contain letters, numbers, and special characters.');
+                setLoading(false);
+                return;
+            }
+
+            formData.append('password', password);
         }
 
 
@@ -447,6 +502,35 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                     </div>
                 )}
 
+                {type === 'protect-pdf' && (
+                    <div className={styles.optionsContainer}>
+                        <div className={styles.formGroup}>
+                            <p className={styles.optionLabel}>Set PDF Password:</p>
+                            <input
+                                type="password"
+                                className={styles.selectInput}
+                                placeholder="Enter a strong password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                style={{ width: '100%', padding: '0.8rem' }}
+                            />
+                        </div>
+                        <div className={styles.formGroup} style={{ marginTop: '1rem' }}>
+                            <p className={styles.optionLabel}>Re-enter Password:</p>
+                            <input
+                                type="password"
+                                className={styles.selectInput}
+                                placeholder="Confirm your password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                style={{ width: '100%', padding: '0.8rem' }}
+                            />
+                            <p className={styles.historyMeta} style={{ marginTop: '0.5rem' }}>
+                                Password must contain letters, numbers, and special characters.
+                            </p>
+                        </div>
+                    </div>
+                )}
 
 
                 <button

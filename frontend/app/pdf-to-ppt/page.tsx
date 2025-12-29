@@ -6,7 +6,7 @@ import { Presentation, Layout, Zap, Shield } from 'lucide-react';
 import styles from '../page.module.css';
 
 export const metadata: Metadata = {
-    title: 'PDF to PPT - Convert PDF to PowerPoint Online | ILOVEPDFKIT',
+    title: 'PDF to PPT - Convert PDF to PowerPoint Online | iLovePDFKit',
     description: 'Convert PDF to editable PowerPoint slides (PPTX). Turn your PDF documents into presentations instantly.',
 };
 
@@ -66,7 +66,7 @@ export default function PdfToPptPage() {
                     },
                     {
                         question: "Do I need to install any software?",
-                        answer: "No, ILOVEPDFKIT is a web-based service. You can convert PDF to PPT online on any device without installing any apps or extensions."
+                        answer: "No, iLovePDFKit is a web-based service. You can convert PDF to PPT online on any device without installing any apps or extensions."
                     }
                 ]}
                 title="PDF to PowerPoint FAQs"

@@ -100,7 +100,7 @@ export default function AdvertisePage() {
             <div className={styles.header}>
                 <h1 className={styles.title}>Advertise With Us</h1>
                 <p className={styles.subtitle}>
-                    Partner with ILOVEPDFKIT and get your brand in front of a global audience of document professionals and creators.
+                    Partner with iLovePDFKit and get your brand in front of a global audience of document professionals and creators.
                 </p>
             </div>
 

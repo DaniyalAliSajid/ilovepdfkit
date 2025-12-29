@@ -5,7 +5,7 @@ import { Presentation, Layout, MonitorPlay, CheckCircle } from 'lucide-react';
 import FAQ from "@/components/FAQ";
 
 export const metadata: Metadata = {
-    title: 'PPT to PDF - Convert PowerPoint to PDF Online | ILOVEPDFKIT',
+    title: 'PPT to PDF - Convert PowerPoint to PDF Online | iLovePDFKit',
     description: 'Convert PowerPoint (PPT, PPTX) to PDF. Preserve slides, layout, and formatting. Make your presentations easy to share.',
     keywords: ['ppt to pdf', 'convert powerpoint to pdf', 'pptx to pdf', 'presentation to pdf', 'slide to pdf', 'save ppt as pdf'],
 };

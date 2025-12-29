@@ -11,14 +11,9 @@ app = Flask(__name__, static_folder='static_build')
 # CORS configuration
 CORS(app, resources={
     r"/api/*": {
-        "origins": [
-            "http://localhost:5173",
-            "http://localhost:3000",
-            "https://ilovepdfkit.com",
-            "https://www.ilovepdfkit.com"
-        ],
+        "origins": "*",
         "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type"],
+        "allow_headers": "*",
         "expose_headers": ["Content-Disposition"]
     }
 })
@@ -26,21 +21,7 @@ CORS(app, resources={
 # Configuration
 MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return app.send_static_file(path)
-    
-    # Fallback for production when frontend is hosted elsewhere (Netlify)
-    if not os.path.exists(os.path.join(app.static_folder, 'index.html')):
-        return jsonify({
-            "message": "ILOVEPDFKIT API is running",
-            "status": "healthy",
-            "frontend": "https://ilovepdfkit.com"
-        }), 200
-        
-    return app.send_static_file('index.html')
+
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -115,7 +96,7 @@ def contact():
                 <p style="color: #6b7280; line-height: 1.6;">{message}</p>
             </div>
             <p style="color: #9ca3af; font-size: 12px; margin-top: 20px;">
-                Sent from ILOVEPDFKIT Platform.
+                Sent from iLovePDFKit Platform.
             </p>
         </div>
         """
@@ -130,7 +111,7 @@ def contact():
                     "Content-Type": "application/json"
                 },
                 json={
-                    "from": "ILOVEPDFKIT <support@ilovepdfkit.com>",
+                    "from": "iLovePDFKit <support@ilovepdfkit.com>",
                     "to": support_email,
                     "reply_to": email,
                     "subject": f"Contact: {subject}",
@@ -342,6 +323,44 @@ def convert_jpg_to_pdf():
     except Exception as e:
         app.logger.error(f"JPG to PDF error: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/pdf-to-png', methods=['POST'])
+def convert_pdf_to_png():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+        
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        image_streams = converter.pdf_to_png(pdf_bytes)
+        
+        # Create a ZIP file in memory
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for i, img_stream in enumerate(image_streams):
+                img_stream.seek(0)
+                zip_file.writestr(f"page_{i+1}.png", img_stream.read())
+        
+        zip_buffer.seek(0)
+        return send_file(
+            zip_buffer,
+            as_attachment=True,
+            download_name=f"{file.filename.rsplit('.', 1)[0]}_png_images.zip",
+            mimetype='application/zip'
+        )
+    except Exception as e:
+        app.logger.error(f"PDF to PNG error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/png-to-pdf', methods=['POST'])
+def convert_png_to_pdf():
+    # Reusing JPG to PDF logic as PIL handles multiple formats
+    return convert_jpg_to_pdf()
 
 @app.route('/api/convert/rotate-pdf', methods=['POST'])
 def convert_rotate_pdf():
@@ -561,7 +580,7 @@ def convert_excel_to_pdf():
     except Exception as e:
         app.logger.error(f"Excel to PDF conversion error: {str(e)}")
         return jsonify({
-            "error": "Conversion failed. Please ensure the Excel document is valid and not corrupted.",
+            "error": f"Conversion failed: {str(e)}",
             "code": "CONVERSION_ERROR",
             "details": str(e)
         }), 500
@@ -621,10 +640,15 @@ def convert_pdf_to_excel():
         )
         
     except Exception as e:
-        app.logger.error(f"PDF to Excel conversion error: {str(e)}")
+        app.logger.error(f"PDF to Excel conversion error [vAR]: {str(e)}")
+        # Provide the real error message for better debugging
+        msg = f"Conversion failed [vAR]: {str(e)}"
+        if "extractable tables" in str(e).lower():
+            msg = "Conversion failed [vAR]. The PDF may not contain extractable tables."
+            
         return jsonify({
-            "error": "Conversion failed. The PDF may not contain extractable tables.",
-            "code": "CONVERSION_ERROR",
+            "error": msg,
+            "code": "CONVERSION_ERROR_VAR",
             "details": str(e)
         }), 500
 
@@ -697,6 +721,53 @@ def delete_pdf_pages_endpoint():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route('/api/convert/protect-pdf', methods=['POST'])
+def convert_protect_pdf():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        password = request.form.get('password')
+        
+        if not password:
+            return jsonify({"error": "Password is required"}), 400
+            
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        pdf_stream = converter.protect_pdf(pdf_bytes, password)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}_protected.pdf"
+        return send_file(
+            pdf_stream,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        app.logger.error(f"Protect PDF error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return app.send_static_file(path)
+    
+    # Fallback for production when frontend is hosted elsewhere (Netlify)
+    if not os.path.exists(os.path.join(app.static_folder, 'index.html')):
+        return jsonify({
+            "message": "iLovePDFKit API is running",
+            "status": "healthy",
+            "frontend": "https://ilovepdfkit.com"
+        }), 200
+        
+    return app.send_static_file('index.html')
+
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, host='0.0.0.0', use_reloader=False)
 

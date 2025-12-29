@@ -5,7 +5,7 @@ import { Hash, Layout, Printer, Shield } from 'lucide-react';
 import FAQ from "@/components/FAQ";
 
 export const metadata: Metadata = {
-    title: 'Add Page Numbers - Number PDF Pages Online | ILOVEPDFKIT',
+    title: 'Add Page Numbers - Number PDF Pages Online | iLovePDFKit',
     description: 'Add page numbers to your PDF documents. Customize position, formatting, and typography. Free tool to paginate PDF files.',
     keywords: ['add page numbers', 'pdf pagination', 'number pdf pages', 'bates numbering', 'page counter', 'pdf footer'],
 };

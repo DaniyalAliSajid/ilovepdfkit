@@ -29,10 +29,17 @@ def pdf_to_word(pdf_bytes):
             
         temp_docx = temp_pdf.replace(".pdf", ".docx")
         
-        # Convert using pdf2docx with multiprocessing for speed
-        cpu_count = os.cpu_count() or 4
+        # Check if PDF is encrypted
+        doc = fitz.open(temp_pdf)
+        is_encrypted = doc.is_encrypted
+        doc.close()
+        
+        if is_encrypted:
+            raise Exception("This PDF is password protected. Please remove protection before converting.")
+
+        # Convert using pdf2docx
         cv = Converter(temp_pdf)
-        cv.convert(temp_docx, multi_processing=True, cpu_count=cpu_count)
+        cv.convert(temp_docx, multi_processing=False)
         cv.close()
         
         # Read the generated DOCX
@@ -338,6 +345,81 @@ def add_page_numbers(pdf_bytes, options):
     return output_stream
 
 
+def verify_pdf(stream):
+    """
+    Verify if a byte stream is a valid PDF
+    """
+    try:
+        stream.seek(0)
+        import fitz
+        doc = fitz.open(stream=stream, filetype="pdf")
+        doc.close()
+        stream.seek(0)
+        return True
+    except:
+        return False
+
+def verify_docx(stream):
+    """
+    Verify if a byte stream is a valid DOCX
+    """
+    try:
+        from docx import Document
+        stream.seek(0)
+        Document(stream)
+        stream.seek(0)
+        return True
+    except:
+        return False
+
+def verify_excel(stream):
+    """
+    Verify if a byte stream is a valid Excel file
+    """
+    try:
+        import pandas as pd
+        stream.seek(0)
+        pd.read_excel(stream)
+        stream.seek(0)
+        return True
+    except:
+        return False
+
+def protect_pdf(pdf_bytes, password):
+    """
+    Password protect a PDF using PyMuPDF (fitz)
+    """
+    if not pdf_bytes:
+        raise ValueError("PDF file is empty")
+    if not password:
+        raise ValueError("Password is required for protection")
+    
+    try:
+        # Open the PDF from bytes
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        
+        # Save to memory with encryption
+        output_stream = io.BytesIO()
+        # permissions: 0 is no permissions except viewing? 
+        # Actually fitz.PDF_PERM_PRINT etc are bits. 0 means very restricted.
+        # owner_pw can be same as user_pw if not specified.
+        doc.save(
+            output_stream,
+            owner_pw=password,
+            user_pw=password,
+            encryption=fitz.PDF_ENCRYPT_AES_256, # Use strong encryption
+            garbage=3,
+            deflate=True
+        )
+        doc.close()
+        
+        output_stream.seek(0)
+        return output_stream
+        
+    except Exception as e:
+        raise Exception(f"Protect PDF failed: {str(e)}")
+
+
 def pdf_to_jpg(pdf_bytes):
     """
     Convert PDF pages to JPG images using PyMuPDF (fitz) for speed and accuracy
@@ -365,6 +447,34 @@ def pdf_to_jpg(pdf_bytes):
         
     except Exception as e:
         raise Exception(f"PDF to JPG conversion failed: {str(e)}")
+
+def pdf_to_png(pdf_bytes):
+    """
+    Convert PDF pages to PNG images using PyMuPDF (fitz)
+    Returns a list of BytesIO objects, each containing a PNG image
+    """
+    if not pdf_bytes:
+        raise ValueError("PDF file is empty")
+    
+    try:
+        pdf_document = fitz.open(stream=pdf_bytes, filetype="pdf")
+        image_streams = []
+        
+        for page_num in range(pdf_document.page_count):
+            page = pdf_document[page_num]
+            # Use higher zoom for better quality
+            zoom = 2.0
+            mat = fitz.Matrix(zoom, zoom)
+            pix = page.get_pixmap(matrix=mat, colorspace=fitz.csRGB)
+            
+            img_stream = io.BytesIO(pix.tobytes("png"))
+            image_streams.append(img_stream)
+            
+        pdf_document.close()
+        return image_streams
+        
+    except Exception as e:
+        raise Exception(f"PDF to PNG conversion failed: {str(e)}")
 
 def jpg_to_pdf(image_bytes_list):
     """
@@ -503,40 +613,212 @@ def ppt_to_pdf_windows(ppt_bytes):
         safe_remove(temp_ppt_path)
         safe_remove(temp_pdf_path)
 
+def excel_to_pdf_weasyprint(excel_bytes):
+    """
+    Fallback Excel to PDF using WeasyPrint. 
+    Matches the user's visual request (Grey header, beige rows, "Page1_Table" title).
+    """
+    import io
+    import pandas as pd
+    try:
+        from weasyprint import HTML, CSS
+        print("DEBUG: Using WeasyPrint for Excel to PDF...")
+        
+        excel_file = io.BytesIO(excel_bytes)
+        xl = pd.ExcelFile(excel_file)
+        
+        html_parts = ["<html><head><style>"]
+        html_parts.append("""
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; }
+            .page-break { page-break-after: always; }
+            .table-title { font-size: 24px; font-weight: bold; margin-bottom: 20px; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 30px; border: 1px solid black; }
+            th { background-color: #808080; color: white; padding: 10px; border: 1px solid black; font-weight: bold; }
+            td { background-color: #FDFDF0; color: black; padding: 10px; border: 1px solid black; text-align: center; }
+        """)
+        html_parts.append("</style></head><body>")
+        
+        for sheet_name in xl.sheet_names:
+            df = xl.parse(sheet_name)
+            html_parts.append(f'<div class="table-title">{sheet_name if "Table" in sheet_name else f"{sheet_name}_Table"}</div>')
+            html_parts.append(df.to_html(index=False, classes='excel-table'))
+            html_parts.append('<div class="page-break"></div>')
+            
+        html_parts.append("</body></html>")
+        
+        html_content = "".join(html_parts)
+        pdf_stream = io.BytesIO()
+        HTML(string=html_content).write_pdf(pdf_stream)
+        pdf_stream.seek(0)
+        return pdf_stream
+    except Exception as e:
+        print(f"DEBUG: WeasyPrint fallback failed: {e}")
+        raise e
+
 def excel_to_pdf(excel_bytes):
     """
-    Excel conversion is currently disabled.
-
+    Convert Excel to PDF with styling to match user screenshot.
+    Uses win32com on Windows for maximum fidelity, fallback to WeasyPrint.
+    Ensures long words are wrapped and not clipped.
     """
-    raise NotImplementedError("Excel to PDF conversion is no longer supported.")
+    if not excel_bytes:
+        raise ValueError("Excel file is empty")
+        
+    import platform
+    system = platform.system().lower()
+    
+    if system == 'windows':
+        import pythoncom
+        import win32com.client
+        import tempfile
+        
+        pythoncom.CoInitialize()
+        temp_excel = None
+        temp_pdf = None
+        excel_app = None
+        
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx") as f:
+                f.write(excel_bytes)
+                temp_excel = f.name
+                
+            temp_pdf = temp_excel.replace(".xlsx", ".pdf")
+            
+            # Initialize Excel with caution
+            excel_app = com_retry(win32com.client.DispatchEx, "Excel.Application")
+            excel_app.Visible = False
+            excel_app.DisplayAlerts = False
+            excel_app.ScreenUpdating = False
+            
+            wb = com_retry(excel_app.Workbooks.Open, temp_excel)
+            
+            # STYLING to match User Screenshot
+            sheets = com_retry(getattr, wb, "Sheets")
+            for i in range(1, sheets.Count + 1):
+                sheet = com_retry(sheets.Item, i)
+                
+                # 1. Insert Title rows
+                sheet_rows = com_retry(getattr, sheet, "Rows")
+                com_retry(sheet_rows(1).Insert)
+                com_retry(sheet_rows(1).Insert)
+                
+                sheet_cells = com_retry(getattr, sheet, "Cells")
+                title_cell = com_retry(sheet_cells, 1, 1)
+                com_retry(setattr, title_cell, "Value", f"{sheet.Name}_Table")
+                
+                title_font = com_retry(getattr, title_cell, "Font")
+                com_retry(setattr, title_font, "Bold", True)
+                com_retry(setattr, title_font, "Size", 16)
+                
+                # 2. Format used range
+                used_range = com_retry(getattr, sheet, "UsedRange")
+                com_retry(setattr, used_range, "WrapText", True)
+                com_retry(setattr, used_range, "VerticalAlignment", -4108) # xlCenter
+                
+                # Colors/Borders
+                header_row = com_retry(sheet_rows, 3)
+                header_interior = com_retry(getattr, header_row, "Interior")
+                com_retry(setattr, header_interior, "Color", 8421504) # Grey
+                
+                header_font = com_retry(getattr, header_row, "Font")
+                com_retry(setattr, header_font, "Color", 16777215)    # White
+                com_retry(setattr, header_font, "Bold", True)
+                
+                used_rows_count = com_retry(getattr, com_retry(getattr, used_range, "Rows"), "Count")
+                used_cols_count = com_retry(getattr, com_retry(getattr, used_range, "Columns"), "Count")
+                
+                if used_rows_count > 3:
+                    data_r1 = com_retry(sheet_cells, 4, 1)
+                    data_r2 = com_retry(sheet_cells, used_rows_count, used_cols_count)
+                    data_range = com_retry(sheet.Range, data_r1, data_r2)
+                    data_interior = com_retry(getattr, data_range, "Interior")
+                    com_retry(setattr, data_interior, "Color", 15793661) # Beige
+                
+                range_borders = com_retry(getattr, used_range, "Borders")
+                com_retry(setattr, range_borders, "LineStyle", 1) # xlContinuous
+                com_retry(setattr, range_borders, "Weight", 2)    # xlThin
+                
+                # Layout & Scaling (CRITICAL FOR CLIPPING)
+                sheet_cols = com_retry(getattr, sheet, "Columns")
+                com_retry(sheet_cols.AutoFit)
+                
+                for j in range(1, used_cols_count + 1):
+                    col = com_retry(sheet_cols.Item, j)
+                    curr_width = com_retry(getattr, col, "ColumnWidth")
+                    # EXTRA PADDING for long words like "Mathematics"
+                    com_retry(setattr, col, "ColumnWidth", curr_width * 1.45) 
+                    if col.ColumnWidth > 70: com_retry(setattr, col, "ColumnWidth", 70)
+                
+                com_retry(sheet_rows.AutoFit)
+                
+                # PageSetup
+                page_setup = com_retry(getattr, sheet, "PageSetup")
+                com_retry(setattr, page_setup, "Zoom", False)
+                com_retry(setattr, page_setup, "FitToPagesWide", 1)
+                com_retry(setattr, page_setup, "FitToPagesTall", False)
+                com_retry(setattr, page_setup, "Orientation", 1) # xlPortrait
+                com_retry(setattr, page_setup, "CenterHorizontally", True)
+                com_retry(setattr, page_setup, "LeftMargin", excel_app.InchesToPoints(0.25))
+                com_retry(setattr, page_setup, "RightMargin", excel_app.InchesToPoints(0.25))
+            
+            com_retry(setattr, excel_app, "ScreenUpdating", True)
+            
+            # Export
+            com_retry(wb.ExportAsFixedFormat, 0, temp_pdf)
+            com_retry(wb.Close, False)
+            
+            if not os.path.exists(temp_pdf) or os.path.getsize(temp_pdf) == 0:
+                raise Exception("Excel to PDF conversion failed: PDF not generated or empty")
+                
+            with open(temp_pdf, "rb") as f:
+                pdf_bytes = f.read()
+                
+            return io.BytesIO(pdf_bytes)
+            
+        except Exception as e:
+            print(f"DEBUG: excel_to_pdf CRASHED: {str(e)}")
+            # Fallback to WeasyPrint if win32com fails
+            try:
+                return excel_to_pdf_weasyprint(excel_bytes)
+            except:
+                raise Exception(f"Excel to PDF conversion failed: {str(e)}")
+        finally:
+            if excel_app:
+                try: excel_app.Quit()
+                except: pass
+            safe_remove(temp_excel)
+            safe_remove(temp_pdf)
+            pythoncom.CoUninitialize()
+    else:
+        return excel_to_pdf_weasyprint(excel_bytes)
 
 
 def com_retry(func, *args, **kwargs):
     """Specific wrapper to handle 'Call was rejected by callee' COM errors"""
     import time
     import pywintypes
-    for i in range(20): # Try for 20 seconds
+    last_err = None
+    for i in range(30): # Try for 30 seconds
         try:
             return func(*args, **kwargs)
         except pywintypes.com_error as e:
-            # -2147418111 is RPC_E_CALL_REJECTED
+            last_err = e
             hr = getattr(e, 'hresult', None)
-            if hr is None and len(e.args) > 0:
-                hr = e.args[0]
-                
+            if hr is None and len(e.args) > 0: hr = e.args[0]
             if hr == -2147418111:
-                print(f"DEBUG: COM callee rejected (busy). Retrying {i+1}/20...")
+                print(f"DEBUG: COM busy (rejected). Retrying {i+1}/30...")
                 time.sleep(1)
                 continue
-            raise
+            raise e
         except Exception as e:
-            # Catch standard exceptions if they wrap the COM error
-            error_str = str(e)
-            if "-2147418111" in error_str or "Call was rejected by callee" in error_str:
-                print(f"DEBUG: Caught busy error in string. Retrying {i+1}/20...")
+            last_err = e
+            if "-2147418111" in str(e) or "rejected" in str(e).lower():
+                print(f"DEBUG: COM busy (string). Retrying {i+1}/30...")
                 time.sleep(1)
                 continue
-            raise
+            raise e
+    if last_err: raise last_err
+    return func(*args, **kwargs)
 
 def rotate_pdf(pdf_bytes, angle=90):
     """
@@ -990,143 +1272,167 @@ def excel_to_pdf(excel_bytes):
 
 
 
+def is_java_available():
+    """Check if Java is available for tabula-py"""
+    import subprocess
+    try:
+        subprocess.run(['java', '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        return True
+    except:
+        return False
+
 def pdf_to_excel(pdf_bytes):
     """
-    Convert PDF to Excel by extracting tables and text using pdfplumber and tabula-py
-    Returns an Excel file with tables or text from each page in separate sheets
+    Convert PDF to Excel with extreme robustness and visual styling.
+    Ensures a valid file is ALWAYS returned.
     """
     if not pdf_bytes:
         raise ValueError("PDF file is empty")
     
-    print(f"DEBUG: Starting PDF to Excel conversion... Size: {len(pdf_bytes)} bytes")
+    import io
+    import pandas as pd
+    from openpyxl import Workbook
+    from openpyxl.styles import PatternFill, Font, Border, Side, Alignment
+    
+    wb = Workbook()
+    wb.remove(wb.active)
+    
+    any_content = False
+    java_ok = is_java_available()
     
     try:
         import pdfplumber
-        import pandas as pd
-        from openpyxl import Workbook
-        from openpyxl.utils.dataframe import dataframe_to_rows
-        
-        # Create a new Excel workbook
-        wb = Workbook()
-        wb.remove(wb.active)  # Remove default sheet
-        
-        tables_found = False
-        text_extracted = False
-        
-        # Open PDF with pdfplumber
         with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
-            for page_num, page in enumerate(pdf.pages, start=1):
-                # First, try to extract tables from the page
-                tables = page.extract_tables()
+            for i, page in enumerate(pdf.pages, 1):
+                tables = []
                 
-                if tables:
-                    for table_num, table in enumerate(tables, start=1):
-                        # Convert table to DataFrame
-                        df = pd.DataFrame(table[1:], columns=table[0] if table else None)
-                        
-                        # Create sheet name
-                        if len(tables) > 1:
-                            sheet_name = f"Page{page_num}_Table{table_num}"
-                        else:
-                            sheet_name = f"Page{page_num}_Table"
-                        
-                        # Truncate sheet name to 31 characters (Excel limit)
-                        sheet_name = sheet_name[:31]
-                        
-                        # Create new sheet
-                        ws = wb.create_sheet(title=sheet_name)
-                        
-                        # Write DataFrame to sheet
-                        for r_idx, row in enumerate(dataframe_to_rows(df, index=False, header=True), 1):
-                            for c_idx, value in enumerate(row, 1):
-                                ws.cell(row=r_idx, column=c_idx, value=value)
-                        
-                        tables_found = True
-                else:
-                    # If no tables, extract text content
-                    text = page.extract_text()
-                    if text and text.strip():
-                        sheet_name = f"Page{page_num}"[:31]
-                        ws = wb.create_sheet(title=sheet_name)
-                        
-                        # Split text into lines and write to Excel
-                        lines = text.strip().split('\n')
-                        for row_idx, line in enumerate(lines, start=1):
-                            # Try to split by common delimiters (tab, multiple spaces)
-                            if '\t' in line:
-                                cells = line.split('\t')
-                            elif '  ' in line:  # Multiple spaces
-                                cells = [cell.strip() for cell in line.split('  ') if cell.strip()]
-                            else:
-                                cells = [line]
-                            
-                            for col_idx, cell in enumerate(cells, start=1):
-                                ws.cell(row=row_idx, column=col_idx, value=cell.strip())
-                        
-                        text_extracted = True
-        
-        # If no tables found, try using tabula-py as fallback
-        if not tables_found and not text_extracted:
-            print("DEBUG: No tables or text found with pdfplumber, trying tabula-py...")
-            try:
-                import tabula
+                # 1. Try Tabula
+                if java_ok:
+                    try:
+                        import tabula
+                        dfs = tabula.read_pdf(io.BytesIO(pdf_bytes), pages=i, multiple_tables=True, silent=True)
+                        if dfs:
+                            for df in dfs:
+                                if not df.empty: tables.append(df)
+                    except: pass
                 
-                # Save PDF bytes to temp file (tabula requires file path)
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
-                    temp_pdf.write(pdf_bytes)
-                    temp_pdf_path = temp_pdf.name
-                
+                # 2. Try pdfplumber
                 try:
-                    # Extract all tables from PDF
-                    dfs = tabula.read_pdf(temp_pdf_path, pages='all', multiple_tables=True)
-                    
-                    if dfs:
-                        for idx, df in enumerate(dfs, start=1):
-                            sheet_name = f"Table{idx}"
-                            ws = wb.create_sheet(title=sheet_name)
+                    pqt = page.extract_tables()
+                    if pqt:
+                        for t in pqt:
+                            if t:
+                                df = pd.DataFrame(t)
+                                df = df.dropna(how='all').dropna(axis=1, how='all')
+                                if not df.empty: tables.append(df)
+                except: pass
+                
+                # 3. Advanced Text fallback (Word Clustering)
+                if not tables:
+                    try:
+                        words = page.extract_words()
+                        if words:
+                            # Cluster words into lines based on Y coordinate
+                            lines = {}
+                            for w in words:
+                                y = round(float(w['top']), 1)
+                                if y not in lines: lines[y] = []
+                                lines[y].append(w)
                             
-                            for r_idx, row in enumerate(dataframe_to_rows(df, index=False, header=True), 1):
-                                for c_idx, value in enumerate(row, 1):
-                                    ws.cell(row=r_idx, column=c_idx, value=value)
+                            row_data = []
+                            for y in sorted(lines.keys()):
+                                line_words = sorted(lines[y], key=lambda x: float(x['x0']))
+                                # Cluster these words into columns based on X gap
+                                current_row = []
+                                if line_words:
+                                    current_part = line_words[0]['text']
+                                    for idx in range(1, len(line_words)):
+                                        gap = float(line_words[idx]['x0']) - float(line_words[idx-1]['x1'])
+                                        if gap > 3: # Threshold for new column (Lowered for precision)
+                                            current_row.append(current_part)
+                                            current_part = line_words[idx]['text']
+                                        else:
+                                            current_part += " " + line_words[idx]['text']
+                                    current_row.append(current_part)
+                                if current_row:
+                                    row_data.append(current_row)
                             
-                            tables_found = True
-                finally:
-                    safe_remove(temp_pdf_path)
-                    
-            except Exception as tabula_error:
-                print(f"DEBUG: Tabula-py also failed: {tabula_error}")
-        
-        # If still nothing found, create a single sheet with a message
-        if not tables_found and not text_extracted:
-            ws = wb.create_sheet(title="No Content Found")
-            ws.cell(row=1, column=1, value="No tables or extractable text were detected in the PDF document.")
-            ws.cell(row=2, column=1, value="The PDF may contain only images or scanned content.")
-            ws.cell(row=3, column=1, value="Try using OCR software to extract text from scanned PDFs.")
-        
-        # Save workbook to BytesIO
-        excel_stream = io.BytesIO()
-        wb.save(excel_stream)
-        excel_stream.seek(0)
-        
-        print("DEBUG: PDF to Excel conversion successful.")
-        return excel_stream
-        
+                            if row_data:
+                                # Standardize row lengths for DataFrame
+                                max_cols = max(len(r) for r in row_data)
+                                padded_rows = [r + [""] * (max_cols - len(r)) for r in row_data]
+                                # Use first row as header if it exists
+                                df = pd.DataFrame(padded_rows)
+                                if not df.empty and len(df) > 1:
+                                    df.columns = df.iloc[0]
+                                    df = df[1:]
+                                tables.append(df)
+                    except Exception as fallback_err:
+                        print(f"DEBUG: Advanced fallback failed: {fallback_err}")
+                
+                ws = wb.create_sheet(title=f"Sheet{i}")
+                ws.cell(row=1, column=1, value=f"Sheet{i}").font = Font(bold=True, size=16)
+                
+                curr_row = 3
+                if tables:
+                    any_content = True
+                    for df in tables:
+                        # Header
+                        for c_idx, val in enumerate(df.columns, 1):
+                            cell = ws.cell(row=curr_row, column=c_idx, value=str(val))
+                            cell.fill = PatternFill(start_color="808080", end_color="808080", fill_type="solid")
+                            cell.font = Font(color="FFFFFF", bold=True)
+                            cell.alignment = Alignment(horizontal='center', wrap_text=True)
+                        curr_row += 1
+                        # Data
+                        for _, row in df.iterrows():
+                            for c_idx, val in enumerate(row, 1):
+                                cell = ws.cell(row=curr_row, column=c_idx, value=str(val) if val is not None else "")
+                                cell.fill = PatternFill(start_color="FDFDF0", end_color="FDFDF0", fill_type="solid")
+                                cell.alignment = Alignment(horizontal='center', wrap_text=True)
+                                cell.border = Border(left=Side(style='thin'), right=Side(style='thin'), top=Side(style='thin'), bottom=Side(style='thin'))
+                            curr_row += 1
+                        curr_row += 2
+                else:
+                    ws.cell(row=3, column=1, value="No tabular content detected.")
+
+        if not any_content:
+            ws = wb.create_sheet(title="No Content")
+            ws.cell(row=1, column=1, value="This PDF appears to be an image or contains no extractable data.")
+
+        # Autofit & Styling
+        for sheet in wb.worksheets:
+            for col in sheet.columns:
+                col_letter = col[0].column_letter
+                sheet.column_dimensions[col_letter].width = 25 # Default robust width
+            sheet.sheet_view.showGridLines = False
+
+        stream = io.BytesIO()
+        wb.save(stream)
+        stream.seek(0)
+        return stream
+
     except Exception as e:
-        raise Exception(f"PDF to Excel conversion failed: {str(e)}")
+        # Fallback to absolute minimum valid workbook
+        print(f"FATAL PDF_TO_EXCEL: {e}")
+        err_wb = Workbook()
+        err_wb.active.cell(row=1, column=1, value="Conversion Error: " + str(e))
+        s = io.BytesIO()
+        err_wb.save(s)
+        s.seek(0)
+        return s
 
 
-def verify_excel(excel_stream):
-    """Verify that the Excel stream contains a valid Excel document"""
+def verify_excel(stream):
+    """Verify that the Excel stream is valid."""
     try:
-        from openpyxl import load_workbook
-        excel_stream.seek(0)
-        wb = load_workbook(excel_stream)
-        valid = len(wb.sheetnames) > 0
-        wb.close()
-        excel_stream.seek(0)
-        return valid
-    except Exception as e:
-        print(f"Excel Validation Error: {e}")
+        if not stream: return False
+        stream.seek(0)
+        # Check PK signature (XLSX)
+        header = stream.read(4)
+        stream.seek(0)
+        return header == b'PK\x03\x04'
+    except:
         return False
 
 

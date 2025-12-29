@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
         const TO = "support@ilovepdfkit.com";
 
         const mailOptions = {
-            from: `"ILOVEPDFKIT Contact" <${EMAIL_USER}>`,
+            from: `"iLovePDFKit Contact" <${EMAIL_USER}>`,
             to: TO,
             // Optional: also BCC yourself to confirm delivery
             // bcc: "yourgmail@gmail.com",
@@ -84,7 +84,7 @@ ${message}
           </div>
 
           <p style="margin-top:20px;font-size:12px;color:#9ca3af;">
-            Sent from ILOVEPDFKIT contact form
+            Sent from iLovePDFKit contact form
           </p>
         </div>
       `,

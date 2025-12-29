@@ -14,12 +14,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://ilovepdfkit.com'),
   title: {
-    default: "ILOVEPDFKIT - Free Online PDF Converter & Tools",
-    template: "%s | ILOVEPDFKIT"
+    default: "iLovePDFKit - Free Online PDF Converter & Tools",
+    template: "%s | iLovePDFKit"
   },
   description: "Transform your documents with pixel-perfect accuracy. Convert between PDF, Word, PowerPoint, and images. Free, secure, and fast document conversion tools. No registration required.",
   keywords: "PDF converter, PDF to Word, Word to PDF, PDF tools, document conversion, free PDF converter, online PDF tools, edit PDF, merge PDF, split PDF",
-  authors: [{ name: "ILOVEPDFKIT" }],
+  authors: [{ name: "iLovePDFKit" }],
   alternates: {
     canonical: './',
   },
@@ -53,7 +53,7 @@ export default function RootLayout({
               "@graph": [
                 {
                   "@type": "WebSite",
-                  "name": "ILOVEPDFKIT",
+                  "name": "iLovePDFKit",
                   "url": "https://ilovepdfkit.com",
                   "potentialAction": {
                     "@type": "SearchAction",
@@ -63,7 +63,7 @@ export default function RootLayout({
                 },
                 {
                   "@type": "SoftwareApplication",
-                  "name": "ILOVEPDFKIT",
+                  "name": "iLovePDFKit",
                   "applicationCategory": "ProductivityApplication",
                   "operatingSystem": "Any",
                   "offers": {

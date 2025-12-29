@@ -6,7 +6,7 @@ import { Files, Layout, Shield, Zap } from 'lucide-react';
 import styles from '../page.module.css';
 
 export const metadata: Metadata = {
-    title: 'Merge PDF - Combine PDF Files Online for Free | ILOVEPDFKIT',
+    title: 'Merge PDF - Combine PDF Files Online for Free | iLovePDFKit',
     description: 'Combine multiple PDF files into one single document. Drag and drop to reorder. Fast, secure, and zero limitations.',
 };
 

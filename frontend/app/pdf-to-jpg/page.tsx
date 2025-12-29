@@ -5,7 +5,7 @@ import { FileImage, Layers, Zap, Download } from 'lucide-react';
 import FAQ from "@/components/FAQ";
 
 export const metadata: Metadata = {
-    title: 'PDF to JPG Converter - High Quality Images | ILOVEPDFKIT',
+    title: 'PDF to JPG Converter - High Quality Images | iLovePDFKit',
     description: 'Convert PDF pages to high-resolution JPG images. Download as individual files or ZIP archive. Fast, free, and secure.',
     keywords: ['pdf to jpg', 'convert pdf to image', 'pdf to png', 'extract images from pdf', 'pdf to picture', 'online pdf converter'],
 };

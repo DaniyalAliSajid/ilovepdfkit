@@ -10,6 +10,7 @@ import {
   Presentation,
   RotateCw,
   FileImage,
+  ImageIcon,
   Images,
   MonitorPlay,
   Files,
@@ -34,7 +35,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className={styles.hero}>
         <div className={styles.container}>
-          <h1 className={styles.title}>Free Online PDF Converter & Tools - ILOVEPDFKIT</h1>
+          <h1 className={styles.title}>Free Online PDF Converter & Tools - iLovePDFKit</h1>
           <p className={styles.subtitle}>
             Transform your documents with pixel-perfect accuracy. Convert between PDF, Word, PowerPoint, Excel, and Image formats while preserving images, fonts, and formatting. 100% Free, Secure, and No Registration Required.
           </p>
@@ -113,6 +114,40 @@ export default function Home() {
               </ul>
               <Link href="/jpg-to-pdf" className={styles.toolButton} aria-label="Start Converting JPG to PDF">
                 Start Converting <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* PDF to PNG */}
+            <div className={`${styles.toolCard} ${styles.pdfToPngCard} `}>
+              <div className={styles.toolIcon}><FileImage size={48} /></div>
+              <h3 className={styles.toolTitle}>PDF to PNG</h3>
+              <p className={styles.toolDesc}>
+                Convert PDF pages to high-quality PNG images with transparency support
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Best quality</li>
+                <li>✓ Fast extraction</li>
+                <li>✓ Secure processing</li>
+              </ul>
+              <Link href="/pdf-to-png" className={styles.toolButton} aria-label="Start PDF to PNG Conversion">
+                Extract PNG <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* PNG to PDF */}
+            <div className={`${styles.toolCard} ${styles.pngToPdfCard} `}>
+              <div className={styles.toolIcon}><ImageIcon size={48} /></div>
+              <h3 className={styles.toolTitle}>PNG to PDF</h3>
+              <p className={styles.toolDesc}>
+                Turn your PNG images into a single PDF document in seconds
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Multiple files</li>
+                <li>✓ Set order</li>
+                <li>✓ Instant merge</li>
+              </ul>
+              <Link href="/png-to-pdf" className={styles.toolButton} aria-label="Start PNG to PDF Conversion">
+                Convert PNG <ArrowRight size={18} />
               </Link>
             </div>
 
@@ -262,6 +297,24 @@ export default function Home() {
               </Link>
             </div>
 
+            {/* Protect PDF */}
+            <div className={`${styles.toolCard} ${styles.protectPdfCard} `}>
+              <div className={styles.toolIcon}><Lock size={48} /></div>
+              <h3 className={styles.toolTitle}>Protect PDF</h3>
+
+              <p className={styles.toolDesc}>
+                Secure your PDF files with a password to prevent unauthorized access
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ AES-256 encryption</li>
+                <li>✓ Set custom passwords</li>
+                <li>✓ Secure processing</li>
+              </ul>
+              <Link href="/protect-pdf" className={styles.toolButton} aria-label="Start Protecting PDF">
+                Protect PDF <ArrowRight size={18} />
+              </Link>
+            </div>
+
           </div>
         </div>
       </section>
@@ -269,7 +322,7 @@ export default function Home() {
       {/* Why Choose Section */}
       <section className={styles.featuresSection}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>Why Choose ILOVEPDFKIT?</h2>
+          <h2 className={styles.sectionTitle}>Why Choose iLovePDFKit?</h2>
           <div className={styles.featuresGrid}>
             <div className={styles.featureItem}>
               <div className={styles.featureIcon} style={{ background: 'var(--gradient-primary)' }}>
