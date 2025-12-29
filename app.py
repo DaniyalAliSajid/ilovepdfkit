@@ -1,5 +1,7 @@
 from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import converter
 import io
 import os
@@ -7,6 +9,14 @@ import zipfile
 import requests
 
 app = Flask(__name__, static_folder='static_build')
+
+# Initialize Limiter
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "60 per minute"],
+    storage_uri="memory://",
+)
 
 # CORS configuration
 CORS(app, resources={
@@ -21,14 +31,28 @@ CORS(app, resources={
 # Configuration
 MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
 
-
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return app.send_static_file(path)
+    
+    # Fallback for production when frontend is hosted elsewhere (Netlify)
+    if not os.path.exists(os.path.join(app.static_folder, 'index.html')):
+        return jsonify({
+            "message": "iLovePDFKit API is running",
+            "status": "healthy",
+            "frontend": "https://ilovepdfkit.com"
+        }), 200
+        
+    return app.send_static_file('index.html')
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint for monitoring"""
     return jsonify({
         "status": "healthy",
-        "service": "Document Converter API",
+        "service": "iLovePDFKit API",
         "version": "1.0.0",
         "endpoints": {
             "pdf_to_word": "/api/convert/pdf-to-word",
@@ -48,6 +72,7 @@ def validate_file_size(file_bytes):
     return size
 
 @app.route('/api/contact', methods=['POST'])
+@limiter.limit("3 per minute")
 def contact():
     try:
         data = request.json
@@ -140,6 +165,7 @@ def contact():
 
 
 @app.route('/api/convert/pdf-to-word', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_pdf_to_word():
     try:
         if 'file' not in request.files:
@@ -202,6 +228,7 @@ def convert_pdf_to_word():
         }), 500
 
 @app.route('/api/convert/word-to-pdf', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_word_to_pdf():
     try:
         if 'file' not in request.files:
@@ -263,6 +290,7 @@ def convert_word_to_pdf():
 
 
 @app.route('/api/convert/pdf-to-jpg', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_pdf_to_jpg():
     try:
         if 'file' not in request.files:
@@ -296,6 +324,7 @@ def convert_pdf_to_jpg():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/convert/jpg-to-pdf', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_jpg_to_pdf():
     try:
         if 'files' not in request.files:
@@ -363,6 +392,7 @@ def convert_png_to_pdf():
     return convert_jpg_to_pdf()
 
 @app.route('/api/convert/rotate-pdf', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_rotate_pdf():
     try:
         if 'file' not in request.files:
@@ -387,6 +417,7 @@ def convert_rotate_pdf():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/convert/ppt-to-pdf', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_ppt_to_pdf():
     try:
         if 'file' not in request.files:
@@ -409,6 +440,7 @@ def convert_ppt_to_pdf():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/convert/merge-pdf', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_merge_pdf():
     try:
         if 'files' not in request.files:
@@ -438,6 +470,7 @@ def convert_merge_pdf():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/convert/compress-pdf', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_compress_pdf():
     try:
         if 'file' not in request.files:
@@ -466,6 +499,7 @@ def convert_compress_pdf():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/convert/pdf-to-ppt', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_pdf_to_ppt():
     try:
         if 'file' not in request.files:
@@ -489,6 +523,7 @@ def convert_pdf_to_ppt():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/convert/add-page-numbers', methods=['POST'])
+@limiter.limit("10 per minute")
 def convert_add_page_numbers():
     try:
         if 'file' not in request.files:

@@ -1,0 +1,97 @@
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 4rem 1.5rem;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: #718096;
+    margin-bottom: 4rem;
+    text-align: center;
+}
+
+.section {
+    margin-bottom: 4rem;
+}
+
+.sectionTitle {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid #edf2f7;
+}
+
+.codeBlock {
+    background: #1a202c;
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.codeHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #a0aec0;
+}
+
+.method {
+    font-weight: 700;
+    color: #63b3ed;
+}
+
+.url {
+    color: #68d391;
+}
+
+.infoBox {
+    background: #ebf8ff;
+    border-left: 4px solid #4299e1;
+    padding: 1rem 1.5rem;
+    border-radius: 0 12px 12px 0;
+    margin: 2rem 0;
+}
+
+.infoTitle {
+    font-weight: 700;
+    color: #2b6cb0;
+    margin-bottom: 0.25rem;
+}
+
+.infoText {
+    color: #2c5282;
+    font-size: 0.95rem;
+}

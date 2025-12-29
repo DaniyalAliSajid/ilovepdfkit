@@ -1,6 +1,6 @@
 # 📄 iLovePDFKit
 
-A modern, full-stack web application for high-fidelity document conversion between PDF and Word formats. Built with Flask (Python) and React, featuring a premium UI/UX with drag-and-drop functionality, real-time conversion tracking, and pixel-perfect accuracy.
+A professional, full-stack document conversion platform. Live at: [ilovepdfkit.com](https://ilovepdfkit.com)
 
 ![iLovePDFKit](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8+-green.svg)
@@ -116,7 +116,17 @@ Navigate to `http://localhost:5173` in your web browser.
 
 ---
 
-## 🔌 API Documentation
+---
+
+## 🔌 Developer API
+
+iLovePDFKit is built with a developer-first mindset. You can interact with our conversion engine programmatically.
+
+- **[Full API Documentation & Examples](API_EXAMPLES.md)** - Includes cURL, Python, and JavaScript examples.
+- **Base URL**: `https://ilovepdfkit-backend.onrender.com/api`
+- **Rate Limiting**: Protected by `Flask-Limiter` (10 converts/min).
+
+## 🔌 Local API Usage
 
 ### Base URL
 ```

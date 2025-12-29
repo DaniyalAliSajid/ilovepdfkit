@@ -673,6 +673,13 @@
     margin-top: var(--space-6);
     padding: var(--space-12) 0 var(--space-8);
   }
+
+  .footerLinks {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4) var(--space-6);
+    line-height: 1.5;
+  }
 }
 
 @media (max-width: 480px) {

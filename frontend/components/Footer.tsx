@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import styles from '@/app/page.module.css'; // Reusing homepage styles for now, or we can move to footer.module.css
+import styles from '@/app/page.module.css';
+import { Github } from 'lucide-react';
 
 export default function Footer() {
     return (
@@ -13,6 +14,15 @@ export default function Footer() {
                     <Link href="/advertise-with-us">Advertise with Us</Link>
                     <Link href="/privacy-policy">Privacy Policy</Link>
                     <Link href="/terms-and-conditions">Terms & Conditions</Link>
+                    <Link href="/api-docs">Developer API</Link>
+                    <a
+                        href="https://github.com/DaniyalAliSajid/ilovepdfkit"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
+                    >
+                        <Github size={16} /> GitHub
+                    </a>
                 </div>
                 <p className={styles.copyright}>
                     © 2025 iLovePDFKit. All rights reserved.

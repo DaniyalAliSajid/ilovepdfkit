@@ -4,13 +4,47 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './Navbar.module.css';
 
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const controlNavbar = () => {
+    if (typeof window !== 'undefined') {
+      const currentScrollY = window.scrollY;
+
+      // Hide on scroll down, show on scroll up
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      // Add background when scrolled
+      if (currentScrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+
+      setLastScrollY(currentScrollY);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.addEventListener('scroll', controlNavbar);
+      return () => {
+        window.removeEventListener('scroll', controlNavbar);
+      };
+    }
+  }, [lastScrollY]);
 
   const scrollToTools = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -32,7 +66,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className={styles.navbar}>
+      <nav className={`${styles.navbar} ${!isVisible ? styles.navbarHidden : ''} ${isScrolled ? styles.navbarScrolled : ''}`}>
         <Link href="/" className={styles.brand}>
           <div className={styles.brandLogo}>
             <Image
@@ -96,7 +130,7 @@ const Navbar = () => {
               <div className={styles.drawerBrand}>
                 <Image
                   src="/logo.webp"
-                  alt="ILOVEPDFKIT"
+                  alt="iLovePDFKit"
                   width={150}
                   height={40}
                   style={{ objectFit: 'contain' }}
