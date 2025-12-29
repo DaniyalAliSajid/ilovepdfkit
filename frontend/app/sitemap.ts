@@ -18,6 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         '/merge-pdf',
         '/pdf-to-ppt',
         '/add-page-numbers',
+        '/delete-pdf-pages',
+        '/excel-to-pdf',
+        '/pdf-to-excel',
+        '/pdf-to-png',
+        '/png-to-pdf',
+        '/protect-pdf',
     ]
 
     return routes.map((route) => ({
