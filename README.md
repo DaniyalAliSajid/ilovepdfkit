@@ -1,8 +1,8 @@
-# 📄 Document Converter Pro
+# 📄 iLovePDFKit
 
 A modern, full-stack web application for high-fidelity document conversion between PDF and Word formats. Built with Flask (Python) and React, featuring a premium UI/UX with drag-and-drop functionality, real-time conversion tracking, and pixel-perfect accuracy.
 
-![Document Converter Pro](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![iLovePDFKit](https://img.shields.io/badge/version-1.0.0-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8+-green.svg)
 ![React](https://img.shields.io/badge/react-19.2.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
@@ -134,7 +134,7 @@ GET /api/health
 ```json
 {
   "status": "healthy",
-  "service": "Document Converter API",
+  "service": "iLovePDFKit API",
   "version": "1.0.0",
   "endpoints": {
     "pdf_to_word": "/api/convert/pdf-to-word",
@@ -301,4 +301,4 @@ This project is open-source under the MIT License. Feel free to use, modify, and
 
 ---
 
-**Made with ❤️ by the Document Converter Pro team**
+**Made with ❤️ by the iLovePDFKit team**

@@ -567,6 +567,95 @@ def rotate_pdf(pdf_bytes, angle=90):
     except Exception as e:
         raise Exception(f"Rotate PDF failed: {str(e)}")
 
+def get_pdf_page_images(pdf_bytes):
+    """
+    Extract thumbnail images of all PDF pages for preview
+    Returns list of base64-encoded JPEG images
+    """
+    if not pdf_bytes:
+        raise ValueError("PDF file is empty")
+    
+    try:
+        import base64
+        
+        pdf_document = fitz.open(stream=pdf_bytes, filetype="pdf")
+        page_images = []
+        
+        for page_num in range(pdf_document.page_count):
+            page = pdf_document[page_num]
+            
+            # Render page at lower resolution for thumbnails (150 DPI)
+            zoom = 1.0  # 72 DPI * 1.0 = 72 DPI for thumbnails
+            mat = fitz.Matrix(zoom, zoom)
+            pix = page.get_pixmap(matrix=mat, colorspace=fitz.csRGB)
+            
+            # Convert to JPEG bytes
+            img_bytes = pix.tobytes("jpeg")
+            
+            # Base64 encode for JSON transport
+            img_base64 = base64.b64encode(img_bytes).decode('utf-8')
+            
+            page_images.append({
+                'page_number': page_num + 1,
+                'image': f"data:image/jpeg;base64,{img_base64}",
+                'width': pix.width,
+                'height': pix.height
+            })
+        
+        pdf_document.close()
+        
+        print(f"DEBUG: Generated {len(page_images)} page thumbnails")
+        return page_images
+        
+    except Exception as e:
+        raise Exception(f"Get PDF page images failed: {str(e)}")
+
+def delete_pdf_pages(pdf_bytes, pages_to_delete):
+    """
+    Delete specified pages from PDF
+    pages_to_delete: list of page numbers (1-indexed) to remove
+    Returns modified PDF as BytesIO stream
+    """
+    if not pdf_bytes:
+        raise ValueError("PDF file is empty")
+    
+    if not pages_to_delete or len(pages_to_delete) == 0:
+        raise ValueError("No pages specified for deletion")
+    
+    try:
+        pdf_document = fitz.open(stream=pdf_bytes, filetype="pdf")
+        total_pages = pdf_document.page_count
+        
+        # Convert to 0-indexed and sort in reverse order
+        pages_to_delete_0indexed = sorted([p - 1 for p in pages_to_delete], reverse=True)
+        
+        # Validate page numbers
+        for page_num in pages_to_delete_0indexed:
+            if page_num < 0 or page_num >= total_pages:
+                raise ValueError(f"Invalid page number: {page_num + 1}")
+        
+        # Check if trying to delete all pages
+        if len(pages_to_delete) >= total_pages:
+            raise ValueError("Cannot delete all pages from PDF")
+        
+        # Delete pages in reverse order to maintain correct indices
+        for page_num in pages_to_delete_0indexed:
+            pdf_document.delete_page(page_num)
+        
+        # Save to memory
+        output_stream = io.BytesIO()
+        pdf_document.save(output_stream, garbage=3, deflate=True)
+        pdf_document.close()
+        
+        output_stream.seek(0)
+        
+        print(f"DEBUG: Deleted {len(pages_to_delete)} pages from PDF")
+        return output_stream
+        
+    except Exception as e:
+        raise Exception(f"Delete PDF pages failed: {str(e)}")
+
+
 def compress_pdf(pdf_bytes, level="recommended"):
     """
     Compress PDF using PyMuPDF (fitz) with image downsampling and garbage collection.
@@ -744,43 +833,301 @@ def excel_to_pdf_windows(excel_bytes):
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as temp_xl:
             temp_xl.write(excel_bytes)
             temp_xl_path = temp_xl.name
-            
+        
+        # Convert to absolute path
+        temp_xl_path = os.path.abspath(temp_xl_path)
         temp_pdf_path = temp_xl_path.replace(suffix, ".pdf")
+        
+        print(f"DEBUG: Excel temp file: {temp_xl_path}")
+        print(f"DEBUG: PDF output file: {temp_pdf_path}")
         
         excel = win32com.client.Dispatch("Excel.Application")
         excel.Visible = False
         excel.DisplayAlerts = False
         
+        print(f"DEBUG: Opening Excel file...")
         wb = excel.Workbooks.Open(temp_xl_path)
+        
+        print(f"DEBUG: Exporting to PDF...")
         # xlTypePDF = 0
         wb.ExportAsFixedFormat(0, temp_pdf_path)
-        wb.Close()
+        
+        print(f"DEBUG: Closing workbook...")
+        wb.Close(SaveChanges=False)
         excel.Quit()
         
         del wb
         del excel
         
+        print(f"DEBUG: Reading PDF file...")
+        if not os.path.exists(temp_pdf_path):
+            raise Exception("PDF file was not created")
+            
         with open(temp_pdf_path, "rb") as f:
             pdf_bytes = f.read()
-            
+        
+        print(f"DEBUG: PDF size: {len(pdf_bytes)} bytes")
         return io.BytesIO(pdf_bytes)
         
     except Exception as e:
+        print(f"DEBUG: Excel to PDF error: {str(e)}")
         raise Exception(f"Excel to PDF failed: {str(e)}")
     finally:
         pythoncom.CoUninitialize()
         safe_remove(temp_xl_path)
         safe_remove(temp_pdf_path)
 
+
+
+
+def excel_to_pdf_fallback(excel_bytes):
+    """
+    Fallback Excel to PDF converter using openpyxl and reportlab
+    Used when COM automation is not available
+    """
+    try:
+        from openpyxl import load_workbook
+        from reportlab.lib.pagesizes import letter, A4
+        from reportlab.lib import colors
+        from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
+        from reportlab.lib.styles import getSampleStyleSheet
+        from reportlab.lib.units import inch
+        
+        print("DEBUG: Using fallback Excel to PDF converter...")
+        
+        # Load Excel workbook
+        wb = load_workbook(io.BytesIO(excel_bytes), data_only=True)
+        
+        # Create PDF
+        pdf_buffer = io.BytesIO()
+        doc = SimpleDocTemplate(pdf_buffer, pagesize=A4)
+        elements = []
+        styles = getSampleStyleSheet()
+        
+        # Process each sheet
+        for sheet_idx, sheet_name in enumerate(wb.sheetnames):
+            ws = wb[sheet_name]
+            
+            # Add sheet title
+            if sheet_idx > 0:
+                elements.append(PageBreak())
+            
+            title = Paragraph(f"<b>{sheet_name}</b>", styles['Heading1'])
+            elements.append(title)
+            elements.append(Spacer(1, 0.2*inch))
+            
+            # Extract data from sheet
+            data = []
+            for row in ws.iter_rows(values_only=True):
+                # Convert None to empty string and handle other types
+                row_data = []
+                for cell in row:
+                    if cell is None:
+                        row_data.append('')
+                    else:
+                        row_data.append(str(cell))
+                data.append(row_data)
+            
+            if data:
+                # Create table
+                table = Table(data)
+                
+                # Style the table
+                table.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 10),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                    ('FONTSIZE', (0, 1), (-1, -1), 8),
+                ]))
+                
+                elements.append(table)
+        
+        # Build PDF
+        doc.build(elements)
+        pdf_buffer.seek(0)
+        
+        print("DEBUG: Fallback Excel to PDF conversion successful")
+        return pdf_buffer
+        
+    except Exception as e:
+        print(f"DEBUG: Fallback Excel to PDF error: {str(e)}")
+        raise Exception(f"Fallback Excel to PDF conversion failed: {str(e)}")
+
+
 def excel_to_pdf(excel_bytes):
     """
-    Convert Excel to PDF
+    Convert Excel to PDF using platform-specific methods
+    - Windows: Tries Excel COM automation first, falls back to openpyxl+reportlab
+    - Linux: Uses LibreOffice for compatibility
     """
-    if platform.system().lower() == 'windows':
-        return excel_to_pdf_windows(excel_bytes)
+    print(f"DEBUG: Starting Excel to PDF conversion... Size: {len(excel_bytes)} bytes")
+    system = platform.system().lower()
+    
+    if system == 'windows':
+        try:
+            result = excel_to_pdf_windows(excel_bytes)
+            print("DEBUG: Excel to PDF conversion complete (COM).")
+            return result
+        except Exception as com_error:
+            print(f"DEBUG: COM automation failed: {str(com_error)}")
+            print("DEBUG: Trying fallback method...")
+            try:
+                result = excel_to_pdf_fallback(excel_bytes)
+                print("DEBUG: Excel to PDF conversion complete (fallback).")
+                return result
+            except Exception as fallback_error:
+                print(f"DEBUG: Fallback also failed: {str(fallback_error)}")
+                raise Exception(f"Excel to PDF conversion failed. COM error: {str(com_error)}, Fallback error: {str(fallback_error)}")
     else:
-        # Fallback for Linux not implemented in this scope
-        raise NotImplementedError("Excel to PDF is currently only supported on Windows")
+        result = office_to_pdf_linux(excel_bytes, ".xlsx")
+        print("DEBUG: Excel to PDF conversion complete (LibreOffice).")
+        return result
+
+
+
+def pdf_to_excel(pdf_bytes):
+    """
+    Convert PDF to Excel by extracting tables and text using pdfplumber and tabula-py
+    Returns an Excel file with tables or text from each page in separate sheets
+    """
+    if not pdf_bytes:
+        raise ValueError("PDF file is empty")
+    
+    print(f"DEBUG: Starting PDF to Excel conversion... Size: {len(pdf_bytes)} bytes")
+    
+    try:
+        import pdfplumber
+        import pandas as pd
+        from openpyxl import Workbook
+        from openpyxl.utils.dataframe import dataframe_to_rows
+        
+        # Create a new Excel workbook
+        wb = Workbook()
+        wb.remove(wb.active)  # Remove default sheet
+        
+        tables_found = False
+        text_extracted = False
+        
+        # Open PDF with pdfplumber
+        with pdfplumber.open(io.BytesIO(pdf_bytes)) as pdf:
+            for page_num, page in enumerate(pdf.pages, start=1):
+                # First, try to extract tables from the page
+                tables = page.extract_tables()
+                
+                if tables:
+                    for table_num, table in enumerate(tables, start=1):
+                        # Convert table to DataFrame
+                        df = pd.DataFrame(table[1:], columns=table[0] if table else None)
+                        
+                        # Create sheet name
+                        if len(tables) > 1:
+                            sheet_name = f"Page{page_num}_Table{table_num}"
+                        else:
+                            sheet_name = f"Page{page_num}_Table"
+                        
+                        # Truncate sheet name to 31 characters (Excel limit)
+                        sheet_name = sheet_name[:31]
+                        
+                        # Create new sheet
+                        ws = wb.create_sheet(title=sheet_name)
+                        
+                        # Write DataFrame to sheet
+                        for r_idx, row in enumerate(dataframe_to_rows(df, index=False, header=True), 1):
+                            for c_idx, value in enumerate(row, 1):
+                                ws.cell(row=r_idx, column=c_idx, value=value)
+                        
+                        tables_found = True
+                else:
+                    # If no tables, extract text content
+                    text = page.extract_text()
+                    if text and text.strip():
+                        sheet_name = f"Page{page_num}"[:31]
+                        ws = wb.create_sheet(title=sheet_name)
+                        
+                        # Split text into lines and write to Excel
+                        lines = text.strip().split('\n')
+                        for row_idx, line in enumerate(lines, start=1):
+                            # Try to split by common delimiters (tab, multiple spaces)
+                            if '\t' in line:
+                                cells = line.split('\t')
+                            elif '  ' in line:  # Multiple spaces
+                                cells = [cell.strip() for cell in line.split('  ') if cell.strip()]
+                            else:
+                                cells = [line]
+                            
+                            for col_idx, cell in enumerate(cells, start=1):
+                                ws.cell(row=row_idx, column=col_idx, value=cell.strip())
+                        
+                        text_extracted = True
+        
+        # If no tables found, try using tabula-py as fallback
+        if not tables_found and not text_extracted:
+            print("DEBUG: No tables or text found with pdfplumber, trying tabula-py...")
+            try:
+                import tabula
+                
+                # Save PDF bytes to temp file (tabula requires file path)
+                with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_pdf:
+                    temp_pdf.write(pdf_bytes)
+                    temp_pdf_path = temp_pdf.name
+                
+                try:
+                    # Extract all tables from PDF
+                    dfs = tabula.read_pdf(temp_pdf_path, pages='all', multiple_tables=True)
+                    
+                    if dfs:
+                        for idx, df in enumerate(dfs, start=1):
+                            sheet_name = f"Table{idx}"
+                            ws = wb.create_sheet(title=sheet_name)
+                            
+                            for r_idx, row in enumerate(dataframe_to_rows(df, index=False, header=True), 1):
+                                for c_idx, value in enumerate(row, 1):
+                                    ws.cell(row=r_idx, column=c_idx, value=value)
+                            
+                            tables_found = True
+                finally:
+                    safe_remove(temp_pdf_path)
+                    
+            except Exception as tabula_error:
+                print(f"DEBUG: Tabula-py also failed: {tabula_error}")
+        
+        # If still nothing found, create a single sheet with a message
+        if not tables_found and not text_extracted:
+            ws = wb.create_sheet(title="No Content Found")
+            ws.cell(row=1, column=1, value="No tables or extractable text were detected in the PDF document.")
+            ws.cell(row=2, column=1, value="The PDF may contain only images or scanned content.")
+            ws.cell(row=3, column=1, value="Try using OCR software to extract text from scanned PDFs.")
+        
+        # Save workbook to BytesIO
+        excel_stream = io.BytesIO()
+        wb.save(excel_stream)
+        excel_stream.seek(0)
+        
+        print("DEBUG: PDF to Excel conversion successful.")
+        return excel_stream
+        
+    except Exception as e:
+        raise Exception(f"PDF to Excel conversion failed: {str(e)}")
+
+
+def verify_excel(excel_stream):
+    """Verify that the Excel stream contains a valid Excel document"""
+    try:
+        from openpyxl import load_workbook
+        excel_stream.seek(0)
+        wb = load_workbook(excel_stream)
+        valid = len(wb.sheetnames) > 0
+        wb.close()
+        excel_stream.seek(0)
+        return valid
+    except Exception as e:
+        print(f"Excel Validation Error: {e}")
+        return False
 
 
 def verify_docx(docx_stream):

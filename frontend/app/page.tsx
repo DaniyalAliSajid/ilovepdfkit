@@ -15,7 +15,8 @@ import {
   Files,
   Minimize2,
   Table,
-  Hash
+  Hash,
+  FileX
 } from 'lucide-react';
 
 import styles from './page.module.css';
@@ -204,6 +205,60 @@ export default function Home() {
               </ul>
               <Link href="/add-page-numbers" className={styles.toolButton} aria-label="Start Adding Page Numbers to PDF">
                 Start Adding <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* PDF to Excel */}
+            <div className={`${styles.toolCard} ${styles.pdfToExcelCard} `}>
+              <div className={styles.toolIcon}><Table size={48} /></div>
+              <h3 className={styles.toolTitle}>PDF to Excel</h3>
+
+              <p className={styles.toolDesc}>
+                Extract tables from PDF documents into editable Excel spreadsheets
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Table extraction</li>
+                <li>✓ Multi-page support</li>
+                <li>✓ Preserve data structure</li>
+              </ul>
+              <Link href="/pdf-to-excel" className={styles.toolButton} aria-label="Start Converting PDF to Excel">
+                Start Converting <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Excel to PDF */}
+            <div className={`${styles.toolCard} ${styles.excelToPdfCard} `}>
+              <div className={styles.toolIcon}><Table size={48} /></div>
+              <h3 className={styles.toolTitle}>Excel to PDF</h3>
+
+              <p className={styles.toolDesc}>
+                Convert Excel spreadsheets to PDF while preserving formatting and charts
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Multi-sheet support</li>
+                <li>✓ Preserve formatting</li>
+                <li>✓ Include charts</li>
+              </ul>
+              <Link href="/excel-to-pdf" className={styles.toolButton} aria-label="Start Converting Excel to PDF">
+                Start Converting <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Delete PDF Pages */}
+            <div className={`${styles.toolCard} ${styles.deletePdfPagesCard} `}>
+              <div className={styles.toolIcon}><FileX size={48} /></div>
+              <h3 className={styles.toolTitle}>Delete PDF Pages</h3>
+
+              <p className={styles.toolDesc}>
+                Remove unwanted pages from your PDF document visually
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>✓ Visual page selector</li>
+                <li>✓ Batch deletion</li>
+                <li>✓ Instant preview</li>
+              </ul>
+              <Link href="/delete-pdf-pages" className={styles.toolButton} aria-label="Start Deleting PDF Pages">
+                Delete Pages <ArrowRight size={18} />
               </Link>
             </div>
 

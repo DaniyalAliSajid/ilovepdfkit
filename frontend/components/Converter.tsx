@@ -7,7 +7,7 @@ import FileDropzone from './FileDropzone';
 import styles from './Converter.module.css';
 
 interface ConverterProps {
-    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers';
+    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers' | 'pdf-to-excel' | 'excel-to-pdf' | 'delete-pdf-pages';
 }
 
 interface HistoryItem {
@@ -106,6 +106,33 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             endpoint: '/api/convert/add-page-numbers',
             gradient: '#e11d48',
             color: '#e11d48',
+            extension: '.pdf',
+            multi: false
+        },
+        'pdf-to-excel': {
+            title: 'PDF to Excel Converter',
+            accept: '.pdf',
+            endpoint: '/api/convert/pdf-to-excel',
+            gradient: '#10b981',
+            color: '#10b981',
+            extension: '.xlsx',
+            multi: false
+        },
+        'excel-to-pdf': {
+            title: 'Excel to PDF Converter',
+            accept: '.xlsx,.xls',
+            endpoint: '/api/convert/excel-to-pdf',
+            gradient: '#059669',
+            color: '#059669',
+            extension: '.pdf',
+            multi: false
+        },
+        'delete-pdf-pages': {
+            title: 'Delete PDF Pages',
+            accept: '.pdf',
+            endpoint: '/api/convert/delete-pdf-pages',
+            gradient: '#ef4444',
+            color: '#ef4444',
             extension: '.pdf',
             multi: false
         }

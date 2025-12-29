@@ -51,7 +51,9 @@ def health_check():
         "version": "1.0.0",
         "endpoints": {
             "pdf_to_word": "/api/convert/pdf-to-word",
-            "word_to_pdf": "/api/convert/word-to-pdf"
+            "word_to_pdf": "/api/convert/word-to-pdf",
+            "excel_to_pdf": "/api/convert/excel-to-pdf",
+            "pdf_to_excel": "/api/convert/pdf-to-excel"
         }
     }), 200
 
@@ -500,6 +502,198 @@ def convert_add_page_numbers():
         )
     except Exception as e:
         app.logger.error(f"Add Page Numbers error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/excel-to-pdf', methods=['POST'])
+def convert_excel_to_pdf():
+    try:
+        if 'file' not in request.files:
+            return jsonify({
+                "error": "No file provided",
+                "code": "NO_FILE"
+            }), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({
+                "error": "No file selected",
+                "code": "EMPTY_FILENAME"
+            }), 400
+        
+        if not file.filename.lower().endswith(('.xlsx', '.xls')):
+            return jsonify({
+                "error": "Invalid file type. Please upload an Excel (.xlsx or .xls) file.",
+                "code": "INVALID_FILE_TYPE",
+                "accepted": [".xlsx", ".xls"]
+            }), 400
+        
+        # Read and validate file size
+        excel_bytes = file.read()
+        try:
+            file_size = validate_file_size(excel_bytes)
+        except ValueError as e:
+            return jsonify({
+                "error": str(e),
+                "code": "FILE_TOO_LARGE"
+            }), 413
+        
+        # Convert Excel to PDF
+        print("DEBUG: Calling converter.excel_to_pdf...")
+        pdf_stream = converter.excel_to_pdf(excel_bytes)
+        print("DEBUG: Converter returned. Verifying...")
+        
+        # Verify stream content
+        pdf_stream.seek(0, 2)
+        size = pdf_stream.tell()
+        pdf_stream.seek(0)
+        print(f"DEBUG: Generated PDF size: {size} bytes")
+        
+        if size == 0 or not converter.verify_pdf(pdf_stream):
+            raise Exception("Generated PDF file is corrupt and cannot be opened")
+        
+        return send_file(
+            pdf_stream,
+            as_attachment=True,
+            download_name=f"{file.filename.rsplit('.', 1)[0]}.pdf",
+            mimetype='application/pdf'
+        )
+        
+    except Exception as e:
+        app.logger.error(f"Excel to PDF conversion error: {str(e)}")
+        return jsonify({
+            "error": "Conversion failed. Please ensure the Excel document is valid and not corrupted.",
+            "code": "CONVERSION_ERROR",
+            "details": str(e)
+        }), 500
+
+@app.route('/api/convert/pdf-to-excel', methods=['POST'])
+def convert_pdf_to_excel():
+    try:
+        if 'file' not in request.files:
+            return jsonify({
+                "error": "No file provided",
+                "code": "NO_FILE"
+            }), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({
+                "error": "No file selected",
+                "code": "EMPTY_FILENAME"
+            }), 400
+        
+        if not file.filename.lower().endswith('.pdf'):
+            return jsonify({
+                "error": "Invalid file type. Please upload a PDF file.",
+                "code": "INVALID_FILE_TYPE",
+                "accepted": [".pdf"]
+            }), 400
+        
+        # Read and validate file size
+        pdf_bytes = file.read()
+        try:
+            file_size = validate_file_size(pdf_bytes)
+        except ValueError as e:
+            return jsonify({
+                "error": str(e),
+                "code": "FILE_TOO_LARGE"
+            }), 413
+        
+        # Convert PDF to Excel
+        print("DEBUG: Calling converter.pdf_to_excel...")
+        excel_stream = converter.pdf_to_excel(pdf_bytes)
+        print("DEBUG: Converter returned. Verifying...")
+        
+        # Verify stream content
+        excel_stream.seek(0, 2)
+        size = excel_stream.tell()
+        excel_stream.seek(0)
+        print(f"DEBUG: Generated Excel size: {size} bytes")
+        
+        if size == 0 or not converter.verify_excel(excel_stream):
+            raise Exception("Generated Excel file is corrupt and cannot be opened")
+        
+        return send_file(
+            excel_stream,
+            as_attachment=True,
+            download_name=f"{file.filename.rsplit('.', 1)[0]}.xlsx",
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        
+    except Exception as e:
+        app.logger.error(f"PDF to Excel conversion error: {str(e)}")
+        return jsonify({
+            "error": "Conversion failed. The PDF may not contain extractable tables.",
+            "code": "CONVERSION_ERROR",
+            "details": str(e)
+        }), 500
+
+@app.route('/api/convert/get-pdf-pages', methods=['POST'])
+def get_pdf_pages():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+        
+        if not file.filename.lower().endswith('.pdf'):
+            return jsonify({"error": "Invalid file type. Please upload a PDF file."}), 400
+        
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        # Get page images
+        page_images = converter.get_pdf_page_images(pdf_bytes)
+        
+        return jsonify({
+            "success": True,
+            "page_count": len(page_images),
+            "pages": page_images
+        }), 200
+        
+    except Exception as e:
+        app.logger.error(f"Get PDF pages error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/delete-pdf-pages', methods=['POST'])
+def delete_pdf_pages_endpoint():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+        
+        # Get pages to delete from form data
+        pages_to_delete_str = request.form.get('pages_to_delete', '')
+        if not pages_to_delete_str:
+            return jsonify({"error": "No pages specified for deletion"}), 400
+        
+        try:
+            # Parse comma-separated page numbers
+            pages_to_delete = [int(p.strip()) for p in pages_to_delete_str.split(',') if p.strip()]
+        except ValueError:
+            return jsonify({"error": "Invalid page numbers format"}), 400
+        
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        # Delete pages
+        pdf_stream = converter.delete_pdf_pages(pdf_bytes, pages_to_delete)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}_deleted_pages.pdf"
+        return send_file(
+            pdf_stream,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+        
+    except Exception as e:
+        app.logger.error(f"Delete PDF pages error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
 
