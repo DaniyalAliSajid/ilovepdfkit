@@ -298,20 +298,50 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                 throw new Error("Received an empty file from the server.");
             }
 
+            // Extact filename from Content-Disposition header if available
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let serverFileName = null;
+            if (contentDisposition && contentDisposition.includes('filename=')) {
+                const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                if (match) serverFileName = match[1];
+            }
+
             const originalName = file?.name || 'document';
             const nameParts = originalName.split('.');
             if (nameParts.length > 1) nameParts.pop();
             const baseName = nameParts.join('.');
             let outputFileName;
-            if (type === 'merge-pdf') {
+
+            if (serverFileName) {
+                outputFileName = serverFileName;
+            } else if (type === 'merge-pdf') {
                 outputFileName = 'merged.pdf';
+            } else if (type === 'pdf-to-jpg' || type === 'pdf-to-png') {
+                outputFileName = `${baseName}.zip`;
             } else if (config.multi) {
-                outputFileName = `converted_images.pdf`;
+                outputFileName = `converted_files.zip`;
             } else {
                 outputFileName = `${baseName}${config.extension}`;
             }
 
-            saveAs(blob, outputFileName);
+            // Robust download method for both mobile and desktop
+            try {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = outputFileName;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 100);
+            } catch (e) {
+                console.error("Manual download failed, falling back to file-saver", e);
+                saveAs(blob, outputFileName);
+            }
+
             setMessage(`Conversion successful! Downloaded ${outputFileName}`);
 
             const historyItem: HistoryItem = {

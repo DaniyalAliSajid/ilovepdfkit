@@ -164,8 +164,17 @@ export default function DeletePdfPagesPage() {
             }
 
             const blob = await response.blob();
+
+            // Extract filename from Content-Disposition if available
+            const contentDisposition = response.headers.get('Content-Disposition');
+            let serverFileName = null;
+            if (contentDisposition && contentDisposition.includes('filename=')) {
+                const match = contentDisposition.match(/filename="?([^"]+)"?/);
+                if (match) serverFileName = match[1];
+            }
+
             setResultBlob(blob);
-            setProcessedFileName(`${file.name.replace('.pdf', '')}_modified.pdf`);
+            setProcessedFileName(serverFileName || `${file.name.replace('.pdf', '')}_modified.pdf`);
             setMessage(`Successfully deleted ${selectedPages.size} page(s)! Click below to download your new PDF.`);
         } catch (err: any) {
             setError(err.message || 'An error occurred during deletion');
@@ -175,7 +184,22 @@ export default function DeletePdfPagesPage() {
     };
 
     const handleDownload = () => {
-        if (resultBlob && processedFileName) {
+        if (!resultBlob || !processedFileName) return;
+
+        try {
+            const url = window.URL.createObjectURL(resultBlob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = processedFileName;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 100);
+        } catch (e) {
+            console.error("Manual download failed, falling back to file-saver", e);
             saveAs(resultBlob, processedFileName);
         }
     };

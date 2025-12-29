@@ -329,10 +329,17 @@ def convert_jpg_to_pdf():
             
         pdf_stream = converter.jpg_to_pdf(image_bytes_list)
         
+        # Determine a suitable download name. If multiple files, use a generic name.
+        # If only one file, use its original name.
+        download_name = "images_to_pdf.pdf"
+        if len(files) == 1 and files[0].filename:
+            original_filename_without_ext = files[0].filename.rsplit('.', 1)[0]
+            download_name = f"{original_filename_without_ext}.pdf"
+        
         return send_file(
             pdf_stream,
             as_attachment=True,
-            download_name="images_to_pdf.pdf",
+            download_name=download_name,
             mimetype='application/pdf'
         )
     except Exception as e:
@@ -444,7 +451,7 @@ def convert_merge_pdf():
             
         pdf_stream = converter.merge_pdf(pdf_bytes_list)
         
-        filename = "merged_document.pdf"
+        filename = "merged.pdf"
         return send_file(
             pdf_stream,
             mimetype='application/pdf',
@@ -729,7 +736,7 @@ def delete_pdf_pages_endpoint():
         # Delete pages
         pdf_stream = converter.delete_pdf_pages(pdf_bytes, pages_to_delete)
         
-        filename = f"{file.filename.rsplit('.', 1)[0]}_deleted_pages.pdf"
+        filename = f"{file.filename.rsplit('.', 1)[0]}_modified.pdf"
         return send_file(
             pdf_stream,
             mimetype='application/pdf',
