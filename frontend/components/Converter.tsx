@@ -5,6 +5,7 @@ import { Download, CheckCircle, XCircle, Clock, RotateCw, RotateCcw, FileCheck }
 import { saveAs } from 'file-saver';
 import FileDropzone from './FileDropzone';
 import styles from './Converter.module.css';
+import { getBaseUrl } from '@/utils/api';
 
 interface ConverterProps {
     type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers' | 'pdf-to-excel' | 'excel-to-pdf' | 'delete-pdf-pages' | 'protect-pdf' | 'pdf-to-png' | 'png-to-pdf';
@@ -178,7 +179,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
     const [isCoverPage, setIsCoverPage] = useState<boolean>(false);
 
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const baseUrl = getBaseUrl();
     if (!config) return null;
     const endpoint = `${baseUrl}${config.endpoint}`;
 

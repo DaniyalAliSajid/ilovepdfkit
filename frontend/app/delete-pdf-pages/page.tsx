@@ -6,6 +6,7 @@ import { saveAs } from 'file-saver';
 import styles from './page.module.css';
 import ToolContent from "@/components/ToolContent";
 import FAQ from "@/components/FAQ";
+import { getBaseUrl } from '@/utils/api';
 
 interface PageData {
     page_number: number;
@@ -76,7 +77,7 @@ export default function DeletePdfPagesPage() {
     const [resultBlob, setResultBlob] = useState<Blob | null>(null);
     const [processedFileName, setProcessedFileName] = useState<string>('');
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    const baseUrl = getBaseUrl();
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];

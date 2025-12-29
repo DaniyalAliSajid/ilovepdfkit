@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Mail, Send, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 import styles from './page.module.css';
+import { getBaseUrl } from '@/utils/api';
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -29,7 +30,7 @@ export default function ContactPage() {
 
         try {
             // Call backend Flask API
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ilovepdfkit-api.onrender.com';
+            const baseUrl = getBaseUrl();
             const response = await fetch(`${baseUrl}/api/contact`, {
                 method: 'POST',
                 headers: {

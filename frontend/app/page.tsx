@@ -55,9 +55,9 @@ export default function Home() {
                 Convert PDF documents to editable Word files with perfect formatting preservation
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Preserve images and layout</li>
-                <li>✓ Maintain fonts and styles</li>
-                <li>✓ Keep page count intact</li>
+                <li>Preserve images and layout</li>
+                <li>Maintain fonts and styles</li>
+                <li>Keep page count intact</li>
               </ul>
               <Link href="/pdf-to-word" className={styles.toolButton} aria-label="Start Converting PDF to Word">
                 Start Converting <ArrowRight size={18} />
@@ -73,9 +73,9 @@ export default function Home() {
                 Convert Word documents to professional PDF files with complete fidelity
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Preserve all formatting</li>
-                <li>✓ Keep images intact</li>
-                <li>✓ Maintain document structure</li>
+                <li>Preserve all formatting</li>
+                <li>Keep images intact</li>
+                <li>Maintain document structure</li>
               </ul>
               <Link href="/word-to-pdf" className={styles.toolButton} aria-label="Start Converting Word to PDF">
                 Start Converting <ArrowRight size={18} />
@@ -90,9 +90,9 @@ export default function Home() {
                 Extract images or convert PDF pages into high-quality JPG images
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ High resolution output</li>
-                <li>✓ Batch extraction</li>
-                <li>✓ Preservation of colors</li>
+                <li>High resolution output</li>
+                <li>Batch extraction</li>
+                <li>Preservation of colors</li>
               </ul>
               <Link href="/pdf-to-jpg" className={styles.toolButton} aria-label="Start Converting PDF to JPG">
                 Start Converting <ArrowRight size={18} />
@@ -108,9 +108,9 @@ export default function Home() {
                 Combine multiple images into a single professional PDF document
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Merge multiple images</li>
-                <li>✓ Auto-alignment</li>
-                <li>✓ Compressed output</li>
+                <li>Merge multiple images</li>
+                <li>Auto-alignment</li>
+                <li>Compressed output</li>
               </ul>
               <Link href="/jpg-to-pdf" className={styles.toolButton} aria-label="Start Converting JPG to PDF">
                 Start Converting <ArrowRight size={18} />
@@ -125,9 +125,9 @@ export default function Home() {
                 Convert PDF pages to high-quality PNG images with transparency support
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Best quality</li>
-                <li>✓ Fast extraction</li>
-                <li>✓ Secure processing</li>
+                <li>Best quality</li>
+                <li>Fast extraction</li>
+                <li>Secure processing</li>
               </ul>
               <Link href="/pdf-to-png" className={styles.toolButton} aria-label="Start PDF to PNG Conversion">
                 Extract PNG <ArrowRight size={18} />
@@ -142,9 +142,9 @@ export default function Home() {
                 Turn your PNG images into a single PDF document in seconds
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Multiple files</li>
-                <li>✓ Set order</li>
-                <li>✓ Instant merge</li>
+                <li>Multiple files</li>
+                <li>Set order</li>
+                <li>Instant merge</li>
               </ul>
               <Link href="/png-to-pdf" className={styles.toolButton} aria-label="Start PNG to PDF Conversion">
                 Convert PNG <ArrowRight size={18} />
@@ -160,9 +160,9 @@ export default function Home() {
                 Convert PowerPoint presentations to PDF while keeping animations and layout
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ 100% layout accuracy</li>
-                <li>✓ Crystal clear text</li>
-                <li>✓ Fast processing</li>
+                <li>100% layout accuracy</li>
+                <li>Crystal clear text</li>
+                <li>Fast processing</li>
               </ul>
               <Link href="/ppt-to-pdf" className={styles.toolButton} aria-label="Start Converting PowerPoint to PDF">
                 Start Converting <ArrowRight size={18} />
@@ -178,9 +178,9 @@ export default function Home() {
                 Rotate your PDF pages clockwise by 90, 180, or 270 degrees easily
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Multi-angle support</li>
-                <li>✓ Instant processing</li>
-                <li>✓ High quality output</li>
+                <li>Multi-angle support</li>
+                <li>Instant processing</li>
+                <li>High quality output</li>
               </ul>
               <Link href="/rotate-pdf" className={styles.toolButton} aria-label="Start Rotating PDF Pages">
                 Start Rotating <ArrowRight size={18} />
@@ -196,9 +196,9 @@ export default function Home() {
                 Combine multiple PDF files into one single document
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Merge unlimited files</li>
-                <li>✓ Preserve order</li>
-                <li>✓ Fast processing</li>
+                <li>Merge unlimited files</li>
+                <li>Preserve order</li>
+                <li>Fast processing</li>
               </ul>
               <Link href="/merge-pdf" className={styles.toolButton} aria-label="Start Merging PDF Files">
                 Start Merging <ArrowRight size={18} />
@@ -216,9 +216,9 @@ export default function Home() {
                 Convert PDF documents to PowerPoint presentations easily
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Visual fidelity</li>
-                <li>✓ Edit slides</li>
-                <li>✓ Fast conversion</li>
+                <li>Visual fidelity</li>
+                <li>Edit slides</li>
+                <li>Fast conversion</li>
               </ul>
               <Link href="/pdf-to-ppt" className={styles.toolButton} aria-label="Start Converting PDF to PowerPoint">
                 Start Converting <ArrowRight size={18} />
@@ -234,9 +234,9 @@ export default function Home() {
                 Add page numbers to your PDF documents with custom positioning
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Custom position</li>
-                <li>✓ Formatting options</li>
-                <li>✓ Batch processing</li>
+                <li>Custom position</li>
+                <li>Formatting options</li>
+                <li>Batch processing</li>
               </ul>
               <Link href="/add-page-numbers" className={styles.toolButton} aria-label="Start Adding Page Numbers to PDF">
                 Start Adding <ArrowRight size={18} />
@@ -252,9 +252,9 @@ export default function Home() {
                 Extract tables from PDF documents into editable Excel spreadsheets
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Table extraction</li>
-                <li>✓ Multi-page support</li>
-                <li>✓ Preserve data structure</li>
+                <li>Table extraction</li>
+                <li>Multi-page support</li>
+                <li>Preserve data structure</li>
               </ul>
               <Link href="/pdf-to-excel" className={styles.toolButton} aria-label="Start Converting PDF to Excel">
                 Start Converting <ArrowRight size={18} />
@@ -270,9 +270,9 @@ export default function Home() {
                 Convert Excel spreadsheets to PDF while preserving formatting and charts
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Multi-sheet support</li>
-                <li>✓ Preserve formatting</li>
-                <li>✓ Include charts</li>
+                <li>Multi-sheet support</li>
+                <li>Preserve formatting</li>
+                <li>Include charts</li>
               </ul>
               <Link href="/excel-to-pdf" className={styles.toolButton} aria-label="Start Converting Excel to PDF">
                 Start Converting <ArrowRight size={18} />
@@ -288,9 +288,9 @@ export default function Home() {
                 Remove unwanted pages from your PDF document visually
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ Visual page selector</li>
-                <li>✓ Batch deletion</li>
-                <li>✓ Instant preview</li>
+                <li>Visual page selector</li>
+                <li>Batch deletion</li>
+                <li>Instant preview</li>
               </ul>
               <Link href="/delete-pdf-pages" className={styles.toolButton} aria-label="Start Deleting PDF Pages">
                 Delete Pages <ArrowRight size={18} />
@@ -306,9 +306,9 @@ export default function Home() {
                 Secure your PDF files with a password to prevent unauthorized access
               </p>
               <ul className={styles.toolFeatures}>
-                <li>✓ AES-256 encryption</li>
-                <li>✓ Set custom passwords</li>
-                <li>✓ Secure processing</li>
+                <li>AES-256 encryption</li>
+                <li>Set custom passwords</li>
+                <li>Secure processing</li>
               </ul>
               <Link href="/protect-pdf" className={styles.toolButton} aria-label="Start Protecting PDF">
                 Protect PDF <ArrowRight size={18} />

@@ -13,6 +13,7 @@ import {
     Zap
 } from 'lucide-react';
 import styles from './page.module.css';
+import { getBaseUrl } from '@/utils/api';
 
 export default function AdvertisePage() {
     const [formData, setFormData] = useState({
@@ -38,7 +39,7 @@ export default function AdvertisePage() {
         setErrorMessage('');
 
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ilovepdfkit-api.onrender.com';
+            const baseUrl = getBaseUrl();
             const payload = {
                 ...formData,
                 subject: `Advertise Inquiry: ${formData.company || 'New Partner'}`
