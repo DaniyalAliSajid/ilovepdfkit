@@ -24,6 +24,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         '/pdf-to-png',
         '/png-to-pdf',
         '/protect-pdf',
+        '/api-docs',
     ]
 
     return routes.map((route) => ({
