@@ -131,37 +131,49 @@ def word_to_pdf(docx_bytes):
 
 def word_to_pdf_windows(docx_bytes):
     """
-    Convert Word to PDF using Microsoft Word COM automation (via docx2pdf)
+    Convert Word to PDF using Microsoft Word COM automation with robustness.
     """
+    import pythoncom
+    import win32com.client
+    
+    pythoncom.CoInitialize()
     temp_docx_path = None
     temp_pdf_path = None
+    word = None
+    doc = None
     
     try:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as temp_docx:
             temp_docx.write(docx_bytes)
-            temp_docx_path = temp_docx.name
+            temp_docx_path = os.path.abspath(temp_docx.name)
             
         temp_pdf_path = temp_docx_path.replace(".docx", ".pdf")
         
-        import pythoncom
-        from docx2pdf import convert
-        
-        pythoncom.CoInitialize()
-        import win32com.client
-        word = win32com.client.Dispatch("Word.Application")
+        # Initialize Word with retry/robustness
+        word = com_retry(win32com.client.DispatchEx, "Word.Application")
         word.Visible = False
+        word.DisplayAlerts = 0 # wdAlertsNone
         
-        doc = word.Documents.Open(temp_docx_path)
-        # wdExportFormatPDF = 17
-        doc.ExportAsFixedFormat(temp_pdf_path, 17)
-        doc.Close()
-        word.Quit()
+        # Open document (ReadOnly=True, ConfirmConversions=False)
+        doc = com_retry(word.Documents.Open, temp_docx_path, False, True)
         
-        with open(temp_pdf_path, "rb") as f:
-            pdf_bytes = f.read()
-            
-        if not os.path.exists(temp_pdf_path):
-             raise Exception("Conversion failed: Output PDF not created")
+        # Export as PDF (wdExportFormatPDF = 17)
+        com_retry(doc.ExportAsFixedFormat, temp_pdf_path, 17)
+        
+        # Close and Cleanup
+        com_retry(doc.Close, False)
+        # We don't necessarily want to Quit Word if it was already open, 
+        # but DispatchEx creates a new instance, so we should Quit it.
+        com_retry(word.Quit)
+        
+        # Explicitly release handles
+        del doc
+        del word
+        doc = None
+        word = None
+        
+        if not os.path.exists(temp_pdf_path) or os.path.getsize(temp_pdf_path) == 0:
+            raise Exception("Conversion failed: Output PDF not created or empty")
              
         with open(temp_pdf_path, "rb") as f:
             pdf_bytes = f.read()
@@ -169,10 +181,17 @@ def word_to_pdf_windows(docx_bytes):
         return io.BytesIO(pdf_bytes)
     
     except Exception as e:
+         print(f"DEBUG: Word to PDF error: {str(e)}")
          raise Exception(f"Word to PDF conversion failed: {str(e)}")
          
     finally:
-        # Cleanup temp files
+        # Final cleanup safety
+        if doc:
+            try: doc.Close(False)
+            except: pass
+        if word:
+            try: word.Quit()
+            except: pass
         pythoncom.CoUninitialize()
         safe_remove(temp_docx_path)
         safe_remove(temp_pdf_path)

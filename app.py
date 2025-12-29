@@ -31,21 +31,7 @@ CORS(app, resources={
 # Configuration
 MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return app.send_static_file(path)
-    
-    # Fallback for production when frontend is hosted elsewhere (Netlify)
-    if not os.path.exists(os.path.join(app.static_folder, 'index.html')):
-        return jsonify({
-            "message": "iLovePDFKit API is running",
-            "status": "healthy",
-            "frontend": "https://ilovepdfkit.com"
-        }), 200
-        
-    return app.send_static_file('index.html')
+
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -783,5 +769,6 @@ def convert_protect_pdf():
     except Exception as e:
         app.logger.error(f"Protect PDF error: {str(e)}")
         return jsonify({"error": str(e)}), 500
+if __name__ == "__main__":
     app.run(debug=True, port=5000, host='0.0.0.0', use_reloader=False)
 

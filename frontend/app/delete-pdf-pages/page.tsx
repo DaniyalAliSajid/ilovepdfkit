@@ -76,7 +76,7 @@ export default function DeletePdfPagesPage() {
     const [resultBlob, setResultBlob] = useState<Blob | null>(null);
     const [processedFileName, setProcessedFileName] = useState<string>('');
 
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
