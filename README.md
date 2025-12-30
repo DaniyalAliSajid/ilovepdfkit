@@ -295,13 +295,8 @@ This project is open-source under the MIT License. Feel free to use, modify, and
 
 ---
 
-## 💬 Contact & Support
 
-- **Email**: m90.rahmati@gmail.com
-- **GitHub**: [@kezb90](https://github.com/kezb90)
-- **Issues**: [Report a bug](https://github.com/kezb90/PDF_To_Word/issues)
 
----
 
 ## 🙏 Acknowledgments
 
