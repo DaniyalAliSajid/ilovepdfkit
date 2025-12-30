@@ -24,7 +24,7 @@ export default function ApiDocsPage() {
             <section className={styles.section}>
                 <div className={styles.infoBox}>
                     <div className={styles.infoTitle}>Base URL</div>
-                    <div className={styles.infoText}>https://ilovepdfkit-backend.onrender.com/api</div>
+                    <div className={styles.infoText}>https://ilovepdfkit-api.onrender.com/api</div>
                 </div>
             </section>
 
@@ -38,7 +38,7 @@ export default function ApiDocsPage() {
                     </p>
                     <div className={styles.codeHeader}>cURL (Terminal)</div>
                     <pre className={styles.codeBlock}>
-                        {`curl -X POST https://ilovepdfkit-backend.onrender.com/api/convert/pdf-to-word \\
+                        {`curl -X POST https://ilovepdfkit-api.onrender.com/api/convert/pdf-to-word \\
   -F "file=@your_document.pdf" \\
   --output result.docx`}
                     </pre>
@@ -57,7 +57,7 @@ export default function ApiDocsPage() {
                     <pre className={styles.codeBlock}>
                         {`import requests
 
-url = "https://ilovepdfkit-backend.onrender.com/api/convert/word-to-pdf"
+url = "https://ilovepdfkit-api.onrender.com/api/convert/word-to-pdf"
 files = {'file': open('document.docx', 'rb')}
 
 response = requests.post(url, files=files)
@@ -80,7 +80,7 @@ if response.status_code == 200:
                         {`const formData = new FormData();
 formData.append('file', fileInput.files[0]);
 
-const response = await fetch('https://ilovepdfkit-backend.onrender.com/api/api/convert/pdf-to-word', {
+const response = await fetch('https://ilovepdfkit-api.onrender.com/api/api/convert/pdf-to-word', {
   method: 'POST',
   body: formData
 });

@@ -178,7 +178,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
     const [isCoverPage, setIsCoverPage] = useState<boolean>(false);
 
 
-    const baseUrl = 'http://127.0.0.1:5000';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ilovepdfkit-api.onrender.com';
     if (!config) return null;
     const endpoint = `${baseUrl}${config.endpoint}`;
 

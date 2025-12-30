@@ -4,7 +4,7 @@ Welcome to the technical side of iLovePDFKit. This guide shows you how to progra
 
 ## Base URL
 ```
-https://ilovepdfkit-backend.onrender.com/api
+https://ilovepdfkit-api.onrender.com/api
 ```
 
 ---
@@ -14,7 +14,7 @@ Convert any PDF document to a high-fidelity Word (.docx) file.
 
 ### cURL (Terminal)
 ```bash
-curl -X POST https://ilovepdfkit-backend.onrender.com/api/convert/pdf-to-word \
+curl -X POST https://ilovepdfkit-api.onrender.com/api/convert/pdf-to-word \
   -F "file=@your_document.pdf" \
   --output result.docx
 ```
@@ -23,7 +23,7 @@ curl -X POST https://ilovepdfkit-backend.onrender.com/api/convert/pdf-to-word \
 ```python
 import requests
 
-url = "https://ilovepdfkit-backend.onrender.com/api/convert/pdf-to-word"
+url = "https://ilovepdfkit-api.onrender.com/api/convert/pdf-to-word"
 files = {'file': open('your_document.pdf', 'rb')}
 
 response = requests.post(url, files=files)
@@ -46,7 +46,7 @@ Convert .docx files to professional PDF documents.
 const formData = new FormData();
 formData.append('file', fileInput.files[0]);
 
-const response = await fetch('https://ilovepdfkit-backend.onrender.com/api/convert/word-to-pdf', {
+const response = await fetch('https://ilovepdfkit-api.onrender.com/api/convert/word-to-pdf', {
   method: 'POST',
   body: formData
 });
