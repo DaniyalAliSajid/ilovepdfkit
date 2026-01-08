@@ -783,5 +783,7 @@ def convert_protect_pdf():
     except Exception as e:
         app.logger.error(f"Protect PDF error: {str(e)}")
         return jsonify({"error": str(e)}), 500
+
+if __name__ == "__main__":
     app.run(debug=True, port=5000, host='0.0.0.0', use_reloader=False)
 
