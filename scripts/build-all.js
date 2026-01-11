@@ -5,7 +5,9 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const root = join(__dirname, '..');
+const root = existsSync(join(__dirname, '..', 'package.json'))
+    ? join(__dirname, '..')
+    : join(__dirname, '..', '..'); // Handle if run from scripts/ or similar
 
 console.log('🚀 Building iLovePDFKit...\n');
 
