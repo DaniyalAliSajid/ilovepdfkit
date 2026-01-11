@@ -1,0 +1,46 @@
+---
+interface Props {
+  headline: string;
+  description: string;
+  datePublished: string;
+  dateModified: string;
+  authorName: string;
+  url: string;
+  image?: string;
+}
+
+const { headline, description, datePublished, dateModified, authorName, url, image } = Astro.props;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": headline,
+  "description": description,
+  "datePublished": datePublished,
+  "dateModified": dateModified,
+  "author": {
+    "@type": "Person",
+    "name": authorName
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "iLovePDFKit",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://ilovepdfkit.com/logo.webp"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": url
+  },
+  ...(image && {
+    "image": {
+      "@type": "ImageObject",
+      "url": image
+    }
+  })
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

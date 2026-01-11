@@ -106,6 +106,12 @@ const Navbar = () => {
           >
             Contact Us
           </Link>
+          <Link
+            href="/blog"
+            className={`${styles.navLink} ${pathname.startsWith('/blog') ? styles.activeNavLink : ''}`}
+          >
+            Blog
+          </Link>
           <a href="#tools-section" onClick={scrollToTools} className={styles.ctaButton}>
             Get Started
           </a>
@@ -166,6 +172,13 @@ const Navbar = () => {
                 onClick={closeMenu}
               >
                 Contact Us
+              </Link>
+              <Link
+                href="/blog"
+                className={`${styles.drawerLink} ${pathname.startsWith('/blog') ? styles.activeDrawerLink : ''}`}
+                onClick={closeMenu}
+              >
+                Blog
               </Link>
               <Link
                 href="/privacy-policy"

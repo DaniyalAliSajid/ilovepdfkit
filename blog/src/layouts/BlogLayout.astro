@@ -1,0 +1,18 @@
+---
+import BlogNavbar from '../components/BlogNavbar.astro';
+import BlogFooter from '../components/BlogFooter.astro';
+import '../styles/global.css';
+import '../styles/blog.css';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <slot name="head" />
+  </head>
+  <body>
+    <BlogNavbar />
+    <slot />
+    <BlogFooter />
+  </body>
+</html>

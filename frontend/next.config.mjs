@@ -22,6 +22,27 @@ const nextConfig = {
                 source: '/api/:path*',
                 destination: `${apiUrl}/api/:path*`,
             },
+            {
+                source: '/blog',
+                destination: 'http://localhost:4321/blog',
+            },
+            {
+                source: '/blog/:path*',
+                destination: 'http://localhost:4321/blog/:path*',
+            },
+            // Proxy internal Astro assets and Vite client in development
+            {
+                source: '/@vite/:path*',
+                destination: 'http://localhost:4321/@vite/:path*',
+            },
+            {
+                source: '/src/:path*',
+                destination: 'http://localhost:4321/src/:path*',
+            },
+            {
+                source: '/@id/:path*',
+                destination: 'http://localhost:4321/@id/:path*',
+            },
         ] : [];
     },
 };

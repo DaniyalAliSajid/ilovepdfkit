@@ -1,0 +1,76 @@
+---
+import BlogLayout from '../layouts/BlogLayout.astro';
+import SEO from '../components/SEO.astro';
+import PostCard from '../components/PostCard.astro';
+import { getAllPosts, getExcerpt, getFeaturedImage } from '../lib/wordpress';
+
+const posts = await getAllPosts();
+---
+
+<BlogLayout>
+  <SEO
+    slot="head"
+    title="Blog"
+    description="Tips, guides, and updates about PDF conversion and document management"
+    canonical="https://ilovepdfkit.com/blog"
+    type="website"
+  />
+  
+  <main class="container">
+    <h1>iLovePDFKit Blog</h1>
+    <p class="subtitle">Tips, guides, and updates about PDF tools</p>
+    
+    {posts.length === 0 ? (
+      <p class="empty-state">No posts available yet. Check back soon!</p>
+    ) : (
+      <div class="posts-grid">
+        {posts.map(post => {
+          const image = getFeaturedImage(post);
+          const excerpt = getExcerpt(post);
+          
+          return (
+            <PostCard
+              title={post.title.rendered}
+              excerpt={excerpt}
+              slug={post.slug}
+              date={post.date}
+              image={image}
+            />
+          );
+        })}
+      </div>
+    )}
+  </main>
+</BlogLayout>
+
+<style>
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+  
+  .subtitle {
+    font-size: 1.25rem;
+    color: var(--color-text-light);
+    margin-bottom: 3rem;
+  }
+  
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-text-light);
+  }
+</style>
