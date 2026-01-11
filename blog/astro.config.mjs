@@ -10,7 +10,7 @@ export default defineConfig({
         assets: '_assets'
     },
     integrations: [
-        // sitemap()
+        sitemap()
     ],
     vite: {
         build: {
