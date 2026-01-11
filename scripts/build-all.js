@@ -17,12 +17,16 @@ try {
     const options = { stdio: 'inherit', cwd: root, shell };
 
     // 1. Build Astro blog
+    console.log('📝 Installing blog dependencies...');
+    execSync('npm install', { ...options, cwd: join(root, 'blog') });
     console.log('📝 Building blog content...');
-    execSync('npm run build --prefix blog', options);
+    execSync('npm run build', { ...options, cwd: join(root, 'blog') });
 
     // 2. Build Next.js frontend
+    console.log('\n🎨 Installing frontend dependencies...');
+    execSync('npm install', { ...options, cwd: join(root, 'frontend') });
     console.log('\n🎨 Building main site frontend...');
-    execSync('npm run build --prefix frontend', options);
+    execSync('npm run build', { ...options, cwd: join(root, 'frontend') });
 
     // 3. Copy blog to frontend output
     console.log('\n📦 Merging outputs...');
