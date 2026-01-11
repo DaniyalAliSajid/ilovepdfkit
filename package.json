@@ -6,9 +6,5 @@
         "build:all": "node scripts/build-all.js",
         "dev:blog": "cd blog && npm run dev",
         "dev:frontend": "cd frontend && npm run dev"
-    },
-    "workspaces": [
-        "blog",
-        "frontend"
-    ]
+    }
 }
