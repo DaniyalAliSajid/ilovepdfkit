@@ -5,11 +5,11 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const root = existsSync(join(__dirname, '..', 'package.json'))
-    ? join(__dirname, '..')
-    : join(__dirname, '..', '..'); // Handle if run from scripts/ or similar
+const root = join(__dirname, '..');
 
-console.log('🚀 Building iLovePDFKit...\n');
+console.log('🚀 Building iLovePDFKit...');
+console.log('📍 Current Directory:', process.cwd());
+console.log('🏠 Project Root:', root);
 
 try {
     const isWindows = process.platform === 'win32';
