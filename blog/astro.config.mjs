@@ -1,6 +1,4 @@
 import { defineConfig } from 'astro/config';
-import sitemap from '@astrojs/sitemap';
-
 export default defineConfig({
     site: 'https://ilovepdfkit.com',
     base: '/blog',
@@ -9,9 +7,7 @@ export default defineConfig({
         format: 'directory', // Clean URLs
         assets: '_assets'
     },
-    integrations: [
-        // sitemap()
-    ],
+    integrations: [],
     vite: {
         build: {
             cssCodeSplit: false, // Single CSS file for performance
