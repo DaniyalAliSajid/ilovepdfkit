@@ -3,8 +3,9 @@ import { ArrowLeft, Terminal, Code2, ShieldCheck, Zap } from 'lucide-react';
 import styles from './page.module.css';
 
 export const metadata = {
-    title: 'Developer API - ILOVEPDFKIT',
-    description: 'Programmatic access to ILOVEPDFKIT document conversion engine.',
+    title: 'Developer API - ILOVEPDFKIT | Document Conversion API',
+    description: 'Integrate ILOVEPDFKIT\'s high-fidelity document conversion engine into your apps via our REST API. Support for PDF, Word, Excel, and more.',
+    keywords: 'document conversion api, pdf api, word to pdf api, developer tools, rest api document processing',
 };
 
 export default function ApiDocsPage() {

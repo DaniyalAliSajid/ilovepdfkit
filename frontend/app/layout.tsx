@@ -18,15 +18,53 @@ export const metadata: Metadata = {
     template: "%s | iLovePDFKit"
   },
   description: "Transform your documents with pixel-perfect accuracy. Convert between PDF, Word, PowerPoint, and images. Free, secure, and fast document conversion tools. No registration required.",
-  keywords: "PDF converter, PDF to Word, Word to PDF, PDF tools, document conversion, free PDF converter, online PDF tools, edit PDF, merge PDF, split PDF",
+  keywords: "PDF converter, PDF to Word, Word to PDF, PDF tools, document conversion, free PDF converter, online PDF tools, edit PDF, merge PDF, split PDF, excel to pdf, pdf to excel, protect pdf, rotate pdf",
   authors: [{ name: "iLovePDFKit" }],
-  alternates: {
-    canonical: './',
+  creator: "iLovePDFKit",
+  publisher: "iLovePDFKit",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://ilovepdfkit.com',
+    siteName: 'iLovePDFKit',
+    title: 'iLovePDFKit - Free Online PDF Converter & Tools',
+    description: 'The ultimate toolkit for your PDF needs. Fast, free, and secure online document conversion.',
+    images: [
+      {
+        url: '/og-image.webp',
+        width: 1200,
+        height: 630,
+        alt: 'iLovePDFKit - Free Online PDF Converter',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'iLovePDFKit - Free Online PDF Converter & Tools',
+    description: 'Professional document conversion tools made free for everyone.',
+    images: ['/og-image.webp'],
+    creator: '@ilovepdfkit',
   },
   icons: {
     icon: '/favicon.webp',
     shortcut: '/favicon.webp',
     apple: '/favicon.webp',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
 };
 

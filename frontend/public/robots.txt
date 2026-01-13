@@ -1,9 +1,0 @@
-User-agent: *
-Allow: /
-Allow: /blog/
-
-# Main Site Sitemap
-Sitemap: https://ilovepdfkit.com/sitemap.xml
-
-# Blog Sitemap
-Sitemap: https://ilovepdfkit.com/blog/sitemap.xml
