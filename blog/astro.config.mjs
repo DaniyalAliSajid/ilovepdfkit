@@ -7,6 +7,14 @@ export default defineConfig({
         format: 'directory', // Clean URLs
         assets: '_assets'
     },
+    image: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'cms.ilovepdfkit.com',
+            },
+        ],
+    },
     integrations: [],
     vite: {
         build: {

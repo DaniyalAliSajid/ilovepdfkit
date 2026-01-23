@@ -1,0 +1,99 @@
+---
+interface Props {
+  name: string;
+  avatar?: string;
+  bio?: string;
+}
+
+const { name, avatar, bio = "Expert in document conversion and digital workflows. Helping you make the most of iLovePDFKit tools." } = Astro.props;
+---
+
+<div class="author-box">
+  <div class="author-avatar">
+    {avatar ? (
+      <img src={avatar} alt={name} />
+    ) : (
+      <div class="avatar-placeholder">{name.charAt(0)}</div>
+    )}
+  </div>
+  <div class="author-info">
+    <p class="written-by">Written by</p>
+    <h3 class="author-name">{name}</h3>
+    <p class="author-bio">{bio}</p>
+  </div>
+</div>
+
+<style>
+  .author-box {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    background: var(--color-bg-alt);
+    border-radius: 1rem;
+    margin: 4rem 0;
+    border: 1px solid #e5e7eb;
+  }
+
+  .author-avatar {
+    flex-shrink: 0;
+  }
+
+  .author-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .avatar-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .author-info {
+    flex-grow: 1;
+  }
+
+  .written-by {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-light);
+    margin-bottom: 0.25rem;
+  }
+
+  .author-name {
+    font-size: 1.25rem;
+    color: var(--color-text);
+    margin-bottom: 0.5rem;
+  }
+
+  .author-bio {
+    font-size: 0.9375rem;
+    color: var(--color-text-light);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .author-box {
+      flex-direction: column;
+      text-align: center;
+      padding: 1.5rem;
+    }
+    
+    .author-avatar {
+      margin-bottom: 1rem;
+    }
+  }
+</style>

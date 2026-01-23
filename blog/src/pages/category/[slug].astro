@@ -1,0 +1,110 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+import SEO from '../../components/SEO.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getAllPosts, getFeaturedImage, getExcerpt } from '../../lib/wordpress';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  const categories = new Set();
+  
+  posts.forEach(post => {
+    const terms = post._embedded?.['wp:term']?.[0] || [];
+    terms.forEach(term => {
+      categories.add(JSON.stringify({ name: term.name, slug: term.slug }));
+    });
+  });
+  
+  return Array.from(categories).map(catJson => {
+    const category = JSON.parse(catJson as string);
+    const categoryPosts = posts.filter(post => {
+      const terms = post._embedded?.['wp:term']?.[0] || [];
+      return terms.some(term => term.slug === category.slug);
+    });
+    
+    return {
+      params: { slug: category.slug },
+      props: { categoryName: category.name, posts: categoryPosts }
+    };
+  });
+}
+
+const { categoryName, posts } = Astro.props;
+const { slug } = Astro.params;
+---
+
+<BlogLayout>
+  <SEO
+    slot="head"
+    title={`${categoryName} Articles`}
+    description={`Browse all our articles in the ${categoryName} category.`}
+    canonical={`https://ilovepdfkit.com/blog/category/${slug}`}
+    type="website"
+  />
+  
+  <main class="container">
+    <div class="category-header">
+      <a href="/blog" class="back-link">← Back to Blog</a>
+      <h1>Category: {categoryName}</h1>
+      <p class="subtitle">{posts.length} {posts.length === 1 ? 'article' : 'articles'} found</p>
+    </div>
+    
+    <div class="posts-grid">
+      {posts.map(post => {
+        const image = getFeaturedImage(post);
+        const excerpt = getExcerpt(post);
+        
+        return (
+          <PostCard
+            title={post.title.rendered}
+            excerpt={excerpt}
+            slug={post.slug}
+            date={post.date}
+            image={image}
+          />
+        );
+      })}
+    </div>
+  </main>
+</BlogLayout>
+
+<style>
+  .container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+  
+  .category-header {
+    margin-bottom: 3rem;
+  }
+  
+  .back-link {
+    display: inline-block;
+    color: var(--color-primary);
+    font-weight: 500;
+    margin-bottom: 1rem;
+    text-decoration: none;
+  }
+  
+  .back-link:hover {
+    text-decoration: underline;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+  }
+  
+  .subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-light);
+  }
+  
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+</style>

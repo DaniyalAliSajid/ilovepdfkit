@@ -11,7 +11,7 @@ interface Props {
 
 const { headline, description, datePublished, dateModified, authorName, url, image } = Astro.props;
 
-const schema = {
+const blogPostingSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": headline,
@@ -27,7 +27,7 @@ const schema = {
     "name": "iLovePDFKit",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://ilovepdfkit.com/logo.webp"
+      "url": "https://ilovepdfkit.com/blog/logo.webp"
     }
   },
   "mainEntityOfPage": {
@@ -41,6 +41,32 @@ const schema = {
     }
   })
 };
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://ilovepdfkit.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Blog",
+      "item": "https://ilovepdfkit.com/blog"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": headline,
+      "item": url
+    }
+  ]
+};
 ---
 
-<script type="application/ld+json" set:html={JSON.stringify(schema)} />
+<script type="application/ld+json" set:html={JSON.stringify(blogPostingSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />

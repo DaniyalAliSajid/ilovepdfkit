@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+
 interface Props {
   title: string;
   excerpt: string;
@@ -13,7 +15,14 @@ const { title, excerpt, slug, date, image } = Astro.props;
 <article class="post-card">
   {image && (
     <a href={`/blog/${slug}`} class="post-image-link">
-      <img src={image.url} alt={image.alt} class="post-image" loading="lazy" />
+      <Image 
+        src={image.url} 
+        alt={image.alt} 
+        width={400} 
+        height={225} 
+        class="post-image"
+        format="webp"
+      />
     </a>
   )}
   
