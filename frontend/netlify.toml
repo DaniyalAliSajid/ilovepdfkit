@@ -1,14 +1,2 @@
-[build]
-  # This config catches the build if Netlify is still set to the /frontend base directory
-  command = "cd .. && npm install && node scripts/build-all.js"
-  publish = "out"
-
-[[redirects]]
-  from = "/blog/*"
-  to = "/blog/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# This file is intentionally left blank.
+# Netlify native Next.js V5 integration is managing the deployment via the Dashboard UI settings.
