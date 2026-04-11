@@ -1,0 +1,149 @@
+.post {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.postHeader {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.postCategories {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.categoryTag {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--primary-600);
+  background: var(--primary-50);
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.categoryTag:hover {
+  background: var(--primary-600);
+  color: white;
+}
+
+.postTitle {
+  font-size: clamp(2rem, 5vw, 3rem);
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+}
+
+.postMeta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+.separator {
+  color: var(--gray-300);
+}
+
+.featuredImage {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 1rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.postContent {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--foreground);
+}
+
+.postContent :global(h2) {
+  font-size: 2rem;
+  margin: 3rem 0 1.5rem;
+  color: var(--gray-900);
+}
+
+.postContent :global(h3) {
+  font-size: 1.5rem;
+  margin: 2rem 0 1rem;
+  color: var(--gray-900);
+}
+
+.postContent :global(p) {
+  margin-bottom: 1.5rem;
+}
+
+.postContent :global(img) {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 2rem 0;
+}
+
+.postContent :global(a) {
+  color: var(--primary-600);
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.postContent :global(ul), .postContent :global(ol) {
+  margin-bottom: 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.postContent :global(li) {
+  margin-bottom: 0.5rem;
+}
+
+.conversionCta {
+  margin-top: 4rem;
+  padding: 3rem;
+  background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
+  border-radius: 1.5rem;
+  text-align: center;
+  border: 1px solid var(--primary-200);
+}
+
+.conversionCta h3 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--foreground);
+}
+
+.conversionCta p {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.ctaButton {
+  display: inline-block;
+  background: var(--primary-600);
+  color: white !important;
+  padding: 1rem 2.5rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.3);
+}
+
+.ctaButton:hover {
+  background: var(--primary-700);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.4);
+}

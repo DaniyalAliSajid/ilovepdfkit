@@ -25,7 +25,7 @@ export default function Footer() {
                     </a>
                 </div>
                 <p className={styles.copyright}>
-                    © 2025 iLovePDFKit. All rights reserved.
+                    © 2026 iLovePDFKit. All rights reserved.
                     <br />
                     Made with ❤️ for seamless document conversion
                 </p>

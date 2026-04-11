@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
+import { getAllPosts } from '@/lib/wordpress';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://ilovepdfkit.com'
     const routes = [
         '',
@@ -25,12 +26,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
         '/png-to-pdf',
         '/protect-pdf',
         '/api-docs',
+        '/blog',
     ]
 
-    return routes.map((route) => ({
+    const staticUrls = routes.map((route) => ({
         url: `${baseUrl}${route}`,
         lastModified: new Date(),
-        changeFrequency: 'weekly',
+        changeFrequency: 'weekly' as const,
         priority: route === '' ? 1 : 0.8,
     }))
+
+    const posts = await getAllPosts();
+    const blogUrls = posts.map((post) => ({
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: new Date(post.modified || post.date),
+        changeFrequency: 'weekly' as const,
+        priority: 0.7,
+    }));
+
+    return [...staticUrls, ...blogUrls];
 }

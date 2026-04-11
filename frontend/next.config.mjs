@@ -1,7 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    output: 'export',
-    images: { unoptimized: true },
+    // Removed output: 'export' to enable Next.js ISR and API Webhooks for the blog
+    images: { 
+        unoptimized: true,
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'cms.ilovepdfkit.com',
+            }
+        ]
+    },
     // Ignore lint and type errors during build for CI/CD speed and reliability
     eslint: {
         ignoreDuringBuilds: true,
@@ -21,27 +29,6 @@ const nextConfig = {
             {
                 source: '/api/:path*',
                 destination: `${apiUrl}/api/:path*`,
-            },
-            {
-                source: '/blog',
-                destination: 'http://localhost:4321/blog',
-            },
-            {
-                source: '/blog/:path*',
-                destination: 'http://localhost:4321/blog/:path*',
-            },
-            // Proxy internal Astro assets and Vite client in development
-            {
-                source: '/@vite/:path*',
-                destination: 'http://localhost:4321/@vite/:path*',
-            },
-            {
-                source: '/src/:path*',
-                destination: 'http://localhost:4321/src/:path*',
-            },
-            {
-                source: '/@id/:path*',
-                destination: 'http://localhost:4321/@id/:path*',
             },
         ] : [];
     },

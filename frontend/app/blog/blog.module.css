@@ -1,0 +1,162 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.title {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+}
+
+.postsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-secondary);
+}
+
+/* PostCard.tsx styles */
+.postCard {
+  border: 1px solid var(--gray-200);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background: white;
+  display: flex;
+  flex-direction: column;
+}
+
+.postCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.postImageLink {
+  display: block;
+}
+
+.postImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.postContent {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.postTitle {
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.postTitle a {
+  color: var(--foreground);
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.postTitle a:hover {
+  color: var(--primary-600);
+}
+
+.excerpt {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.date {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.authorBox {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: var(--gray-50);
+  border-radius: 1rem;
+  margin: 4rem 0;
+  border: 1px solid var(--gray-200);
+}
+
+.authorAvatar {
+  flex-shrink: 0;
+}
+
+.authorImg {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.avatarPlaceholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--primary-500);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.authorInfo {
+  flex-grow: 1;
+}
+
+.writtenBy {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.authorName {
+  font-size: 1.25rem;
+  color: var(--foreground);
+  margin-bottom: 0.5rem;
+}
+
+.authorBio {
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .authorBox {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  .authorAvatar {
+    margin-bottom: 1rem;
+  }
+}
+

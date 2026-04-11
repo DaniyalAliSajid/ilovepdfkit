@@ -173,6 +173,7 @@ eggs/
 .eggs/
 lib/
 !blog/src/lib/
+!frontend/lib/
 lib64/
 parts/
 sdist/
@@ -368,6 +369,7 @@ eggs/
 .eggs/
 lib/
 !blog/src/lib/
+!frontend/lib/
 lib64/
 parts/
 sdist/

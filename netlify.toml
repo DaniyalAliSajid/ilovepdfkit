@@ -1,12 +1,6 @@
 [build]
   command = "node scripts/build-all.js"
-  publish = "frontend/out"
-
-# Blog routes
-[[redirects]]
-  from = "/blog/*"
-  to = "/blog/:splat"
-  status = 200
+  publish = "frontend/.next"
 
 # Main site catch-all
 [[redirects]]
