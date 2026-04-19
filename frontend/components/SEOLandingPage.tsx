@@ -71,7 +71,6 @@ export default function SEOLandingPage(props: SEOLandingPageProps) {
 
       {/* 1. Hero & Breadcrumbs */}
       <section className={styles.seoHero}>
-        <div className={styles.gradientStrip} style={{ backgroundColor: props.themeColor }}></div>
         
         <nav className={styles.breadcrumbNav} aria-label="breadcrumb">
           <ol className={styles.breadcrumbList}>

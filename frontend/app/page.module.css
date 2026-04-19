@@ -864,6 +864,81 @@
 
 
 
+/* Compress PDF Card */
+.compressPdfCard::before {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.compressPdfCard .toolIcon {
+  color: #10b981;
+  background: #ecfdf5;
+}
+
+.compressPdfCard .toolButton {
+  background: #10b981;
+  border-color: #10b981;
+}
+
+.compressPdfCard .toolButton:hover {
+  background: white;
+  color: #10b981;
+  border-color: #10b981;
+}
+
+.compressPdfCard .toolFeatures li::before {
+  color: #10b981;
+}
+
+/* Split PDF Card */
+.splitPdfCard::before {
+  background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%);
+}
+
+.splitPdfCard .toolIcon {
+  color: #8B5CF6;
+  background: #f5f3ff;
+}
+
+.splitPdfCard .toolButton {
+  background: #8B5CF6;
+  border-color: #8B5CF6;
+}
+
+.splitPdfCard .toolButton:hover {
+  background: white;
+  color: #8B5CF6;
+  border-color: #8B5CF6;
+}
+
+.splitPdfCard .toolFeatures li::before {
+  color: #8B5CF6;
+}
+
+/* Unlock PDF Card */
+.unlockPdfCard::before {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.unlockPdfCard .toolIcon {
+  color: #3b82f6;
+  background: #eff6ff;
+}
+
+.unlockPdfCard .toolButton {
+  background: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.unlockPdfCard .toolButton:hover {
+  background: white;
+  color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.unlockPdfCard .toolFeatures li::before {
+  color: #3b82f6;
+}
+
 /* Tool Content Section (Zig-Zag Layout) */
 .toolContentWrapper {
   max-width: 1200px;

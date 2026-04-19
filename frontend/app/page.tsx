@@ -17,7 +17,9 @@ import {
   Minimize2,
   Table,
   Hash,
-  FileX
+  FileX,
+  Scissors,
+  Unlock
 } from 'lucide-react';
 
 import styles from './page.module.css';
@@ -312,6 +314,57 @@ export default function Home() {
               </ul>
               <Link href="/protect-pdf" className={styles.toolButton} aria-label="Start Protecting PDF">
                 Protect PDF <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Compress PDF */}
+            <div className={`${styles.toolCard} ${styles.compressPdfCard} `}>
+              <div className={styles.toolIcon}><Minimize2 size={48} /></div>
+              <h3 className={styles.toolTitle}>Compress PDF</h3>
+              <p className={styles.toolDesc}>
+                Reduce document file size without sacrificing visual quality
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>Smart image processing</li>
+                <li>Multiple compression levels</li>
+                <li>Best size-to-quality ratio</li>
+              </ul>
+              <Link href="/compress-pdf" className={styles.toolButton} aria-label="Start Compressing PDF">
+                Compress PDF <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Split PDF */}
+            <div className={`${styles.toolCard} ${styles.splitPdfCard} `}>
+              <div className={styles.toolIcon}><Scissors size={48} /></div>
+              <h3 className={styles.toolTitle}>Split PDF</h3>
+              <p className={styles.toolDesc}>
+                Extract pages from a PDF document into separate files easily
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>Extract specific pages</li>
+                <li>Visual page selection</li>
+                <li>Organized ZIP output</li>
+              </ul>
+              <Link href="/split-pdf" className={styles.toolButton} aria-label="Start Splitting PDF">
+                Split PDF <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Unlock PDF */}
+            <div className={`${styles.toolCard} ${styles.unlockPdfCard} `}>
+              <div className={styles.toolIcon}><Unlock size={48} /></div>
+              <h3 className={styles.toolTitle}>Unlock PDF</h3>
+              <p className={styles.toolDesc}>
+                Remove passwords and owner restrictions from protected documents
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>Remove copy/print locks</li>
+                <li>Instant decryption</li>
+                <li>Secure processing</li>
+              </ul>
+              <Link href="/unlock-pdf" className={styles.toolButton} aria-label="Start Unlocking PDF">
+                Unlock PDF <ArrowRight size={18} />
               </Link>
             </div>
 

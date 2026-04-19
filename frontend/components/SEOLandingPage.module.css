@@ -1,6 +1,6 @@
 .seoHero {
   position: relative;
-  padding: var(--space-20) 0 var(--space-12);
+  padding: 160px 0 var(--space-20);
   text-align: center;
   overflow: hidden;
   background: white;
@@ -62,37 +62,37 @@
 
 /* Hero Content */
 .h1 {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 800;
   color: var(--gray-900);
   margin-bottom: var(--space-6);
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .heroDescription {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   color: var(--text-secondary);
-  max-width: 700px;
-  margin: 0 auto var(--space-8);
-  line-height: 1.7;
+  max-width: 750px;
+  margin: 0 auto var(--space-10);
+  line-height: 1.6;
 }
 
 .heroCta {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-4) var(--space-8);
+  padding: 1rem 2.5rem;
   border-radius: var(--radius-full);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.125rem;
   color: white;
   text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   /* background color set inline */
 }
 
@@ -103,11 +103,12 @@
 
 /* Sections */
 .section {
-  padding: var(--space-16) 0;
+  padding: 100px 0;
 }
 
 .sectionAlt {
   background: var(--gray-50);
+  padding: 100px 0;
 }
 
 .container {
@@ -131,12 +132,12 @@
 
 /* Intro Paragraph */
 .seoIntro {
-  font-size: 1.25rem;
+  font-size: 1.1875rem;
   line-height: 1.8;
-  color: var(--gray-700);
+  color: var(--gray-800);
   max-width: 800px;
   margin: 0 auto var(--space-12);
-  text-align: center;
+  text-align: left;
 }
 
 /* How-To Steps */
@@ -400,17 +401,20 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-6);
+  padding: 1rem 2.5rem;
   border-radius: var(--radius-full);
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.125rem;
   color: white;
   text-decoration: none;
-  transition: opacity 0.2s;
+  transition: all 0.2s;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
   /* background set inline */
 }
 
 .midCta:hover {
-  opacity: 0.9;
+  transform: translateY(-2px);
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.2);
 }
 
 /* Bottom CTA Banner */
@@ -448,4 +452,29 @@
 .ctaBannerBtn:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .seoHero {
+    padding: 120px 0 var(--space-12);
+  }
+
+  .h1 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+  }
+
+  .heroDescription {
+    font-size: 1.125rem;
+  }
+
+  .section, .sectionAlt {
+    padding: var(--space-16) 0;
+  }
+
+  .seoIntro {
+    font-size: 1.125rem;
+    text-align: left;
+  }
 }
