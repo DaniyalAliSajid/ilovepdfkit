@@ -1460,3 +1460,71 @@ def verify_pdf(pdf_stream):
         print(f"PDF Validation Error: {e}")
         return False
 
+def unlock_pdf(pdf_bytes, password=None):
+    """
+    Remove password protection from a PDF.
+    If a user password is provided, it unlocks the file. Otherwise, it tries to remove restrictions.
+    """
+    try:
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        
+        # Check if actually encrypted
+        if not doc.is_encrypted:
+            doc.close()
+            return io.BytesIO(pdf_bytes) # Already unlocked
+            
+        # Try to unlock
+        if password:
+            success = doc.authenticate(password)
+            if not success:
+                raise ValueError("Incorrect password provided.")
+        else:
+            # Try unlocking with empty password (owner password might be empty)
+            success = doc.authenticate("")
+            if not success:
+                raise ValueError("PDF requires a password to unlock.")
+                
+        # Save as new, unencrypted PDF
+        out_stream = io.BytesIO()
+        doc.save(out_stream)
+        doc.close()
+        out_stream.seek(0)
+        
+        return out_stream
+    except Exception as e:
+        raise Exception(f"Failed to unlock PDF: {str(e)}")
+
+def split_pdf(pdf_bytes):
+    """
+    Splits a PDF by extracting every single page into a separate PDF file.
+    Returns a ZIP file containing all split pages.
+    """
+    try:
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        page_count = doc.page_count
+        
+        if page_count == 0:
+            raise ValueError("The PDF is empty.")
+            
+        # Create an in-memory ZIP file
+        zip_stream = io.BytesIO()
+        with zipfile.ZipFile(zip_stream, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            # Extract each page
+            for i in range(page_count):
+                single_page_doc = fitz.open()
+                single_page_doc.insert_pdf(doc, from_page=i, to_page=i)
+                
+                # Save single page to memory
+                page_stream = io.BytesIO()
+                single_page_doc.save(page_stream)
+                single_page_doc.close()
+                
+                # Write to ZIP
+                zipf.writestr(f"page_{i + 1}.pdf", page_stream.getvalue())
+                
+        doc.close()
+        zip_stream.seek(0)
+        return zip_stream
+    except Exception as e:
+        raise Exception(f"Failed to split PDF: {str(e)}")
+

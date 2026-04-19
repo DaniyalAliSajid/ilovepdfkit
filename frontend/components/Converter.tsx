@@ -7,7 +7,7 @@ import FileDropzone from './FileDropzone';
 import styles from './Converter.module.css';
 
 interface ConverterProps {
-    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers' | 'pdf-to-excel' | 'excel-to-pdf' | 'delete-pdf-pages' | 'protect-pdf' | 'pdf-to-png' | 'png-to-pdf';
+    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers' | 'pdf-to-excel' | 'excel-to-pdf' | 'delete-pdf-pages' | 'protect-pdf' | 'pdf-to-png' | 'png-to-pdf' | 'compress-pdf' | 'split-pdf' | 'unlock-pdf';
 }
 
 interface HistoryItem {
@@ -162,6 +162,33 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             color: '#2563EB',
             extension: '.pdf',
             multi: true
+        },
+        'compress-pdf': {
+            title: 'Compress PDF',
+            accept: '.pdf',
+            endpoint: '/api/convert/compress-pdf',
+            gradient: '#10b981',
+            color: '#10b981',
+            extension: '.pdf',
+            multi: false
+        },
+        'split-pdf': {
+            title: 'Split PDF',
+            accept: '.pdf',
+            endpoint: '/api/convert/split-pdf',
+            gradient: '#f59e0b',
+            color: '#f59e0b',
+            extension: '.zip',
+            multi: false
+        },
+        'unlock-pdf': {
+            title: 'Unlock PDF',
+            accept: '.pdf',
+            endpoint: '/api/convert/unlock-pdf',
+            gradient: '#64748b',
+            color: '#64748b',
+            extension: '.pdf',
+            multi: false
         }
     }[type];
 

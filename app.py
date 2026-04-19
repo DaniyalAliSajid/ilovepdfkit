@@ -784,6 +784,54 @@ def convert_protect_pdf():
         app.logger.error(f"Protect PDF error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/convert/split-pdf', methods=['POST'])
+def convert_split_pdf():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+            
+        file = request.files['file']
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        zip_stream = converter.split_pdf(pdf_bytes)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}_split.zip"
+        return send_file(
+            zip_stream,
+            mimetype='application/zip',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        app.logger.error(f"Split PDF error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/unlock-pdf', methods=['POST'])
+def convert_unlock_pdf():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+            
+        file = request.files['file']
+        password = request.form.get('password') # Optional, will attempt to unlock without it if not provided
+        
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        pdf_stream = converter.unlock_pdf(pdf_bytes, password)
+        
+        filename = f"{file.filename.rsplit('.', 1)[0]}_unlocked.pdf"
+        return send_file(
+            pdf_stream,
+            mimetype='application/pdf',
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        app.logger.error(f"Unlock PDF error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(debug=True, port=5000, host='0.0.0.0', use_reloader=False)
 

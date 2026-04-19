@@ -1,0 +1,451 @@
+.seoHero {
+  position: relative;
+  padding: var(--space-20) 0 var(--space-12);
+  text-align: center;
+  overflow: hidden;
+  background: white;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.gradientStrip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  /* background color set inline via style tag based on themeColor */
+}
+
+/* Breadcrumbs */
+.breadcrumbNav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-8);
+}
+
+.breadcrumbList {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbLink {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.breadcrumbLink:hover {
+  color: var(--gray-900);
+}
+
+.breadcrumbSeparator {
+  margin: 0 var(--space-2);
+  color: var(--gray-400);
+  font-size: 0.75rem;
+}
+
+.breadcrumbCurrent {
+  color: var(--gray-900);
+  font-weight: 500;
+}
+
+/* Hero Content */
+.h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: var(--space-6);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heroDescription {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 700px;
+  margin: 0 auto var(--space-8);
+  line-height: 1.7;
+}
+
+.heroCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: white;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  /* background color set inline */
+}
+
+.heroCta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Sections */
+.section {
+  padding: var(--space-16) 0;
+}
+
+.sectionAlt {
+  background: var(--gray-50);
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+.sectionHeader {
+  text-align: center;
+  margin-bottom: var(--space-12);
+}
+
+.sectionTitle {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--space-4);
+  letter-spacing: -0.01em;
+}
+
+/* Intro Paragraph */
+.seoIntro {
+  font-size: 1.25rem;
+  line-height: 1.8;
+  color: var(--gray-700);
+  max-width: 800px;
+  margin: 0 auto var(--space-12);
+  text-align: center;
+}
+
+/* How-To Steps */
+.howToGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+.stepCard {
+  background: white;
+  padding: var(--space-8);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  position: relative;
+  overflow: hidden;
+}
+
+.stepCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  /* background color set inline */
+}
+
+.stepNumber {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin-bottom: var(--space-4);
+  /* color and background set inline */
+}
+
+.stepTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--space-2);
+}
+
+.stepDesc {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.9375rem;
+}
+
+/* Features Grid */
+.featuresGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-8);
+}
+
+.featureCard {
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background: white;
+  border: 1px solid var(--gray-200);
+  transition: box-shadow 0.2s;
+}
+
+.featureCard:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.featureIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-4);
+  /* background and color set inline */
+}
+
+.featureTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--space-2);
+}
+
+.featureDesc {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.9375rem;
+}
+
+/* Use Cases */
+.useCasesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-6);
+}
+
+.useCaseCard {
+  background: white;
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  border-left: 4px solid;
+  /* border color set inline */
+  box-shadow: var(--shadow-sm);
+}
+
+.useCaseTitle {
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--space-2);
+  font-size: 1.125rem;
+}
+
+.useCaseDesc {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.9375rem;
+}
+
+/* Tool Spotlights */
+.toolSpotlightGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-6);
+}
+
+.spotlightCard {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--gray-200);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.spotlightCard:hover {
+  border-color: transparent;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.spotlightIcon {
+  flex-shrink: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  /* background and color set inline */
+}
+
+.spotlightContent h3 {
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--space-1);
+}
+
+.spotlightContent p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Comparison Table */
+.tableWrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--gray-200);
+  background: white;
+}
+
+.comparisonTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.comparisonTable th,
+.comparisonTable td {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.comparisonTable th {
+  font-weight: 600;
+  color: var(--gray-900);
+  background: var(--gray-50);
+}
+
+.comparisonTable th:first-child {
+  width: 40%;
+}
+
+.comparisonTable tr:last-child td {
+  border-bottom: none;
+}
+
+.ourCol {
+  background: rgba(139, 92, 246, 0.05); /* very light purple tint */
+  font-weight: 500;
+  color: var(--gray-900);
+}
+
+/* Related Tools */
+.relatedTools {
+  padding: var(--space-12) 0;
+  border-top: 1px solid var(--gray-200);
+  text-align: center;
+}
+
+.relatedTools h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin-bottom: var(--space-6);
+}
+
+.pillRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.toolPill {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-4);
+  background: white;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-full);
+  color: var(--gray-700);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.toolPill:hover {
+  /* border-color and color set dynamically in component based on theme */
+  box-shadow: var(--shadow-sm);
+}
+
+/* Mid CTA Area */
+.midCtaArea {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-2);
+}
+
+.midCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.2s;
+  /* background set inline */
+}
+
+.midCta:hover {
+  opacity: 0.9;
+}
+
+/* Bottom CTA Banner */
+.ctaBanner {
+  text-align: center;
+  padding: var(--space-16) var(--space-6);
+  margin: var(--space-8) auto;
+  max-width: 1000px;
+  border-radius: var(--radius-2xl);
+  color: white;
+  /* background color set inline */
+}
+
+.ctaBanner h2 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: var(--space-6);
+  color: white;
+}
+
+.ctaBannerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: white;
+  /* text color set inline to match parent bg */
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 1.125rem;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ctaBannerBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}

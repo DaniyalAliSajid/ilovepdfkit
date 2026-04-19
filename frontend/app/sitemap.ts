@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { getAllPosts } from '@/lib/wordpress';
+import { SEO_PAGES_CONFIG } from '@/lib/seo-pages.config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://ilovepdfkit.com'
@@ -25,6 +26,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/pdf-to-png',
         '/png-to-pdf',
         '/protect-pdf',
+        '/compress-pdf',
+        '/split-pdf',
+        '/unlock-pdf',
         '/api-docs',
         '/blog',
     ]
@@ -36,13 +40,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: route === '' ? 1 : 0.8,
     }))
 
-    const posts = await getAllPosts();
-    const blogUrls = posts.map((post) => ({
+    const posts = await getAllPosts().catch(() => []);
+    const blogUrls = (posts || []).map((post) => ({
         url: `${baseUrl}/blog/${post.slug}`,
         lastModified: new Date(post.modified || post.date),
         changeFrequency: 'weekly' as const,
         priority: 0.7,
     }));
 
-    return [...staticUrls, ...blogUrls];
+    const seoUrls = SEO_PAGES_CONFIG.map((page) => ({
+        url: `${baseUrl}/${page.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8, // Slightly lower than primary tools, higher than blog posts
+    }));
+
+    return [...staticUrls, ...blogUrls, ...seoUrls];
 }
