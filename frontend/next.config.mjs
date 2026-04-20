@@ -24,7 +24,7 @@ const nextConfig = {
     swcMinify: true,
     // Use rewrites ONLY for local development to avoid CORS issues
     async rewrites() {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5000';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:5001';
         return process.env.NODE_ENV === 'development' ? [
             {
                 source: '/api/:path*',

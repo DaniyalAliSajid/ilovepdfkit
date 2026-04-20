@@ -19,7 +19,9 @@ import {
   Hash,
   FileX,
   Scissors,
-  Unlock
+  Unlock,
+  Wand2,
+  MessageSquare
 } from 'lucide-react';
 
 import styles from './page.module.css';
@@ -49,6 +51,42 @@ export default function Home() {
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Choose Your Conversion Tool</h2>
           <div className={styles.toolsGrid}>
+            {/* AI PDF Summarizer */}
+            <div className={`${styles.toolCard} ${styles.aiSummarizerCard} `}>
+              <div className={styles.toolIcon}><Wand2 size={48} /></div>
+              <h3 className={styles.toolTitle}>AI PDF Summarizer</h3>
+              <div className={styles.newBadge}>NEW AI</div>
+              <p className={styles.toolDesc}>
+                Get instant, intelligent summaries of any PDF document using advanced AI technology
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>Extract key insights</li>
+                <li>Save hours of reading</li>
+                <li>Detailed structured output</li>
+              </ul>
+              <Link href="/pdf-summarizer" className={styles.aiButton} aria-label="Summarize PDF with AI">
+                Summarize Now <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Chat with PDF */}
+            <div className={`${styles.toolCard} ${styles.chatWithPdfCard} `}>
+              <div className={styles.toolIcon}><MessageSquare size={48} /></div>
+              <h3 className={styles.toolTitle}>Chat with PDF</h3>
+              <div className={styles.newBadge}>NEW AI</div>
+              <p className={styles.toolDesc}>
+                Interactive AI assistant that answers questions and explains content directly from your PDF
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>Contextual answers</li>
+                <li>Multi-turn conversation</li>
+                <li>Understand complex concepts</li>
+              </ul>
+              <Link href="/chat-with-pdf" className={styles.aiButton} aria-label="Chat with PDF Assistant">
+                Start Chatting <ArrowRight size={18} />
+              </Link>
+            </div>
+
             {/* PDF to Word */}
             <div className={`${styles.toolCard} ${styles.pdfToWordCard} `}>
               <div className={styles.toolIcon}><FileText size={48} /></div>

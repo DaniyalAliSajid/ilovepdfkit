@@ -1528,3 +1528,17 @@ def split_pdf(pdf_bytes):
     except Exception as e:
         raise Exception(f"Failed to split PDF: {str(e)}")
 
+def extract_text_from_pdf(pdf_bytes):
+    """
+    Extract text from PDF perfectly using PyMuPDF (fitz).
+    """
+    try:
+        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+        text = ""
+        for page in doc:
+            text += page.get_text() + "\n"
+        doc.close()
+        return text
+    except Exception as e:
+        raise Exception(f"Failed to extract text: {str(e)}")
+

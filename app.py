@@ -7,6 +7,11 @@ import io
 import os
 import zipfile
 import requests
+import ai_service
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = Flask(__name__, static_folder='static_build')
 
@@ -30,22 +35,6 @@ CORS(app, resources={
 
 # Configuration
 MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
-
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return app.send_static_file(path)
-    
-    # Fallback for production when frontend is hosted elsewhere (Netlify)
-    if not os.path.exists(os.path.join(app.static_folder, 'index.html')):
-        return jsonify({
-            "message": "iLovePDFKit API is running",
-            "status": "healthy",
-            "frontend": "https://ilovepdfkit.com"
-        }), 200
-        
-    return app.send_static_file('index.html')
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
@@ -832,6 +821,63 @@ def convert_unlock_pdf():
         app.logger.error(f"Unlock PDF error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/api/convert/ai-summarize', methods=['POST'])
+@limiter.limit("5 per minute")
+def ai_summarize():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        file = request.files['file']
+        pdf_bytes = file.read()
+        text = converter.extract_text_from_pdf(pdf_bytes)
+        if not text.strip():
+            return jsonify({"error": "Could not extract any text"}), 400
+        summary = ai_service.summarize_pdf(text)
+        return jsonify({"success": True, "summary": summary}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/ai-chat', methods=['POST'])
+@limiter.limit("20 per minute")
+def ai_chat():
+    try:
+        data = request.json
+        pdf_text = data.get('pdf_text')
+        user_query = data.get('message')
+        chat_history = data.get('history', [])
+        response = ai_service.chat_with_pdf(pdf_text, user_query, chat_history)
+        return jsonify({"success": True, "response": response}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/convert/ai-extract-text', methods=['POST'])
+@limiter.limit("10 per minute")
+def ai_extract_text():
+    try:
+        if 'file' not in request.files: return jsonify({"error": "No file"}), 400
+        file = request.files['file']
+        text = converter.extract_text_from_pdf(file.read())
+        return jsonify({"success": True, "text": text}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return app.send_static_file(path)
+    
+    # Fallback for production when frontend is hosted elsewhere (Netlify)
+    if not os.path.exists(os.path.join(app.static_folder, 'index.html')):
+        return jsonify({
+            "message": "iLovePDFKit API is running",
+            "status": "healthy",
+            "frontend": "https://ilovepdfkit.com"
+        }), 200
+        
+    return app.send_static_file('index.html')
+
 if __name__ == "__main__":
-    app.run(debug=True, port=5000, host='0.0.0.0', use_reloader=False)
+    app.run(debug=True, port=5001, host='0.0.0.0', use_reloader=False)
 
