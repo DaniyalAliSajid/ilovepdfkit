@@ -2,8 +2,8 @@ import io
 import os
 import tempfile
 import fitz  # PyMuPDF
-from docx import Document
 from pdf2docx import Converter
+import ai_service
 import platform
 import subprocess
 import shutil
@@ -131,35 +131,38 @@ def word_to_pdf(docx_bytes):
 
 def word_to_pdf_windows(docx_bytes):
     """
-    Convert Word to PDF using Microsoft Word COM automation (via docx2pdf)
+    Convert Word document to PDF using Microsoft Word COM automation
     """
-    temp_docx_path = None
-    temp_pdf_path = None
+    import win32com.client
+    import pythoncom
     
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as temp_docx:
+        temp_docx.write(docx_bytes)
+        temp_docx_path = temp_docx.name
+        
+    temp_pdf_path = temp_docx_path.replace(".docx", ".pdf")
+    
+    word = None
+    doc = None
     try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".docx") as temp_docx:
-            temp_docx.write(docx_bytes)
-            temp_docx_path = temp_docx.name
-            
-        temp_pdf_path = temp_docx_path.replace(".docx", ".pdf")
-        
-        import pythoncom
-        from docx2pdf import convert
-        
         pythoncom.CoInitialize()
-        import win32com.client
-        word = win32com.client.Dispatch("Word.Application")
-        word.Visible = False
         
-        doc = word.Documents.Open(temp_docx_path)
-        # wdExportFormatPDF = 17
-        doc.ExportAsFixedFormat(temp_pdf_path, 17)
-        doc.Close()
-        word.Quit()
-        
-        with open(temp_pdf_path, "rb") as f:
-            pdf_bytes = f.read()
+        # Function to perform the actual conversion steps
+        def perform_conversion():
+            nonlocal word, doc
+            if not word:
+                word = win32com.client.Dispatch("Word.Application")
+                word.Visible = False
+                word.DisplayAlerts = 0 # wdAlertsNone
             
+            doc = word.Documents.Open(os.path.abspath(temp_docx_path))
+            # wdExportFormatPDF = 17
+            doc.ExportAsFixedFormat(os.path.abspath(temp_pdf_path), 17)
+            return True
+
+        # Use com_retry for the entire operation
+        com_retry(perform_conversion)
+        
         if not os.path.exists(temp_pdf_path):
              raise Exception("Conversion failed: Output PDF not created")
              
@@ -172,7 +175,16 @@ def word_to_pdf_windows(docx_bytes):
          raise Exception(f"Word to PDF conversion failed: {str(e)}")
          
     finally:
-        # Cleanup temp files
+        if doc:
+            try:
+                doc.Close(0) # wdDoNotSaveChanges
+            except:
+                pass
+        if word:
+            try:
+                word.Quit()
+            except:
+                pass
         pythoncom.CoUninitialize()
         safe_remove(temp_docx_path)
         safe_remove(temp_pdf_path)
@@ -795,7 +807,6 @@ def excel_to_pdf(excel_bytes):
 
 def com_retry(func, *args, **kwargs):
     """Specific wrapper to handle 'Call was rejected by callee' COM errors"""
-    import time
     import pywintypes
     last_err = None
     for i in range(30): # Try for 30 seconds
@@ -803,22 +814,12 @@ def com_retry(func, *args, **kwargs):
             return func(*args, **kwargs)
         except pywintypes.com_error as e:
             last_err = e
-            hr = getattr(e, 'hresult', None)
-            if hr is None and len(e.args) > 0: hr = e.args[0]
-            if hr == -2147418111:
-                print(f"DEBUG: COM busy (rejected). Retrying {i+1}/30...")
+            if e.hresult == -2147417846: # Call was rejected by callee
                 time.sleep(1)
                 continue
             raise e
-        except Exception as e:
-            last_err = e
-            if "-2147418111" in str(e) or "rejected" in str(e).lower():
-                print(f"DEBUG: COM busy (string). Retrying {i+1}/30...")
-                time.sleep(1)
-                continue
-            raise e
-    if last_err: raise last_err
-    return func(*args, **kwargs)
+    raise last_err
+
 
 def rotate_pdf(pdf_bytes, angle=90):
     """
@@ -1541,4 +1542,5 @@ def extract_text_from_pdf(pdf_bytes):
         return text
     except Exception as e:
         raise Exception(f"Failed to extract text: {str(e)}")
+
 

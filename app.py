@@ -865,19 +865,18 @@ def ai_extract_text():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
+    if path != '' and os.path.exists(app.static_folder + '/' + path):
         return app.send_static_file(path)
     
     # Fallback for production when frontend is hosted elsewhere (Netlify)
     if not os.path.exists(os.path.join(app.static_folder, 'index.html')):
         return jsonify({
-            "message": "iLovePDFKit API is running",
-            "status": "healthy",
-            "frontend": "https://ilovepdfkit.com"
+            'message': 'iLovePDFKit API is running',
+            'status': 'healthy',
+            'frontend': 'https://ilovepdfkit.com'
         }), 200
         
     return app.send_static_file('index.html')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True, port=5001, host='0.0.0.0', use_reloader=False)
-
