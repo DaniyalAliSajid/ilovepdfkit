@@ -9,14 +9,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-# llama-3.3-70b-versatile is the current flagship. 
-# llama-3.1-8b-instant is the most stable fallback with high limits.
-PRIMARY_MODEL = "llama-3.3-70b-versatile"
-STABLE_MODEL = "llama-3.1-8b-instant"
+# llama-3.1-8b-instant is the most stable free-tier model with high limits.
+# llama-3.3-70b-versatile is the high-quality model reserved for final steps.
+PRIMARY_MODEL = "llama-3.1-8b-instant"
+ADVANCED_MODEL = "llama-3.3-70b-versatile"
 
-# Context limits (Llama 3.1/3.3 has 128k, but we use a safer limit for stability and payload size)
-MAX_CONTEXT_CHARS = 400000 # ~100k tokens
-CHUNK_SIZE_CHARS = 60000   # ~15k tokens - good for detailed chunk summaries
+# Context limits
+MAX_CONTEXT_CHARS = 300000 # ~75k tokens (Safe for 8B free tier)
+CHUNK_SIZE_CHARS = 50000   # ~12k tokens
+MAX_HISTORY_MESSAGES = 5    # Limit history for free tier stability
 
 def get_client():
     api_key = os.environ.get("GROQ_API_KEY")
@@ -24,10 +25,9 @@ def get_client():
         return None
     return Groq(api_key=api_key)
 
-def retry_on_error(max_retries=3, initial_delay=2):
+def retry_on_error(max_retries=2, initial_delay=3):
     """
     Decorator for retrying AI requests with exponential backoff.
-    Handles Rate Limits and temporary Server Errors.
     """
     def decorator(func):
         @functools.wraps(func)
@@ -49,12 +49,9 @@ def retry_on_error(max_retries=3, initial_delay=2):
                             wait_time = int(e.response.headers.get('retry-after')) + 1
                         except: pass
                     
-                    print(f"DEBUG: Groq {type(e).__name__} (Attempt {i+1}/{max_retries}). Waiting {wait_time}s...")
+                    print(f"DEBUG: Groq {type(e).__name__} (Attempt {i+1}). Waiting {wait_time}s...")
                     time.sleep(wait_time + (random.random() * 1))
                     delay *= 2
-                except APIStatusError as e:
-                    # If it's a 403 (Forbidden/Blocked) or other status error, don't retry, just bubble up to fallback
-                    raise e
                 except Exception as e:
                     raise e
             raise last_err
@@ -62,15 +59,14 @@ def retry_on_error(max_retries=3, initial_delay=2):
     return decorator
 
 def chunk_text(text, size=CHUNK_SIZE_CHARS):
-    """Split text into chunks of approximately 'size' characters."""
     return [text[i:i + size] for i in range(0, len(text), size)]
 
-@retry_on_error(max_retries=2)
+@retry_on_error(max_retries=1)
 def call_groq(messages, model=PRIMARY_MODEL):
-    """Base helper to call Groq with fallback logic built-in."""
+    """Base helper to call Groq."""
     client = get_client()
     if not client:
-        return "GROQ_API_KEY is not set in .env"
+        return "ERROR: GROQ_API_KEY not configured."
     
     try:
         chat_completion = client.chat.completions.create(
@@ -78,88 +74,70 @@ def call_groq(messages, model=PRIMARY_MODEL):
             model=model,
         )
         return chat_completion.choices[0].message.content
+    except RateLimitError:
+        return "ERROR: AI service is currently at capacity. Please wait a moment."
     except Exception as e:
-        print(f"DEBUG: Groq model {model} failed: {str(e)}. Attempting fallback...")
-        if model == PRIMARY_MODEL:
-            # Recursive call with stable model
-            return call_groq(messages, model=STABLE_MODEL)
-        raise e
+        print(f"DEBUG: Groq error: {str(e)}")
+        return f"ERROR: AI Service unavailable ({type(e).__name__})"
 
 def summarize_pdf(text: str):
     """
-    Summarize the provided PDF text with robust multi-model fallback and recursive chunking for large files.
+    Summarize PDF using 8B for chunks and 70B for the final high-quality synthesis.
     """
     if not text:
         return "No text provided for summarization."
 
-    # If text is small enough, summarize it directly
+    # If text is small, summarize it directly with 8B
     if len(text) <= CHUNK_SIZE_CHARS:
         messages = [
-            {"role": "system", "content": "You are a professional PDF summarizer. Provide a concise yet comprehensive summary with bullet points."},
-            {"role": "user", "content": f"Summarize this PDF content:\n\n{text}"}
+            {"role": "system", "content": "You are a professional PDF summarizer. Provide a concise summary with bullet points based ONLY on the provided text."},
+            {"role": "user", "content": f"Summarize this:\n\n{text}"}
         ]
-        return call_groq(messages)
+        return call_groq(messages, model=PRIMARY_MODEL)
 
-    # Large file: Recursive/Chunked summarization (Map-Reduce)
-    print(f"DEBUG: Large PDF detected ({len(text)} chars). Using chunked summarization...")
+    # Large file: Map-Reduce
     chunks = chunk_text(text)
+    # Limit chunks to prevent long wait times on free tier (approx first 10 chunks ~500k chars)
+    chunks = chunks[:10] 
+    
     chunk_summaries = []
-
     for i, chunk in enumerate(chunks):
-        print(f"DEBUG: Summarizing chunk {i+1}/{len(chunks)}...")
         messages = [
-            {"role": "system", "content": "You are a professional PDF summarizer. Summarize this specific section of a larger document."},
-            {"role": "user", "content": f"Summarize this section:\n\n{chunk}"}
+            {"role": "system", "content": "Summarize this section of a larger document concisely."},
+            {"role": "user", "content": chunk}
         ]
-        summary = call_groq(messages)
-        chunk_summaries.append(f"--- Section {i+1} Summary ---\n{summary}")
+        summary = call_groq(messages, model=PRIMARY_MODEL)
+        if "ERROR:" in summary: return summary # Fail fast if rate limited
+        chunk_summaries.append(summary)
 
-    # Combine summaries
+    # Final reduction using the more powerful 70B model
     combined_summary_text = "\n\n".join(chunk_summaries)
-    
-    # If the combined summary is still very large, summarize the summaries!
-    if len(combined_summary_text) > CHUNK_SIZE_CHARS:
-        print("DEBUG: Combined summary is large. Performing final reduction...")
-        final_messages = [
-            {"role": "system", "content": "You are a professional PDF summarizer. Combine these section summaries into one cohesive, high-level executive summary using bullet points."},
-            {"role": "user", "content": f"Combine these summaries:\n\n{combined_summary_text}"}
-        ]
-        return call_groq(final_messages)
-    
-    return combined_summary_text
+    final_messages = [
+        {"role": "system", "content": "You are a professional editor. Combine these section summaries into one cohesive, high-level executive summary using bullet points."},
+        {"role": "user", "content": f"Finalize this summary:\n\n{combined_summary_text}"}
+    ]
+    return call_groq(final_messages, model=ADVANCED_MODEL)
 
 def chat_with_pdf(text: str, user_query: str, chat_history: list = None):
     """
-    Answer questions based on PDF context with handling for large context.
+    Answer questions using 8B for efficiency.
     """
-    if not text:
-        return "No PDF context available."
+    if not text: return "No PDF context available."
+    if chat_history is None: chat_history = []
+
+    # Truncate context for stability
+    context_text = text[:MAX_CONTEXT_CHARS]
     
-    if chat_history is None:
-        chat_history = []
-
-    # If text is too large for the context window, we must truncate or use an extraction strategy.
-    # For a simple "Chat with PDF", we'll truncate at our context limit but prioritize 
-    # the start and end of the document if it's massive, as they often contain key info.
-    context_text = text
-    if len(text) > MAX_CONTEXT_CHARS:
-        print(f"DEBUG: Context exceeds limit ({len(text)} > {MAX_CONTEXT_CHARS}). Truncating...")
-        # Take first 70% and last 30% of the allowed limit? 
-        # Or just take the first part. Let's take the first 350k chars.
-        context_text = text[:MAX_CONTEXT_CHARS] + "\n\n[Context truncated due to size...]"
-
     messages = [
-        {"role": "system", "content": f"Answer the user's question based ONLY on the provided context from a PDF document. If the information is not in the context, say you don't know.\n\nContext:\n{context_text}"}
+        {"role": "system", "content": f"Answer based ONLY on the provided context. If not found, say so. Do not hallucinate.\n\nContext:\n{context_text}"}
     ]
     
-    # Add chat history (trimming if history is too long)
-    for msg in chat_history[-10:]: # Keep last 10 messages
+    # Strict history limit for free tier
+    for msg in chat_history[-MAX_HISTORY_MESSAGES:]:
         messages.append(msg)
         
-    messages.append({"role": "user", "content": user_query})
+    messages.append({"role": "user", "content": user_query[:1000]}) # Limit query length
 
-    try:
-        return call_groq(messages)
-    except Exception as e:
-        return f"AI Service Error: {str(e)}"
+    return call_groq(messages, model=PRIMARY_MODEL)
+
 

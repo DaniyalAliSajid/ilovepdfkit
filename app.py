@@ -821,45 +821,118 @@ def convert_unlock_pdf():
         app.logger.error(f"Unlock PDF error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
+import cache_manager
+
+# Configuration
+MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
+MAX_AI_FILE_SIZE = 10 * 1024 * 1024 # 10MB for AI
+MAX_AI_PAGES = 20
+
 @app.route('/api/convert/ai-summarize', methods=['POST'])
-@limiter.limit("5 per minute")
+@limiter.limit("3 per day", key_func=get_remote_address) # Strict daily limit for free tier
 def ai_summarize():
     try:
         if 'file' not in request.files:
             return jsonify({"error": "No file provided"}), 400
+        
         file = request.files['file']
         pdf_bytes = file.read()
-        text = converter.extract_text_from_pdf(pdf_bytes)
+        
+        # 1. Size Limit
+        if len(pdf_bytes) > MAX_AI_FILE_SIZE:
+            return jsonify({"error": f"PDF too large for free AI mode. Max {MAX_AI_FILE_SIZE//1024//1024}MB allowed."}), 413
+            
+        # 2. Check Cache
+        file_hash = cache_manager.get_hash(pdf_bytes)
+        cache_key = f"summary_{file_hash}"
+        cached_summary = cache_manager.get_cache(cache_key)
+        if cached_summary:
+            return jsonify({"success": True, "summary": cached_summary, "cached": True}), 200
+            
+        # 3. Extract & Limit Pages
+        text = converter.extract_text_from_pdf(pdf_bytes, max_pages=MAX_AI_PAGES)
         if not text.strip():
-            return jsonify({"error": "Could not extract any text"}), 400
+            return jsonify({"error": "Could not extract any text from this PDF."}), 400
+            
+        # 4. Summarize
         summary = ai_service.summarize_pdf(text)
-        return jsonify({"success": True, "summary": summary}), 200
+        
+        if "ERROR:" in summary:
+            return jsonify({"error": summary.replace("ERROR: ", "")}), 429
+
+        # 5. Save to Cache
+        cache_manager.set_cache(cache_key, summary)
+        
+        return jsonify({
+            "success": True, 
+            "summary": summary,
+            "warning": f"Summarized first {MAX_AI_PAGES} pages only." if "[Note:" in text else None
+        }), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "AI Service temporarily unavailable. Please try later."}), 500
 
 @app.route('/api/convert/ai-chat', methods=['POST'])
-@limiter.limit("20 per minute")
+@limiter.limit("10 per day", key_func=get_remote_address) # Daily limit
 def ai_chat():
     try:
         data = request.json
         pdf_text = data.get('pdf_text')
         user_query = data.get('message')
         chat_history = data.get('history', [])
+        
+        if not pdf_text or not user_query:
+            return jsonify({"error": "Missing PDF context or question"}), 400
+            
+        # Limit query length
+        if len(user_query) > 1000:
+            user_query = user_query[:1000]
+
+        # Check Cache for identical question on same PDF
+        q_hash = cache_manager.get_hash(user_query.lower().strip())
+        ctx_hash = cache_manager.get_hash(pdf_text[:1000]) # Use start of text as context identifier
+        cache_key = f"chat_{ctx_hash}_{q_hash}"
+        
+        cached_ans = cache_manager.get_cache(cache_key)
+        if cached_ans:
+            return jsonify({"success": True, "response": cached_ans, "cached": True}), 200
+
         response = ai_service.chat_with_pdf(pdf_text, user_query, chat_history)
+        
+        if "ERROR:" in response:
+            return jsonify({"error": response.replace("ERROR: ", "")}), 429
+            
+        # Cache answer for 30 mins
+        cache_manager.set_cache(cache_key, response, ttl=1800)
+            
         return jsonify({"success": True, "response": response}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Chat assistant busy. Try again shortly."}), 500
 
 @app.route('/api/convert/ai-extract-text', methods=['POST'])
-@limiter.limit("10 per minute")
+@limiter.limit("5 per minute")
 def ai_extract_text():
     try:
         if 'file' not in request.files: return jsonify({"error": "No file"}), 400
         file = request.files['file']
-        text = converter.extract_text_from_pdf(file.read())
+        pdf_bytes = file.read()
+        
+        if len(pdf_bytes) > MAX_AI_FILE_SIZE:
+             return jsonify({"error": f"PDF too large for free AI mode. Max {MAX_AI_FILE_SIZE//1024//1024}MB."}), 413
+             
+        # Check cache for text
+        file_hash = cache_manager.get_hash(pdf_bytes)
+        cache_key = f"text_{file_hash}"
+        cached_text = cache_manager.get_cache(cache_key)
+        if cached_text:
+            return jsonify({"success": True, "text": cached_text, "cached": True}), 200
+
+        text = converter.extract_text_from_pdf(pdf_bytes, max_pages=MAX_AI_PAGES)
+        cache_manager.set_cache(cache_key, text)
+        
         return jsonify({"success": True, "text": text}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 @app.route('/', defaults={'path': ''})

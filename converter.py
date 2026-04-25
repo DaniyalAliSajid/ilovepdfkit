@@ -1529,18 +1529,29 @@ def split_pdf(pdf_bytes):
     except Exception as e:
         raise Exception(f"Failed to split PDF: {str(e)}")
 
-def extract_text_from_pdf(pdf_bytes):
+def extract_text_from_pdf(pdf_bytes, max_pages=20):
     """
-    Extract text from PDF perfectly using PyMuPDF (fitz).
+    Extract text from PDF using PyMuPDF (fitz), with a limit on pages for the free tier.
     """
     try:
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
         text = ""
-        for page in doc:
+        total_pages = len(doc)
+        
+        # Truncate to max_pages
+        pages_to_process = min(total_pages, max_pages)
+        for i in range(pages_to_process):
+            page = doc[i]
             text += page.get_text() + "\n"
+        
         doc.close()
+        
+        if total_pages > max_pages:
+            text += f"\n\n[Note: Only the first {max_pages} pages were processed in free mode.]"
+            
         return text
     except Exception as e:
         raise Exception(f"Failed to extract text: {str(e)}")
+
 
 

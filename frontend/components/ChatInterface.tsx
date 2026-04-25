@@ -25,6 +25,8 @@ const ChatInterface = () => {
     const themeColor = '#2563EB';
     const themeGradient = 'linear-gradient(135deg, #2563EB 0%, #1E40AF 100%)';
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
+    
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -36,6 +38,13 @@ const ChatInterface = () => {
 
     const handleFileSelect = async (selectedFile: File | File[] | null) => {
         const fileToUse = Array.isArray(selectedFile) ? selectedFile[0] : selectedFile;
+        
+        if (fileToUse && fileToUse.size > maxFileSize) {
+            setError(`File is too large for free AI mode. Max 10MB allowed.`);
+            setFile(null);
+            return;
+        }
+
         setFile(fileToUse);
         setPdfText(null);
         setMessages([]);
@@ -58,12 +67,17 @@ const ChatInterface = () => {
                 body: formData,
             });
 
-            if (!response.ok) throw new Error('Failed to read PDF context');
             const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Failed to read PDF context');
+            
             setPdfText(data.text);
-            setMessages([{ role: 'assistant', content: `Hello! I've successfully analyzed **${fileToUse.name}**. You can now ask me anything about its content, and I'll answer perfectly based on the text.` }]);
+            const welcomeMsg = data.text.includes('[Note:') 
+                ? `Hello! I've analyzed the first 20 pages of **${fileToUse.name}**. You can now ask me questions about this portion.`
+                : `Hello! I've analyzed **${fileToUse.name}**. You can now ask me anything about its content.`;
+                
+            setMessages([{ role: 'assistant', content: welcomeMsg }]);
         } catch (err: any) {
-            setError(err.message || 'Could not extract text from PDF.');
+            setError(err.message || 'Could not extract text from PDF. The server might be starting up.');
         } finally {
             setExtracting(false);
         }
@@ -78,6 +92,7 @@ const ChatInterface = () => {
         const newMessages: Message[] = [...messages, { role: 'user', content: userMsg }];
         setMessages(newMessages);
         setLoading(true);
+        setError(null);
 
         try {
             const response = await fetch(`${baseUrl}/api/convert/ai-chat`, {
@@ -86,19 +101,26 @@ const ChatInterface = () => {
                 body: JSON.stringify({
                     pdf_text: pdfText,
                     message: userMsg,
-                    history: messages.map(m => ({ role: m.role, content: m.content }))
+                    history: messages.slice(-5).map(m => ({ role: m.role, content: m.content }))
                 }),
             });
 
-            if (!response.ok) throw new Error('Chat failed');
             const data = await response.json();
+            if (!response.ok) {
+                if (response.status === 429) {
+                    throw new Error(data.error || 'You have reached the daily free chat limit.');
+                }
+                throw new Error(data.error || 'Chat failed. Please try again.');
+            }
+            
             setMessages([...newMessages, { role: 'assistant', content: data.response }]);
         } catch (err: any) {
-            setError('Failed to get a response. Please try again.');
+            setError(err.message || 'Failed to get a response. The AI might be busy, please try again in a moment.');
         } finally {
             setLoading(false);
         }
     };
+
 
     const handleCopy = (content: string, index: number) => {
         navigator.clipboard.writeText(content);

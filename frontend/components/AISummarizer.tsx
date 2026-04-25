@@ -18,11 +18,19 @@ const AISummarizer = () => {
     const themeColor = '#8B5CF6';
     const themeGradient = 'linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%)';
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || '';
-
-    // Remove typing effect logic, display immediately
+    
+    const maxPages = 20;
+    const maxFileSize = 10 * 1024 * 1024; // 10MB
 
     const handleFileSelect = (selectedFile: File | File[] | null) => {
         const fileToUse = Array.isArray(selectedFile) ? selectedFile[0] : selectedFile;
+        
+        if (fileToUse && fileToUse.size > maxFileSize) {
+            setError(`File is too large for free AI mode. Please use a PDF smaller than 10MB.`);
+            setFile(null);
+            return;
+        }
+
         setFile(fileToUse || null);
         setSummary(null);
         setDisplayedSummary('');
@@ -49,21 +57,27 @@ const AISummarizer = () => {
                 body: formData,
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Summarization failed');
+                if (response.status === 429) {
+                    throw new Error(data.error || 'Daily free limit reached. Please try again tomorrow.');
+                }
+                throw new Error(data.error || 'AI Service is temporarily busy. Please try again.');
             }
 
-            const data = await response.json();
             setSummary(data.summary);
-            setDisplayedSummary(data.summary); // Set immediately
-            setTyping(false);
+            setDisplayedSummary(data.summary);
+            if (data.warning) {
+                setError(`Note: ${data.warning}`); // Use error box for the warning
+            }
         } catch (err: any) {
-            setError(err.message || 'An error occurred during summarization.');
+            setError(err.message || 'An error occurred. The AI server might be starting up, please try again in 30 seconds.');
         } finally {
             setLoading(false);
         }
     };
+
 
     const handleCopy = () => {
         if (summary) {

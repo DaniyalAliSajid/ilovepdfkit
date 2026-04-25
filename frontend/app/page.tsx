@@ -21,7 +21,8 @@ import {
   Scissors,
   Unlock,
   Wand2,
-  MessageSquare
+  MessageSquare,
+  Sparkles
 } from 'lucide-react';
 
 import styles from './page.module.css';
@@ -46,48 +47,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tools Section */}
+      {/* Core Tools Section */}
       <section id="tools-section" className={styles.section}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Choose Your Conversion Tool</h2>
           <div className={styles.toolsGrid}>
-            {/* AI PDF Summarizer */}
-            <div className={`${styles.toolCard} ${styles.aiSummarizerCard} `}>
-              <div className={styles.toolIcon}><Wand2 size={48} /></div>
-              <h3 className={styles.toolTitle}>AI PDF Summarizer</h3>
-              <div className={styles.newBadge}>NEW AI</div>
-              <p className={styles.toolDesc}>
-                Get instant, intelligent summaries of any PDF document using advanced AI technology
-              </p>
-              <ul className={styles.toolFeatures}>
-                <li>Extract key insights</li>
-                <li>Save hours of reading</li>
-                <li>Detailed structured output</li>
-              </ul>
-              <Link href="/pdf-summarizer" className={styles.aiButton} aria-label="Summarize PDF with AI">
-                Summarize Now <ArrowRight size={18} />
-              </Link>
-            </div>
-
-            {/* Chat with PDF */}
-            <div className={`${styles.toolCard} ${styles.chatWithPdfCard} `}>
-              <div className={styles.toolIcon}><MessageSquare size={48} /></div>
-              <h3 className={styles.toolTitle}>Chat with PDF</h3>
-              <div className={styles.newBadge}>NEW AI</div>
-              <p className={styles.toolDesc}>
-                Interactive AI assistant that answers questions and explains content directly from your PDF
-              </p>
-              <ul className={styles.toolFeatures}>
-                <li>Contextual answers</li>
-                <li>Multi-turn conversation</li>
-                <li>Understand complex concepts</li>
-              </ul>
-              <Link href="/chat-with-pdf" className={styles.aiButton} aria-label="Chat with PDF Assistant">
-                Start Chatting <ArrowRight size={18} />
-              </Link>
-            </div>
-
-
             {/* PDF to Word */}
             <div className={`${styles.toolCard} ${styles.pdfToWordCard} `}>
               <div className={styles.toolIcon}><FileText size={48} /></div>
@@ -410,6 +374,60 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* AI Tools Section */}
+      <section className={styles.aiSection}>
+        <div className={styles.container}>
+          <h2 className={styles.aiTitle}>
+            <Sparkles style={{ color: '#8b5cf6' }} size={36} /> AI-Powered PDF Tools
+          </h2>
+          <p className={styles.aiSubtitle}>
+            Use AI to summarize documents and get answers instantly
+          </p>
+          
+          <div className={styles.aiGrid}>
+            {/* AI PDF Summarizer */}
+            <div className={`${styles.toolCard} ${styles.aiCard} ${styles.aiSummarizerCard}`}>
+              <div className={styles.newBadge}>NEW</div>
+              <div className={styles.toolIcon}><Wand2 size={48} /></div>
+              <h3 className={styles.toolTitle}>AI PDF Summarizer</h3>
+              <p className={styles.toolDesc}>
+                Generate fast AI-powered summaries from your PDF
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>Extract key insights</li>
+                <li>Save hours of reading</li>
+                <li>Detailed structured output</li>
+              </ul>
+              <Link href="/pdf-summarizer" className={styles.aiButton} aria-label="Summarize PDF with AI">
+                Summarize Now <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            {/* Chat with PDF */}
+            <div className={`${styles.toolCard} ${styles.aiCard} ${styles.chatWithPdfCard}`}>
+              <div className={styles.newBadge}>NEW</div>
+              <div className={styles.toolIcon}><MessageSquare size={48} /></div>
+              <h3 className={styles.toolTitle}>Chat with PDF</h3>
+              <p className={styles.toolDesc}>
+                Ask questions and explore your PDF with AI
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>Contextual answers</li>
+                <li>Multi-turn conversation</li>
+                <li>Understand complex concepts</li>
+              </ul>
+              <Link href="/chat-with-pdf" className={styles.aiButton} aria-label="Chat with PDF Assistant">
+                Start Chatting <ArrowRight size={18} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+
 
       {/* Why Choose Section */}
       <section className={styles.featuresSection}>
