@@ -232,6 +232,95 @@
     }
 }
 
+/* Social Links */
+.socialSection {
+    margin-top: 2rem;
+}
+
+.socialGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.socialCard {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    text-decoration: none;
+    color: var(--gray-700);
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.socialCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Platform-specific Hover Effects */
+.facebook:hover {
+    color: white;
+    border-color: transparent;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(24, 119, 242, 0.3);
+}
+.facebook::before { background: #1877F2; }
+.facebook:hover::before { opacity: 1; }
+
+.linkedin:hover {
+    color: white;
+    border-color: transparent;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(10, 102, 194, 0.3);
+}
+.linkedin::before { background: #0a66c2; }
+.linkedin:hover::before { opacity: 1; }
+
+.twitter:hover {
+    color: white;
+    border-color: transparent;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+.twitter::before { background: #000000; }
+.twitter:hover::before { opacity: 1; }
+
+.pinterest:hover {
+    color: white;
+    border-color: transparent;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(230, 0, 35, 0.3);
+}
+.pinterest::before { background: #E60023; }
+.pinterest:hover::before { opacity: 1; }
+
+.socialIcon {
+    margin-right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+.socialCard:hover .socialIcon {
+    transform: scale(1.1);
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 6rem 1rem 2rem;
@@ -251,5 +340,9 @@
 
     .formCard {
         padding: 1.5rem;
+    }
+    
+    .socialGrid {
+        grid-template-columns: 1fr;
     }
 }
