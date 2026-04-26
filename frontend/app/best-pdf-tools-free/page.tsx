@@ -49,7 +49,7 @@ export default function BestPdfToolsFreePage() {
         { name: 'Best Free Suite', href: '/best-pdf-tools-free' },
       ]}
       themeColor="#6d28d9"
-      internalLinksOverride={{ parentTool: { url: '/', text: 'View All Tools', href: '/' } }}
+      internalLinksOverride={{ parentTool: { href: '/', text: 'View All Tools' } }}
     />
   );
 }

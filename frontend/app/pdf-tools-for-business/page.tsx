@@ -35,7 +35,7 @@ export default function PdfToolsForBusinessPage() {
         { name: 'Merge Legal Files (PDF)', href: '/merge-pdf', description: 'Stitch together different vendor contracts, NDAs, and addendums into one clean master document.', icon: FileDigit },
         { name: 'Secure HR Data (PDF)', href: '/protect-pdf', description: 'Add strict AES password encryption to sensitive employee records and payroll information.', icon: ShieldCheck },
       ]}
-      midCTA={{ text: 'Explore Business Tools →', href: '/' }}
+      midCTA={{ text: 'Explore Business Tools â†’', href: '/' }}
       bottomCTA={{ headline: 'Better workflows. Zero software budget.', text: 'Start Optimizing Company Files', href: '/' }}
       faqs={[
         { question: 'Is it safe to upload confidential corporate documents?', answer: 'Yes. We take data security incredibly seriously. We use bank-level AES-256 bit encryption for all file transfers, and our system is designed to automatically and permanently delete all uploaded files from our servers within a few hours.' },
@@ -49,7 +49,7 @@ export default function PdfToolsForBusinessPage() {
         { name: 'Business Tools', href: '/pdf-tools-for-business' },
       ]}
       themeColor="#6d28d9"
-      internalLinksOverride={{ parentTool: { url: '/', text: 'View All Tools', href: '/' } }}
+      internalLinksOverride={{ parentTool: { href: '/', text: 'View All Tools' } }}
     />
   );
 }

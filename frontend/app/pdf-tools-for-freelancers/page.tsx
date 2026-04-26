@@ -17,7 +17,7 @@ export default function PdfToolsForFreelancersPage() {
       angle="audience"
       h1="The Essential PDF Toolkit for Freelancers"
       heroDescription="Manage client contracts, compress massive portfolios, and organize your invoices without paying for expensive software subscriptions."
-      intro="Running a freelance business means wearing every hat: you are the talent, the sales team, and the accounting department. When a client requests a signed NDA or when you need to email a hefty design portfolio, fighting with clunky PDF documents slows down your workflow and costs you money. You shouldn't have to surrender $15 a month just to stitch two invoices together. Our suite of PDF tools for freelancers gives you enterprise-grade utility—compressing, merging, and securing documents—completely free. Handle your paperwork in seconds so you can get back to billable hours."
+      intro="Running a freelance business means wearing every hat: you are the talent, the sales team, and the accounting department. When a client requests a signed NDA or when you need to email a hefty design portfolio, fighting with clunky PDF documents slows down your workflow and costs you money. You shouldn't have to surrender $15 a month just to stitch two invoices together. Our suite of PDF tools for freelancers gives you enterprise-grade utilityâ€”compressing, merging, and securing documentsâ€”completely free. Handle your paperwork in seconds so you can get back to billable hours."
       steps={[
         { title: 'Choose Your Tool', description: 'Select the right tool for contracts, portfolios, or invoices below.' },
         { title: 'Upload Document', description: 'Drag your client files into our secure, encrypted browser utility.' },
@@ -35,7 +35,7 @@ export default function PdfToolsForFreelancersPage() {
         { name: 'Merge Invoices (PDF)', href: '/merge-pdf', description: 'Combine your W9, monthly invoice, and timesheet into a single clean PDF for the accounting department.', icon: CreditCard },
         { name: 'Protect NDAs (PDF)', href: '/protect-pdf', description: 'Add strict AES password encryption to sensitive client contracts before emailing them.', icon: Lock },
       ]}
-      midCTA={{ text: 'Optimize Your Workflow →', href: '/' }}
+      midCTA={{ text: 'Optimize Your Workflow â†’', href: '/' }}
       bottomCTA={{ headline: 'Spend time on clients, not files.', text: 'Use Free PDF Tools', href: '/' }}
       faqs={[
         { question: 'Will using a free tool add watermarks to my client documents?', answer: 'Never. We know that sending a contract or portfolio with a messy "Compressed by FreePDF" watermark looks highly unprofessional. We will never alter the visual content of your files.' },
@@ -49,7 +49,7 @@ export default function PdfToolsForFreelancersPage() {
         { name: 'Freelancer Tools', href: '/pdf-tools-for-freelancers' },
       ]}
       themeColor="#6d28d9"
-      internalLinksOverride={{ parentTool: { url: '/', text: 'View All Tools', href: '/' } }}
+      internalLinksOverride={{ parentTool: { href: '/', text: 'View All Tools' } }}
     />
   );
 }

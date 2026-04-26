@@ -36,7 +36,7 @@ export default function PdfToolsForStudentsPage() {
         { name: 'Split PDF', href: '/split-pdf', description: 'Extract a single required reading chapter from a massive 500-page textbook PDF.', icon: PenTool },
         { name: 'PDF to Word', href: '/pdf-to-word', description: 'Convert locked handouts into editable Word files to take your own notes.', icon: CheckCircle },
       ]}
-      midCTA={{ text: 'Explore All Tools →', href: '/' }}
+      midCTA={{ text: 'Explore All Tools â†’', href: '/' }}
       bottomCTA={{ headline: 'Ace your assignments. Not your budget.', text: 'Start Managing Your PDFs', href: '/' }}
       faqs={[
         { question: 'Do I need to create a student account or verify my .edu email?', answer: 'No! Unlike other platforms that offer "student discounts", our platform requires absolutely no account creation. Every tool is completely free for everyone to use immediately.' },
@@ -50,7 +50,7 @@ export default function PdfToolsForStudentsPage() {
         { name: 'Student Tools', href: '/pdf-tools-for-students' },
       ]}
       themeColor="#6d28d9"
-      internalLinksOverride={{ parentTool: { url: '/', text: 'View All Tools', href: '/' } }}
+      internalLinksOverride={{ parentTool: { href: '/', text: 'View All Tools' } }}
     />
   );
 }

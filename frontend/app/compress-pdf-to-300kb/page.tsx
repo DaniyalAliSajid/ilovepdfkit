@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import SEOLandingPage from '@/components/SEOLandingPage';
-import { Zap, Clock, FastForward, Timer } from 'lucide-react';
+import { Zap, Clock, FastForward, Timer, CloudLightning } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Compress PDF to 300KB Instantly | Fast & Free PDF Resizer',
@@ -54,7 +54,3 @@ export default function CompressPdfTo300kbPage() {
   );
 }
 
-// Custom icon since CloudLightning is not imported
-function CloudLightning(props: any) {
-    return <Zap {...props} />;
-}

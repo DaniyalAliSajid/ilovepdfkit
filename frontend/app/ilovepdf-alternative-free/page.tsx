@@ -17,7 +17,7 @@ export default function IlovepdfAlternativeFreePage() {
       angle="comparison"
       h1="The Best Free iLovePDF Alternative"
       heroDescription="Tired of hitting daily task limits or finding your file is 'too large for free users'? Switch to the truly free alternative."
-      intro="If you manage documents regularly, you have likely used iLovePDF. It is incredibly popular, but eventually, you hit the wall. You try to compress a large file, and suddenly they prompt you to upgrade to Premium. Or you try to merge files a third time today, and you are locked out because you hit your limit. You need an iLovePDF alternative free of arbitrary daily task limits, strict file size payloads, and aggressive upsells. iLovePDFKit was built to process documents fast, securely, and completely free—no account necessary."
+      intro="If you manage documents regularly, you have likely used iLovePDF. It is incredibly popular, but eventually, you hit the wall. You try to compress a large file, and suddenly they prompt you to upgrade to Premium. Or you try to merge files a third time today, and you are locked out because you hit your limit. You need an iLovePDF alternative free of arbitrary daily task limits, strict file size payloads, and aggressive upsells. iLovePDFKit was built to process documents fast, securely, and completely freeâ€”no account necessary."
       steps={[
         { title: 'Skip the Paywall', description: 'Don\'t pay $8/month just to merge a file that was slightly too large.' },
         { title: 'No Daily Task Limits', description: 'Process as many files as you need today. We won\'t lock you out.' },
@@ -26,7 +26,7 @@ export default function IlovepdfAlternativeFreePage() {
       ]}
       features={[
         { icon: Banknote, title: 'No Subscription Traps', description: 'We don\'t hold your processed files hostage behind a checkout screen.' },
-        { icon: Zap, title: 'Unlimited Daily Tasks', description: 'Merge 5 times, compress 10 times—you won\'t hit a limit.' },
+        { icon: Zap, title: 'Unlimited Daily Tasks', description: 'Merge 5 times, compress 10 timesâ€”you won\'t hit a limit.' },
         { icon: ShieldAlert, title: 'No Registration Tracking', description: 'Use the tools entirely anonymously without creating an account.' },
         { icon: LayoutDashboard, title: 'Clean Interface', description: 'No overwhelming ads or confusing premium buttons.' },
       ]}
@@ -37,7 +37,7 @@ export default function IlovepdfAlternativeFreePage() {
         { feature: 'No Account Required', ilovepdfkit: true, ilovepdf: true, smallpdf: false, adobe: false },
         { feature: '100% Free Core Tools', ilovepdfkit: true, ilovepdf: false, smallpdf: false, adobe: false },
       ]}
-      midCTA={{ text: 'Experience the Alternative →', href: '/' }}
+      midCTA={{ text: 'Experience the Alternative â†’', href: '/' }}
       bottomCTA={{ headline: 'Never hit a document limit again.', text: 'Try iLovePDFKit Free', href: '/' }}
       faqs={[
         { question: 'Why is iLovePDFKit free while others charge?', answer: 'Many large PDF platforms use basic tools like compression as a hook to sell you expensive monthly subscriptions. We focus only on providing the core, essential PDF tools without the massive corporate overhead, allowing us to offer them without arbitrary limits.' },
@@ -51,7 +51,7 @@ export default function IlovepdfAlternativeFreePage() {
         { name: 'Alternatives', href: '/ilovepdf-alternative-free' },
       ]}
       themeColor="#6d28d9"
-      internalLinksOverride={{ parentTool: { url: '/', text: 'View All Tools', href: '/' } }}
+      internalLinksOverride={{ parentTool: { href: '/', text: 'View All Tools' } }}
     />
   );
 }
