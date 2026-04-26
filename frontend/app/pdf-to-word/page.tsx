@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'PDF to Word Converter - 100% Free & Editable | iLovePDFKit',
     description: 'Convert PDF files to editable Word documents (DOCX) instantly. Best free online PDF to Word converter with OCR. No signup required.',
     keywords: ['pdf to word', 'convert pdf to word', 'pdf to docx', 'editable pdf', 'ocr pdf', 'free pdf converter'],
+    alternates: { canonical: 'https://ilovepdfkit.com/pdf-to-word' },
 };
 
 export default function PdfToWordPage() {

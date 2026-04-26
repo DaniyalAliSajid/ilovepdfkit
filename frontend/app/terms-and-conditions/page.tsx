@@ -5,6 +5,7 @@ import styles from '../privacy-policy/privacy.module.css';
 export const metadata = {
     title: 'Terms and Conditions - iLovePDFKit',
     description: 'Read the terms and conditions for using iLovePDFKit document conversion services.',
+    alternates: { canonical: 'https://ilovepdfkit.com/terms-and-conditions' },
 };
 
 export default function TermsAndConditions() {

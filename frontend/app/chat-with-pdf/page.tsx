@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'Chat with PDF - Interactive AI PDF Assistant | iLovePDFKit',
     description: 'Chat with your PDF documents using AI. Ask questions, get explanations, and find specific information within your PDFs instantly for free.',
     keywords: ['chat with pdf', 'ai pdf assistant', 'pdf question answering', 'interactive pdf', 'understand pdf with ai', 'ask pdf questions'],
+    alternates: { canonical: 'https://ilovepdfkit.com/chat-with-pdf' },
 };
 
 export default function ChatWithPdfPage() {

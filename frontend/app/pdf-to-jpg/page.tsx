@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'PDF to JPG Converter - High Quality Images | iLovePDFKit',
     description: 'Convert PDF pages to high-resolution JPG images. Download as individual files or ZIP archive. Fast, free, and secure.',
     keywords: ['pdf to jpg', 'convert pdf to image', 'pdf to png', 'extract images from pdf', 'pdf to picture', 'online pdf converter'],
+    alternates: { canonical: 'https://ilovepdfkit.com/pdf-to-jpg' },
 };
 
 export default function PdfToJpgPage() {

@@ -6,6 +6,7 @@ export const metadata = {
     title: 'About Us - iLovePDFKit',
     description: 'Learn about iLovePDFKit\'s mission to provide the world\'s most precise and accessible document conversion tools. Professional quality, zero cost.',
     keywords: 'about ilovepdfkit, pdf tool mission, secure document conversion, free online converter story',
+    alternates: { canonical: 'https://ilovepdfkit.com/about' },
 };
 
 export default function AboutPage() {

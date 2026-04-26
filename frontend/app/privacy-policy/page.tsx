@@ -5,6 +5,7 @@ import styles from './privacy.module.css';
 export const metadata = {
     title: 'Privacy Policy - iLovePDFKit',
     description: 'Learn how iLovePDFKit protects your privacy and handles your data during document conversion.',
+    alternates: { canonical: 'https://ilovepdfkit.com/privacy-policy' },
 };
 
 export default function PrivacyPolicy() {

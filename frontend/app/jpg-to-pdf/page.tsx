@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'JPG to PDF Converter - Combine Images to PDF | iLovePDFKit',
     description: 'Convert JPG, PNG, and other images to PDF. Merge multiple photos into one PDF file. Auto-alignment and compression included.',
     keywords: ['jpg to pdf', 'image to pdf', 'png to pdf', 'photos to pdf', 'combine images', 'merge jpg'],
+    alternates: { canonical: 'https://ilovepdfkit.com/jpg-to-pdf' },
 };
 
 export default function JpgToPdfPage() {

@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'Protect PDF - Add Password to PDF Online | iLovePDFKit',
     description: 'Secure your PDF files with a strong password. Encrypt your documents online for free and prevent unauthorized access.',
     keywords: ['protect pdf', 'encrypt pdf', 'password protect pdf', 'secure pdf', 'pdf lock', 'online pdf protection'],
+    alternates: { canonical: 'https://ilovepdfkit.com/protect-pdf' },
 };
 
 export default function ProtectPdfPage() {

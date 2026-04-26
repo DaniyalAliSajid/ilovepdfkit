@@ -8,6 +8,7 @@ import styles from '../page.module.css';
 export const metadata: Metadata = {
     title: 'Merge PDF - Combine PDF Files Online for Free | iLovePDFKit',
     description: 'Combine multiple PDF files into one single document. Drag and drop to reorder. Fast, secure, and zero limitations.',
+    alternates: { canonical: 'https://ilovepdfkit.com/merge-pdf' },
 };
 
 export default function MergePdfPage() {

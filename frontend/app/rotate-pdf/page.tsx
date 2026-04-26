@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'Rotate PDF - Rotate PDF Pages Permanently Online | iLovePDFKit',
     description: 'Rotate PDF pages 90, 180 or 270 degrees clockwise. Save and download your rotated PDF instantly. Free service, no limits.',
     keywords: ['rotate pdf', 'turn pdf', 'flip pdf', 'rotate pdf pages', 'save rotated pdf', 'online pdf rotator'],
+    alternates: { canonical: 'https://ilovepdfkit.com/rotate-pdf' },
 };
 
 export default function RotatePdfPage() {

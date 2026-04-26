@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'AI PDF Summarizer - Summarize PDF Documents Online | iLovePDFKit',
     description: 'Use our AI-powered PDF summarizer to get instant, accurate summaries of your PDF documents. Save time and extract key insights automatically for free.',
     keywords: ['ai pdf summarizer', 'summarize pdf', 'pdf summary tool', 'extract key insights pdf', 'automatic pdf summarizer', 'free ai summarizer'],
+    alternates: { canonical: 'https://ilovepdfkit.com/pdf-summarizer' },
 };
 
 export default function PDFSummarizerPage() {

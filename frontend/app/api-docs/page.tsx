@@ -6,6 +6,7 @@ export const metadata = {
     title: 'Developer API - ILOVEPDFKIT | Document Conversion API',
     description: 'Integrate ILOVEPDFKIT\'s high-fidelity document conversion engine into your apps via our REST API. Support for PDF, Word, Excel, and more.',
     keywords: 'document conversion api, pdf api, word to pdf api, developer tools, rest api document processing',
+    alternates: { canonical: 'https://ilovepdfkit.com/api-docs' },
 };
 
 export default function ApiDocsPage() {

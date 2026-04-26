@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'Excel to PDF Converter - 100% Free & Professional | iLovePDFKit',
     description: 'Convert Excel spreadsheets to PDF files instantly. Best free online Excel to PDF converter preserving formatting and charts. No signup required.',
     keywords: ['excel to pdf', 'convert excel to pdf', 'xlsx to pdf', 'spreadsheet to pdf', 'excel converter', 'free excel to pdf'],
+    alternates: { canonical: 'https://ilovepdfkit.com/excel-to-pdf' },
 };
 
 export default function ExcelToPdfPage() {

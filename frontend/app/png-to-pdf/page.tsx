@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'PNG to PDF Converter - Convert PNG Images to PDF | iLovePDFKit',
     description: 'Convert your PNG images to a single PDF document online for free. Easy to use, fast, and secure.',
     keywords: ['png to pdf', 'convert png to pdf', 'images to pdf', 'png to pdf online', 'free pdf converter'],
+    alternates: { canonical: 'https://ilovepdfkit.com/png-to-pdf' },
 };
 
 export default function PngToPdfPage() {

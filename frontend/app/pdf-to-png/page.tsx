@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'PDF to PNG Converter - Extract Images from PDF | iLovePDFKit',
     description: 'Convert PDF pages to high-quality PNG images online for free. Fast, secure, and preserves original quality.',
     keywords: ['pdf to png', 'convert pdf to png', 'extract png from pdf', 'pdf to image', 'online pdf converter'],
+    alternates: { canonical: 'https://ilovepdfkit.com/pdf-to-png' },
 };
 
 export default function PdfToPngPage() {

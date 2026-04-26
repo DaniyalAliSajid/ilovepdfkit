@@ -8,6 +8,7 @@ export const metadata: Metadata = {
     title: 'Word to PDF Converter - Convert DOCX to PDF Online | iLovePDFKit',
     description: 'Turn Microsoft Word documents into PDF files instantly. Preserve original formatting, fonts, and layout. 100% Free and Secure.',
     keywords: ['word to pdf', 'docx to pdf', 'convert word to pdf', 'doc to pdf', 'save word as pdf', 'online word converter'],
+    alternates: { canonical: 'https://ilovepdfkit.com/word-to-pdf' },
 };
 
 export default function WordToPdfPage() {

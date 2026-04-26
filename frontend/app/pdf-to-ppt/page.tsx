@@ -8,6 +8,7 @@ import styles from '../page.module.css';
 export const metadata: Metadata = {
     title: 'PDF to PPT - Convert PDF to PowerPoint Online | iLovePDFKit',
     description: 'Convert PDF to editable PowerPoint slides (PPTX). Turn your PDF documents into presentations instantly.',
+    alternates: { canonical: 'https://ilovepdfkit.com/pdf-to-ppt' },
 };
 
 export default function PdfToPptPage() {
