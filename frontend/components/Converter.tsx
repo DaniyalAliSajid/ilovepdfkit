@@ -7,7 +7,7 @@ import FileDropzone from './FileDropzone';
 import styles from './Converter.module.css';
 
 interface ConverterProps {
-    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers' | 'pdf-to-excel' | 'excel-to-pdf' | 'delete-pdf-pages' | 'protect-pdf' | 'pdf-to-png' | 'png-to-pdf' | 'compress-pdf' | 'split-pdf' | 'unlock-pdf';
+    type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers' | 'pdf-to-excel' | 'excel-to-pdf' | 'delete-pdf-pages' | 'protect-pdf' | 'pdf-to-png' | 'png-to-pdf' | 'compress-pdf' | 'unlock-pdf' | 'split-pdf';
 }
 
 interface HistoryItem {
@@ -172,15 +172,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             extension: '.pdf',
             multi: false
         },
-        'split-pdf': {
-            title: 'Split PDF',
-            accept: '.pdf',
-            endpoint: '/api/convert/split-pdf',
-            gradient: '#f59e0b',
-            color: '#f59e0b',
-            extension: '.zip',
-            multi: false
-        },
+
         'unlock-pdf': {
             title: 'Unlock PDF',
             accept: '.pdf',
@@ -188,6 +180,15 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             gradient: '#64748b',
             color: '#64748b',
             extension: '.pdf',
+            multi: false
+        },
+        'split-pdf': {
+            title: 'Split PDF File',
+            accept: '.pdf',
+            endpoint: '/api/convert/split-pdf',
+            gradient: '#10b981',
+            color: '#10b981',
+            extension: '.pdf', // Will be overridden in download logic if ZIP
             multi: false
         }
     }[type];
@@ -203,9 +204,11 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
     const [firstNumber, setFirstNumber] = useState<number>(1);
     const [pageMode, setPageMode] = useState<string>('single');
     const [isCoverPage, setIsCoverPage] = useState<boolean>(false);
+    const [unlockPassword, setUnlockPassword] = useState<string>('');
+    const [splitMode, setSplitMode] = useState<'single' | 'range' | 'extract'>('single');
+    const [splitData, setSplitData] = useState('');
 
-
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'https://ilovepdfkit-api.onrender.com';
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
     if (!config) return null;
     const endpoint = `${baseUrl}${config.endpoint}`;
 
@@ -228,6 +231,9 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
         setFirstNumber(1);
         setPageMode('single');
         setIsCoverPage(false);
+        setUnlockPassword('');
+        setSplitMode('single');
+        setSplitData('');
     };
 
     const handleConvert = async () => {
@@ -246,6 +252,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
         setMessage(null);
         setError(null);
 
+        // 1. Prepare PDF for Upload (User Requirement 5)
         const formData = new FormData();
         if (config.multi) {
             files.forEach(f => formData.append('files', f));
@@ -292,6 +299,18 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
         }
 
 
+        if (type === 'unlock-pdf') {
+            if (unlockPassword) {
+                formData.append('password', unlockPassword);
+            }
+        }
+
+        if (type === 'split-pdf') {
+            formData.append('mode', splitMode);
+            formData.append('data', splitData);
+        }
+
+
 
 
         try {
@@ -317,7 +336,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                 }
                 throw new Error(errorMessage);
             }
-
+            // 4. Handle conversion result
             const blob = await response.blob();
 
             if (blob.size === 0) {
@@ -334,11 +353,26 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
             } else if (config.multi) {
                 outputFileName = `converted_images.pdf`;
             } else {
-                outputFileName = `${baseName}${config.extension}`;
+                let extension = config.extension;
+                if (type === 'split-pdf' && splitMode === 'single') {
+                    extension = '.zip';
+                }
+                outputFileName = `${baseName}${extension}`;
             }
 
-            saveAs(blob, outputFileName);
-            setMessage(`Conversion successful! Downloaded ${outputFileName}`);
+            // 5. Trigger Auto-download (User Requirements 4 & 6)
+            // We use a virtual anchor element to trigger the browser's download dialog automatically
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = outputFileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            // Show success message AFTER download starts
+            setMessage(`Done! Your Word file "${outputFileName}" is downloading.`);
 
             const historyItem: HistoryItem = {
                 id: Date.now(),
@@ -373,33 +407,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                     multiple={config.multi}
                 />
 
-                {loading && (
-                    <div className={styles.progressBarContainer}>
-                        <div className={styles.progressBar}>
-                            <div
-                                className={styles.progressFill}
-                                style={{ width: `${progress}%`, background: config.gradient }}
-                            >
-                                {progress}%
-                            </div>
-                        </div>
-                        <p className={styles.loadingText}>Converting... Please wait.</p>
-                    </div>
-                )}
 
-                {message && (
-                    <div className={`${styles.alert} ${styles.alertSuccess}`}>
-                        <CheckCircle size={20} />
-                        <span>{message}</span>
-                    </div>
-                )}
-
-                {error && (
-                    <div className={`${styles.alert} ${styles.alertError}`}>
-                        <XCircle size={20} />
-                        <span>{error}</span>
-                    </div>
-                )}
 
                 {type === 'rotate-pdf' && (
                     <div className={styles.rotationContainer}>
@@ -559,6 +567,53 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                     </div>
                 )}
 
+
+                {type === 'unlock-pdf' && (
+                    <div className={styles.optionsContainer}>
+                        <div className={styles.formGroup}>
+                            <p className={styles.optionLabel}>PDF Password (if known):</p>
+                            <input
+                                type="password"
+                                className={styles.selectInput}
+                                placeholder="Enter password to unlock"
+                                value={unlockPassword}
+                                onChange={(e) => setUnlockPassword(e.target.value)}
+                                style={{ width: '100%', padding: '0.8rem' }}
+                            />
+                            <p className={styles.historyMeta} style={{ marginTop: '0.5rem' }}>
+                                If the PDF has an owner password, we'll attempt to remove restrictions.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                {loading && (
+                    <div className={styles.progressBarContainer}>
+                        <div className={styles.progressBar}>
+                            <div
+                                className={styles.progressFill}
+                                style={{ width: `${progress}%`, background: config.gradient }}
+                            >
+                                {progress}%
+                            </div>
+                        </div>
+                        <p className={styles.loadingText}>Converting... Please wait. Do not close this tab.</p>
+                    </div>
+                )}
+
+                {message && (
+                    <div className={`${styles.alert} ${styles.alertSuccess}`}>
+                        <CheckCircle size={20} />
+                        <span>{message}</span>
+                    </div>
+                )}
+
+                {error && (
+                    <div className={`${styles.alert} ${styles.alertError}`}>
+                        <XCircle size={20} />
+                        <span>{error}</span>
+                    </div>
+                )}
 
                 <button
                     className={styles.convertButton}

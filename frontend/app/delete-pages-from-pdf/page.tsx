@@ -35,18 +35,17 @@ export default function DeletePagesFromPdfPage() {
         { title: 'Redacting Legal Appendices', description: 'Drop sensitive pages before sharing a legal brief.' },
         { title: 'Cutting Title Pages', description: 'Remove annoying cover sheets from downloaded web articles.' },
       ]}
-      midCTA={{ text: 'Remove Unwanted Pages →', href: '/split-pdf' }}
-      bottomCTA={{ headline: 'Clean up your documents.', text: 'Split & Delete Pages Now', href: '/split-pdf' }}
+      midCTA={{ text: 'Remove Unwanted Pages →', href: '/delete-pdf-pages' }}
+      bottomCTA={{ headline: 'Clean up your documents.', text: 'Delete Pages Now', href: '/delete-pdf-pages' }}
       faqs={[
-        { question: 'Why does this tool split the PDF instead of just deleting specific pages?', answer: 'Splitting the PDF into individual pages is the absolute safest way to give you total manual control over what you keep and what you discard on your own computer, guaranteeing privacy.' },
-        { question: 'Will deleting pages reduce my file size?', answer: 'Yes. Once you identify and delete the heavy, unwanted pages from the extracted folder, the overall footprint of your remaining files will be significantly lighter.' },
-        { question: 'Is it safe to upload a contract if I just want to delete the signature page?', answer: 'Yes. Your uploads are secured by HTTPS, and we permanently delete both your uploaded document and the separated pages from our servers immediately after you download them.' },
+        { question: 'Will deleting pages reduce my file size?', answer: 'Yes. Once you identify and delete the heavy, unwanted pages, the overall footprint of your remaining file will be significantly lighter.' },
+        { question: 'Is it safe to upload a contract if I just want to delete the signature page?', answer: 'Yes. Your uploads are secured by HTTPS, and we permanently delete your document from our servers shortly after processing.' },
       ]}
       faqTitle="Deleting Pages FAQ"
       faqSubtitle="Answers on document cleanup"
       breadcrumbs={[
         { name: 'Home', href: '/' },
-        { name: 'Split PDF', href: '/split-pdf' },
+        { name: 'Delete PDF Pages', href: '/delete-pdf-pages' },
         { name: 'Delete Pages', href: '/delete-pages-from-pdf' },
       ]}
       themeColor="#8b5cf6"

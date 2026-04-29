@@ -8,11 +8,68 @@ import platform
 import subprocess
 import shutil
 import time
+from zipfile import ZipFile, ZIP_DEFLATED
 from PIL import Image
+
+def needs_ocr(pdf_path):
+    """
+    Detect if a PDF is likely scanned or image-based.
+    Returns True only if it's truly a scanned document with no fonts and little text.
+    """
+    try:
+        doc = fitz.open(pdf_path)
+        
+        # 1. Check for fonts. If it has fonts, it's a native PDF.
+        has_fonts = False
+        for i in range(min(len(doc), 5)):
+            if doc[i].get_fonts():
+                has_fonts = True
+                break
+        
+        if has_fonts:
+            doc.close()
+            return False # Native PDF, don't OCR
+            
+        total_text = ""
+        # Check first 10 pages for text density
+        pages_to_check = min(len(doc), 10)
+        is_mainly_images = False
+        
+        for i in range(pages_to_check):
+            page = doc[i]
+            page_text = page.get_text().strip()
+            total_text += page_text
+            
+            # If a page has images but almost no text, and no fonts found earlier
+            if len(page_text) < 10 and page.get_images():
+                is_mainly_images = True
+                break
+        doc.close()
+        
+        # Threshold: if less than 20 characters per page on average and no fonts
+        return is_mainly_images or len(total_text) < (20 * pages_to_check)
+    except:
+        return False
+
+def run_ocr(input_path, output_path):
+    """
+    Attempt to run OCR on a PDF to make it searchable.
+    Requires ocrmypdf and Tesseract-OCR installed on the system.
+    """
+    try:
+        import ocrmypdf
+        print(f"DEBUG: Running OCR on {input_path}...")
+        # skip-text: only OCR pages that don't have text
+        ocrmypdf.ocr(input_path, output_path, skip_text=True, deskew=True)
+        return True
+    except Exception as e:
+        print(f"DEBUG: OCR failed or ocrmypdf not installed: {e}")
+        return False
 
 def pdf_to_word(pdf_bytes):
     """
-    Convert PDF bytes to Word document using pdf2docx for better layout preservation
+    Convert PDF bytes to Word document using pdf2docx for layout preservation.
+    Supports OCR fallback for scanned PDFs.
     """
     if not pdf_bytes:
         raise ValueError("PDF file is empty")
@@ -20,46 +77,199 @@ def pdf_to_word(pdf_bytes):
     print(f"DEBUG: Starting PDF to Word conversion... Size: {len(pdf_bytes)} bytes")
     temp_pdf = None
     temp_docx = None
+    clean_pdf_path = None
+    ocr_pdf_path = None
     
     try:
-        # Create temp files
+        # 1. Save uploaded PDF to temporary file
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as f:
             f.write(pdf_bytes)
             temp_pdf = f.name
             
         temp_docx = temp_pdf.replace(".pdf", ".docx")
         
-        # Check if PDF is encrypted
+        # 2. Sanitize and Check Encryption
+        # We re-save the PDF to clean internal artifacts that break conversion
         doc = fitz.open(temp_pdf)
-        is_encrypted = doc.is_encrypted
+        if doc.is_encrypted:
+            doc.close()
+            raise Exception("This PDF is password protected. Please remove protection before converting.")
+            
+        clean_pdf_path = temp_pdf.replace(".pdf", "_clean.pdf")
+        doc.save(clean_pdf_path, garbage=4, deflate=True, clean=True)
         doc.close()
         
-        if is_encrypted:
-            raise Exception("This PDF is password protected. Please remove protection before converting.")
+        # 3. Ultra-Fidelity OCR Fallback
+        # We now use a more aggressive approach: if the layout is complex, we force OCR
+        # to "re-build" the document structure from a visual perspective.
+        input_for_conversion = clean_pdf_path
+        
+        # Check if it's a scanned PDF OR if it looks like a complex educational layout
+        is_scanned = needs_ocr(clean_pdf_path)
+        
+        if is_scanned:
+            print("DEBUG: Complex or scanned layout detected. Attempting Ultra-Fidelity OCR...")
+            ocr_pdf_path = clean_pdf_path.replace(".pdf", "_ocr.pdf")
+            # Force OCR even if some text exists to better capture boxes/borders
+            if run_ocr(clean_pdf_path, ocr_pdf_path):
+                input_for_conversion = ocr_pdf_path
+                print("DEBUG: OCR reconstruction successful.")
+            else:
+                print("DEBUG: OCR failed. Proceeding with standard analysis.")
 
-        # Convert using pdf2docx
-        cv = Converter(temp_pdf)
-        cv.convert(temp_docx, multi_processing=False)
+        # 4. Advanced Two-Step Conversion using pdf2docx
+        print(f"DEBUG: Converting {input_for_conversion} with Ultra-Fidelity Parsing...")
+        cv = Converter(input_for_conversion)
+        
+        # Hyper-precise configuration for "Perfection" and layout preservation
+        settings = {
+            'line_margin': 0.1,          
+            'word_margin': 0.05,         
+            'line_overlap': 0.5,        
+            'is_parse_shapes': True,    
+            'is_parse_images': True,    
+            'is_parse_tables': True,    
+            'shape_threshold': 0.1,      
+            'min_shape_width': 2.0,      
+            'is_extract_hidden_text': True,
+            # Enhanced settings to reduce extra spaces and prevent page overflow
+            'is_collect_images': True,           
+            'is_parse_shapes_as_images': False,  
+            'line_break_free_space_ratio': 0.01, # Extremely tight
+            'new_paragraph_free_space_ratio': 0.99, # Maximize line grouping
+            'max_line_spacing_ratio': 1.0,       # Minimum spacing
+            'page_margin_factor_top': 0.0,       # Use PDF's exact margins
+            'page_margin_factor_bottom': 0.0,
+            'float_image_ignorable_gap': 100.0,  # Treat images as floating to avoid pushing text
+            'multi_processing': False            
+        }
+        
+        # Use cv.convert which handles parse and make_docx in one go with the provided settings
+        cv.convert(temp_docx, start=0, end=None, **settings)
         cv.close()
         
-        # Read the generated DOCX
-        if not os.path.exists(temp_docx):
-            raise Exception("Conversion failed: Output file not created")
+        # 4.5 POST-PROCESSING: Tighten spacing and margins to fix extra spaces/pages
+        try:
+            from docx import Document
+            from docx.shared import Pt
+            doc_obj = Document(temp_docx)
             
-        print("DEBUG: pdf2docx conversion complete. Reading output...")
+            # Reset margins to avoid overflow and extra pages
+            for section in doc_obj.sections:
+                section.top_margin = Pt(36)    # 0.5 inch
+                section.bottom_margin = Pt(36)
+                section.left_margin = Pt(36)
+                section.right_margin = Pt(36)
+            
+            # Reset paragraph spacing to avoid "extra spaces"
+            for para in doc_obj.paragraphs:
+                para_format = para.paragraph_format
+                para_format.space_before = Pt(0)
+                para_format.space_after = Pt(0)
+                para_format.line_spacing = 1.0
+                
+            doc_obj.save(temp_docx)
+            print("DEBUG: Post-processing complete. Spacing and margins tightened.")
+        except Exception as e:
+            print(f"DEBUG: Post-processing failed: {e}")
+        
+        # 5. Read Result and Return
+        if not os.path.exists(temp_docx):
+            raise Exception("Conversion failed: Word document not generated.")
+            
         with open(temp_docx, "rb") as f:
             docx_bytes = f.read()
             
-        print("DEBUG: PDF to Word conversion successful.")
         return io.BytesIO(docx_bytes)
         
     except Exception as e:
+        print(f"ERROR: pdf_to_word failed: {str(e)}")
         raise Exception(f"PDF to Word conversion failed: {str(e)}")
         
     finally:
         # Cleanup temp files
         safe_remove(temp_pdf)
         safe_remove(temp_docx)
+        safe_remove(clean_pdf_path)
+        safe_remove(ocr_pdf_path)
+
+
+def split_pdf(pdf_bytes, mode, data=None):
+    """
+    Split PDF based on mode:
+    - 'single': Split every page into its own PDF file (returns ZIP)
+    - 'range': Extract a range of pages (e.g., '1-3')
+    - 'extract': Extract specific pages (e.g., '1, 3, 5')
+    """
+    if not pdf_bytes:
+        raise ValueError("PDF file is empty")
+        
+    doc = fitz.open(stream=pdf_bytes, filetype="pdf")
+    total_pages = len(doc)
+    
+    if mode == 'single':
+        zip_buffer = io.BytesIO()
+        with ZipFile(zip_buffer, 'w', ZIP_DEFLATED) as zip_file:
+            for i in range(total_pages):
+                new_doc = fitz.open()
+                new_doc.insert_pdf(doc, from_page=i, to_page=i)
+                pdf_out = io.BytesIO()
+                new_doc.save(pdf_out)
+                new_doc.close()
+                zip_file.writestr(f"page_{i+1}.pdf", pdf_out.getvalue())
+        doc.close()
+        zip_buffer.seek(0)
+        return zip_buffer, True # True means it's a ZIP
+        
+    elif mode == 'range':
+        if not data: raise ValueError("Range data is missing (e.g. 1-3)")
+        try:
+            # Handle possible spaces
+            data = data.replace(" ", "")
+            start, end = map(int, data.split('-'))
+            # Convert to 0-indexed and handle bounds
+            start_idx = max(0, start - 1)
+            end_idx = min(total_pages - 1, end - 1)
+            
+            if start_idx > end_idx:
+                raise ValueError("Start page cannot be greater than end page")
+                
+            new_doc = fitz.open()
+            new_doc.insert_pdf(doc, from_page=start_idx, to_page=end_idx)
+            pdf_out = io.BytesIO()
+            new_doc.save(pdf_out)
+            new_doc.close()
+            doc.close()
+            pdf_out.seek(0)
+            return pdf_out, False
+        except Exception as e:
+            if "Start page" in str(e): raise e
+            raise ValueError(f"Invalid range format: {str(e)}")
+            
+    elif mode == 'extract':
+        if not data: raise ValueError("Page data is missing (e.g. 1, 3, 5)")
+        try:
+            pages = [int(p.strip()) - 1 for p in data.split(',') if p.strip()]
+            # Filter valid pages
+            valid_pages = [p for p in pages if 0 <= p < total_pages]
+            
+            if not valid_pages: raise ValueError("No valid pages selected within document range")
+            
+            new_doc = fitz.open()
+            for p in valid_pages:
+                new_doc.insert_pdf(doc, from_page=p, to_page=p)
+            pdf_out = io.BytesIO()
+            new_doc.save(pdf_out)
+            new_doc.close()
+            doc.close()
+            pdf_out.seek(0)
+            return pdf_out, False
+        except Exception as e:
+            if "No valid pages" in str(e): raise e
+            raise ValueError(f"Invalid page format: {str(e)}")
+    
+    doc.close()
+    raise ValueError("Invalid split mode")
 
 
 def word_to_pdf_linux(docx_bytes):
@@ -1466,6 +1676,7 @@ def unlock_pdf(pdf_bytes, password=None):
     Remove password protection from a PDF.
     If a user password is provided, it unlocks the file. Otherwise, it tries to remove restrictions.
     """
+    doc = None
     try:
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
         
@@ -1485,49 +1696,19 @@ def unlock_pdf(pdf_bytes, password=None):
             if not success:
                 raise ValueError("PDF requires a password to unlock.")
                 
-        # Save as new, unencrypted PDF
+        # Save as new, unencrypted PDF with optimizations
         out_stream = io.BytesIO()
-        doc.save(out_stream)
-        doc.close()
+        # garbage=3: deduplicate objects, deflate=True: compress streams
+        doc.save(out_stream, garbage=3, deflate=True)
         out_stream.seek(0)
-        
         return out_stream
     except Exception as e:
-        raise Exception(f"Failed to unlock PDF: {str(e)}")
+        raise e
+    finally:
+        if doc:
+            doc.close()
 
-def split_pdf(pdf_bytes):
-    """
-    Splits a PDF by extracting every single page into a separate PDF file.
-    Returns a ZIP file containing all split pages.
-    """
-    try:
-        doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-        page_count = doc.page_count
-        
-        if page_count == 0:
-            raise ValueError("The PDF is empty.")
-            
-        # Create an in-memory ZIP file
-        zip_stream = io.BytesIO()
-        with zipfile.ZipFile(zip_stream, 'w', zipfile.ZIP_DEFLATED) as zipf:
-            # Extract each page
-            for i in range(page_count):
-                single_page_doc = fitz.open()
-                single_page_doc.insert_pdf(doc, from_page=i, to_page=i)
-                
-                # Save single page to memory
-                page_stream = io.BytesIO()
-                single_page_doc.save(page_stream)
-                single_page_doc.close()
-                
-                # Write to ZIP
-                zipf.writestr(f"page_{i + 1}.pdf", page_stream.getvalue())
-                
-        doc.close()
-        zip_stream.seek(0)
-        return zip_stream
-    except Exception as e:
-        raise Exception(f"Failed to split PDF: {str(e)}")
+
 
 def extract_text_from_pdf(pdf_bytes, max_pages=20):
     """

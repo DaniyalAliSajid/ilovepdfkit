@@ -35,12 +35,12 @@ export default function RearrangePdfPagesOnlinePage() {
         { title: 'Portfolio Updates', description: 'Move your newest work to the very front of an existing PDF portfolio.' },
         { title: 'Presentation Fixes', description: 'Fix slide order without having to re-export from PowerPoint.' },
       ]}
-      midCTA={{ text: 'Start Rearranging →', href: '/split-pdf' }}
+      midCTA={{ text: 'Start Rearranging →', href: '/delete-pdf-pages' }}
       bottomCTA={{ headline: 'Put your document back together perfectly.', text: 'Organize Your System Free', href: '/merge-pdf' }}
       faqs={[
-        { question: 'Why do I have to split the file before rearranging it?', answer: 'Extracting the pages first ensures you have maximum visual control. Once the pages are separated, dropping them into our Merge tool gives you a massive canvas to drag-and-drop them into precisely the right order.' },
-        { question: 'Will unpacking and repacking the PDF reduce the quality?', answer: 'No. The data inside the PDF pages is completely preserved during both the splitting and merging processes. No visual quality is lost.' },
-        { question: 'Is this faster than just rescanning the document?', answer: 'Absolutely. Rescanning can take minutes and introduces the chance for new errors. Splitting and merging takes mere seconds of processing time.' },
+        { question: 'How do I rearrange the file pages?', answer: 'The easiest way is to use our Delete PDF Pages tool to remove unwanted ones, or use our visual Merge PDF tool to combine pages in precisely the right order.' },
+        { question: 'Will repacking the PDF reduce the quality?', answer: 'No. The data inside the PDF pages is completely preserved during the process. No visual quality is lost.' },
+        { question: 'Is this faster than just rescanning the document?', answer: 'Absolutely. Rescanning can take minutes and introduces the chance for new errors. Trimming and merging takes mere seconds of processing time.' },
       ]}
       faqTitle="Rearranging FAQs"
       faqSubtitle="Answers on reorganizing your files"

@@ -33,7 +33,7 @@ export default function BestPdfToolsFreePage() {
       toolSpotlights={[
         { name: 'Free PDF Compressor', href: '/compress-pdf', description: 'Shrink your massive files to bypass email and website upload limits without ruining the image quality.', icon: Zap },
         { name: 'Free PDF Merger', href: '/merge-pdf', description: 'Stitch multiple separate documents and images into one beautifully organized master file.', icon: Sparkles },
-        { name: 'Free PDF Splitter', href: '/split-pdf', description: 'Extract exact pages from heavy documents to throw away the junk you do not need.', icon: Pocket },
+        { name: 'Free PDF Page Remover', href: '/delete-pdf-pages', description: 'Visually select and remove unwanted pages from your documents instantly.', icon: Pocket },
       ]}
       midCTA={{ text: 'Try the Free Suite →', href: '/' }}
       bottomCTA={{ headline: 'Stop paying for basic file management.', text: 'Use The Best Free Suite', href: '/' }}

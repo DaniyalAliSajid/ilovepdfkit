@@ -18,11 +18,11 @@ import {
   Table,
   Hash,
   FileX,
-  Scissors,
   Unlock,
   Wand2,
   MessageSquare,
-  Sparkles
+  Sparkles,
+  Scissors
 } from 'lucide-react';
 
 import styles from './page.module.css';
@@ -209,6 +209,24 @@ export default function Home() {
                 Start Merging <ArrowRight size={18} />
               </Link>
             </div>
+            
+            {/* Split PDF */}
+            <div className={`${styles.toolCard} ${styles.splitPdfCard} `}>
+              <div className={styles.toolIcon}><Scissors size={48} /></div>
+              <h3 className={styles.toolTitle}>Split PDF</h3>
+
+              <p className={styles.toolDesc}>
+                Divide your PDF into separate pages or extract specific ranges
+              </p>
+              <ul className={styles.toolFeatures}>
+                <li>Extract ranges</li>
+                <li>Pick individual pages</li>
+                <li>Split every page</li>
+              </ul>
+              <Link href="/split-pdf" className={styles.toolButton} aria-label="Start Splitting PDF">
+                Start Splitting <ArrowRight size={18} />
+              </Link>
+            </div>
 
 
 
@@ -337,22 +355,6 @@ export default function Home() {
               </Link>
             </div>
 
-            {/* Split PDF */}
-            <div className={`${styles.toolCard} ${styles.splitPdfCard} `}>
-              <div className={styles.toolIcon}><Scissors size={48} /></div>
-              <h3 className={styles.toolTitle}>Split PDF</h3>
-              <p className={styles.toolDesc}>
-                Extract pages from a PDF document into separate files easily
-              </p>
-              <ul className={styles.toolFeatures}>
-                <li>Extract specific pages</li>
-                <li>Visual page selection</li>
-                <li>Organized ZIP output</li>
-              </ul>
-              <Link href="/split-pdf" className={styles.toolButton} aria-label="Start Splitting PDF">
-                Split PDF <ArrowRight size={18} />
-              </Link>
-            </div>
 
             {/* Unlock PDF */}
             <div className={`${styles.toolCard} ${styles.unlockPdfCard} `}>

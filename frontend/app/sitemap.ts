@@ -27,7 +27,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/png-to-pdf',
         '/protect-pdf',
         '/compress-pdf',
-        '/split-pdf',
         '/unlock-pdf',
         '/api-docs',
         '/blog',

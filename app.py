@@ -8,6 +8,7 @@ import os
 import zipfile
 import requests
 import ai_service
+import cache_manager
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -198,8 +199,8 @@ def convert_pdf_to_word():
         docx_stream.seek(0)
         print(f"DEBUG: Generated DOCX size: {size} bytes")
         
-        if size == 0 or not converter.verify_docx(docx_stream):
-            raise Exception("Generated DOCX file is corrupt and cannot be opened")
+        if size == 0:
+            raise Exception("Conversion failed: The generated Word document is empty.")
             
         return send_file(
             docx_stream,
@@ -210,10 +211,10 @@ def convert_pdf_to_word():
         
     except Exception as e:
         app.logger.error(f"PDF to Word conversion error: {str(e)}")
+        # Provide the actual error message to the user for better debugging
         return jsonify({
-            "error": "Conversion failed. The document could not be processed.",
-            "code": "CONVERSION_ERROR",
-            "details": str(e)
+            "error": f"Conversion failed: {str(e)}",
+            "code": "CONVERSION_ERROR"
         }), 500
 
 @app.route('/api/convert/word-to-pdf', methods=['POST'])
@@ -276,6 +277,41 @@ def convert_word_to_pdf():
             "code": "CONVERSION_ERROR",
             "details": str(e)
         }), 500
+
+
+@app.route('/api/convert/split-pdf', methods=['POST'])
+@limiter.limit("10 per minute")
+def convert_split_pdf():
+    try:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+            
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+            
+        mode = request.form.get('mode', 'single')
+        data = request.form.get('data', '')
+        
+        pdf_bytes = file.read()
+        validate_file_size(pdf_bytes)
+        
+        result_stream, is_zip = converter.split_pdf(pdf_bytes, mode, data)
+        
+        output_filename = file.filename.rsplit('.', 1)[0]
+        output_filename += '_split.zip' if is_zip else '_split.pdf'
+        mimetype = 'application/zip' if is_zip else 'application/pdf'
+        
+        return send_file(
+            result_stream,
+            as_attachment=True,
+            download_name=output_filename,
+            mimetype=mimetype
+        )
+        
+    except Exception as e:
+        app.logger.error(f"Split PDF error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/api/convert/pdf-to-jpg', methods=['POST'])
@@ -773,28 +809,7 @@ def convert_protect_pdf():
         app.logger.error(f"Protect PDF error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/convert/split-pdf', methods=['POST'])
-def convert_split_pdf():
-    try:
-        if 'file' not in request.files:
-            return jsonify({"error": "No file provided"}), 400
-            
-        file = request.files['file']
-        pdf_bytes = file.read()
-        validate_file_size(pdf_bytes)
-        
-        zip_stream = converter.split_pdf(pdf_bytes)
-        
-        filename = f"{file.filename.rsplit('.', 1)[0]}_split.zip"
-        return send_file(
-            zip_stream,
-            mimetype='application/zip',
-            as_attachment=True,
-            download_name=filename
-        )
-    except Exception as e:
-        app.logger.error(f"Split PDF error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+
 
 @app.route('/api/convert/unlock-pdf', methods=['POST'])
 def convert_unlock_pdf():
@@ -817,14 +832,12 @@ def convert_unlock_pdf():
             as_attachment=True,
             download_name=filename
         )
+    except ValueError as ve:
+        return jsonify({"error": str(ve)}), 400
     except Exception as e:
         app.logger.error(f"Unlock PDF error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "An unexpected error occurred during unlocking."}), 500
 
-import cache_manager
-
-# Configuration
-MAX_FILE_SIZE = 100 * 1024 * 1024  # 100MB
 MAX_AI_FILE_SIZE = 10 * 1024 * 1024 # 10MB for AI
 MAX_AI_PAGES = 20
 

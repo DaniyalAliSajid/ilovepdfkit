@@ -33,7 +33,7 @@ export default function PdfToolsForStudentsPage() {
       toolSpotlights={[
         { name: 'Compress PDF', href: '/compress-pdf', description: 'Shrink massive assignments to bypass strict portal file-size limits.', icon: BookOpen },
         { name: 'Merge PDF', href: '/merge-pdf', description: 'Stitch separate essay drafts and bibliographies into one master file.', icon: GraduationCap },
-        { name: 'Split PDF', href: '/split-pdf', description: 'Extract a single required reading chapter from a massive 500-page textbook PDF.', icon: PenTool },
+        { name: 'Delete PDF Pages', href: '/delete-pdf-pages', description: 'Remove unwanted pages or blank scans from your assignments visually.', icon: PenTool },
         { name: 'PDF to Word', href: '/pdf-to-word', description: 'Convert locked handouts into editable Word files to take your own notes.', icon: CheckCircle },
       ]}
       midCTA={{ text: 'Explore All Tools â†’', href: '/' }}
