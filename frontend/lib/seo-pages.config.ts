@@ -36,6 +36,9 @@ export const SEO_PAGES_CONFIG: SEOPageConfig[] = [
   { slug: 'compress-pdf-to-300kb', keyword: 'compress pdf to 300kb', tool: 'compress-pdf', modifier: 'size', page_type: 'A', angle: 'speed', cluster: 'compress', themeColor: '#10b981', phase: 1 },
   { slug: 'compress-pdf-to-500kb', keyword: 'compress pdf to 500kb', tool: 'compress-pdf', modifier: 'size', page_type: 'A', angle: 'quality', cluster: 'compress', themeColor: '#10b981', phase: 1 },
   { slug: 'compress-pdf-under-1mb', keyword: 'compress pdf under 1mb', tool: 'compress-pdf', modifier: 'size', page_type: 'A', angle: 'use-case', cluster: 'compress', themeColor: '#10b981', phase: 1 },
+  { slug: 'compress-pdf-to-150kb', keyword: 'compress pdf to 150kb', tool: 'compress-pdf', modifier: 'size', page_type: 'A', angle: 'problem', cluster: 'compress', themeColor: '#10b981', phase: 1 },
+  { slug: 'compress-pdf-to-250kb', keyword: 'compress pdf to 250kb', tool: 'compress-pdf', modifier: 'size', page_type: 'A', angle: 'use-case', cluster: 'compress', themeColor: '#10b981', phase: 1 },
+  { slug: 'compress-pdf-to-1mb', keyword: 'compress pdf to 1mb', tool: 'compress-pdf', modifier: 'size', page_type: 'A', angle: 'problem', cluster: 'compress', themeColor: '#10b981', phase: 1 },
 
   // COMPRESS — USE-CASE
   { slug: 'compress-pdf-for-email', keyword: 'compress pdf for email', tool: 'compress-pdf', modifier: 'email', page_type: 'A', angle: 'use-case', cluster: 'compress', themeColor: '#10b981', phase: 1 },
@@ -43,6 +46,9 @@ export const SEO_PAGES_CONFIG: SEOPageConfig[] = [
   { slug: 'compress-pdf-for-job-application', keyword: 'compress pdf for job application', tool: 'compress-pdf', modifier: 'job', page_type: 'A', angle: 'use-case', cluster: 'compress', themeColor: '#10b981', phase: 1 },
   { slug: 'compress-pdf-without-losing-quality', keyword: 'compress pdf without losing quality', tool: 'compress-pdf', modifier: 'quality', page_type: 'A', angle: 'quality', cluster: 'compress', themeColor: '#10b981', phase: 1 },
   { slug: 'compress-pdf-no-login', keyword: 'compress pdf no login', tool: 'compress-pdf', modifier: 'no-login', page_type: 'A', angle: 'privacy', cluster: 'compress', themeColor: '#10b981', phase: 1 },
+  { slug: 'compress-pdf-for-upload', keyword: 'compress pdf for upload', tool: 'compress-pdf', modifier: 'upload', page_type: 'A', angle: 'problem', cluster: 'compress', themeColor: '#10b981', phase: 1 },
+  { slug: 'compress-pdf-fast-online', keyword: 'compress pdf fast online', tool: 'compress-pdf', modifier: 'fast', page_type: 'A', angle: 'speed', cluster: 'compress', themeColor: '#10b981', phase: 1 },
+  { slug: 'compress-pdf-high-quality', keyword: 'compress pdf high quality', tool: 'compress-pdf', modifier: 'quality', page_type: 'A', angle: 'quality', cluster: 'compress', themeColor: '#10b981', phase: 1 },
 
   // COMPRESS — PROBLEM
   { slug: 'reduce-pdf-size-for-upload', keyword: 'reduce pdf size for upload', tool: 'compress-pdf', modifier: 'upload', page_type: 'A', angle: 'problem', cluster: 'compress', themeColor: '#10b981', phase: 1 },
@@ -61,6 +67,11 @@ export const SEO_PAGES_CONFIG: SEOPageConfig[] = [
   { slug: 'rearrange-pdf-pages-online', keyword: 'rearrange pdf pages online', tool: 'delete-pdf-pages', modifier: 'reorder', page_type: 'A', angle: 'use-case', cluster: 'organize', themeColor: '#8b5cf6', phase: 1 },
 
   // CONVERT
+  { slug: 'excel-to-pdf-online-free', keyword: 'excel to pdf online free', tool: 'excel-to-pdf', modifier: 'free', page_type: 'A', angle: 'speed', cluster: 'convert', themeColor: '#6d28d9', phase: 1 },
+  { slug: 'excel-to-pdf-without-formatting', keyword: 'excel to pdf without formatting', tool: 'excel-to-pdf', modifier: 'formatting', page_type: 'A', angle: 'problem', cluster: 'convert', themeColor: '#6d28d9', phase: 1 },
+  { slug: 'excel-to-pdf-fast', keyword: 'excel to pdf fast', tool: 'excel-to-pdf', modifier: 'fast', page_type: 'A', angle: 'speed', cluster: 'convert', themeColor: '#6d28d9', phase: 1 },
+  { slug: 'excel-to-pdf-no-login', keyword: 'excel to pdf no login', tool: 'excel-to-pdf', modifier: 'no-login', page_type: 'A', angle: 'privacy', cluster: 'convert', themeColor: '#6d28d9', phase: 1 },
+  { slug: 'convert-excel-to-pdf-high-quality', keyword: 'convert excel to pdf high quality', tool: 'excel-to-pdf', modifier: 'quality', page_type: 'A', angle: 'quality', cluster: 'convert', themeColor: '#6d28d9', phase: 1 },
   { slug: 'pdf-to-word-editable', keyword: 'pdf to word editable', tool: 'pdf-to-word', modifier: 'editable', page_type: 'A', angle: 'use-case', cluster: 'convert', themeColor: '#6d28d9', phase: 1 },
   { slug: 'pdf-to-excel-online', keyword: 'pdf to excel online', tool: 'pdf-to-excel', modifier: 'excel', page_type: 'A', angle: 'use-case', cluster: 'convert', themeColor: '#6d28d9', phase: 1 },
   { slug: 'pdf-to-jpg-high-quality', keyword: 'pdf to jpg high quality', tool: 'pdf-to-jpg', modifier: 'quality', page_type: 'A', angle: 'quality', cluster: 'convert', themeColor: '#6d28d9', phase: 1 },
@@ -91,7 +102,6 @@ export const SEO_PAGES_CONFIG: SEOPageConfig[] = [
   { slug: 'ilovepdf-alternative-free', keyword: 'ilovepdf alternative free', tool: 'general', modifier: 'comparison', page_type: 'D', angle: 'comparison', cluster: 'general', themeColor: '#6d28d9', phase: 1 },
 
   // ─── PHASE 2 (commented out — not built yet) ────────────────────────────
-  // { slug: 'compress-pdf-to-1mb', keyword: 'compress pdf to 1mb', tool: 'compress-pdf', modifier: 'size', page_type: 'A', angle: 'use-case', cluster: 'compress', themeColor: '#10b981', phase: 2 },
   // { slug: 'compress-pdf-for-google-drive', keyword: 'compress pdf for google drive', tool: 'compress-pdf', modifier: 'cloud', page_type: 'A', angle: 'use-case', cluster: 'compress', themeColor: '#10b981', phase: 2 },
   // { slug: 'watermark-pdf-online', keyword: 'watermark pdf online', tool: 'watermark-pdf', modifier: 'watermark', page_type: 'A', angle: 'use-case', cluster: 'security', themeColor: '#1e3a8a', phase: 2 },
 ];

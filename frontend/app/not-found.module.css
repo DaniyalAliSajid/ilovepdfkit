@@ -1,0 +1,195 @@
+.container {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.errorCode {
+  font-size: 6rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-600, #6d28d9) 0%, var(--primary-400, #c4b5fd) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--gray-900, #0f172a);
+}
+
+.description {
+  font-size: 1.125rem;
+  color: var(--text-secondary, #475569);
+  max-width: 500px;
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+}
+
+.buttonContainer {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 3.5rem;
+  width: 100%;
+}
+
+.primaryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: var(--primary-600, #6d28d9);
+  color: white;
+  border-radius: 9999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+  width: 100%;
+  justify-content: center;
+}
+
+.primaryButton:hover {
+  background: var(--primary-700, #5b21b6);
+  box-shadow: var(--shadow-md, 0 4px 6px rgba(0,0,0,0.1));
+  transform: translateY(-2px);
+}
+
+.outlineButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: white;
+  color: var(--primary-600, #6d28d9);
+  border: 1.5px solid var(--gray-200, #e2e8f0);
+  border-radius: 9999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  justify-content: center;
+  box-shadow: var(--shadow-xs, 0 1px 2px rgba(0,0,0,0.05));
+}
+
+.outlineButton:hover {
+  background: var(--gray-50, #f8fafc);
+  border-color: var(--primary-200, #ede9fe);
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+  transform: translateY(-1px);
+}
+
+/* Tools Grid */
+.toolsSection {
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 3.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--gray-900, #0f172a);
+}
+
+.toolsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.toolCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: white;
+  border: 1.5px solid var(--gray-200, #e2e8f0);
+  border-radius: 1rem;
+  text-decoration: none;
+  color: var(--gray-800, #1e293b);
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+}
+
+.toolCard:hover {
+  border-color: var(--primary-300, #ddd6fe);
+  box-shadow: var(--shadow-md, 0 4px 6px rgba(0,0,0,0.1));
+  transform: translateY(-2px);
+}
+
+.toolIcon {
+  color: var(--primary-600, #6d28d9);
+  margin-bottom: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.toolCard:hover .toolIcon {
+  transform: scale(1.1);
+}
+
+.toolName {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Links Grid */
+.linksSection {
+  width: 100%;
+  max-width: 800px;
+}
+
+.linksGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.internalLink {
+  color: var(--gray-600, #475569);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 1.25rem;
+  border-radius: 9999px;
+  background: white;
+  border: 1.5px solid var(--gray-200, #e2e8f0);
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.internalLink:hover {
+  color: var(--primary-700, #5b21b6);
+  background: var(--primary-50, #faf5ff);
+  border-color: var(--primary-200, #ede9fe);
+  transform: translateY(-1px);
+}
+
+/* Desktop sizing */
+@media (min-width: 640px) {
+  .errorCode {
+    font-size: 8rem;
+  }
+  .title {
+    font-size: 2.5rem;
+  }
+  .description {
+    font-size: 1.25rem;
+  }
+  .primaryButton, .outlineButton {
+    width: auto;
+  }
+  .toolsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

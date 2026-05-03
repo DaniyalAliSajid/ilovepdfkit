@@ -41,6 +41,12 @@ const CLUSTER_MAP: Record<string, ClusterEntry> = {
   'reduce-pdf-size-for-upload':         { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
   'pdf-file-too-large-fix':             { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'split-pdf' },
   'how-to-compress-pdf-to-100kb':       { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-pdf-to-150kb':              { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-pdf-to-250kb':              { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-pdf-to-1mb':                { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-pdf-for-upload':            { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-pdf-fast-online':           { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'pdf-to-word' },
+  'compress-pdf-high-quality':          { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'pdf-to-word' },
 
   // ── ORGANIZE ─────────────────────────────────────────────────────────────
   'merge-pdf-online-free':              { cluster: 'organize', primary: 'merge-pdf', crossCluster: 'compress-pdf' },
@@ -61,6 +67,11 @@ const CLUSTER_MAP: Record<string, ClusterEntry> = {
   'pdf-to-jpg-high-quality':            { cluster: 'convert', primary: 'pdf-to-jpg', crossCluster: 'compress-pdf' },
   'jpg-to-pdf-no-login':                { cluster: 'convert', primary: 'jpg-to-pdf', crossCluster: 'compress-pdf' },
   'word-to-pdf-online-free':            { cluster: 'convert', primary: 'word-to-pdf', crossCluster: 'compress-pdf' },
+  'excel-to-pdf-online-free':           { cluster: 'convert', primary: 'excel-to-pdf', crossCluster: 'compress-pdf' },
+  'excel-to-pdf-without-formatting':    { cluster: 'convert', primary: 'excel-to-pdf', crossCluster: 'merge-pdf' },
+  'excel-to-pdf-fast':                  { cluster: 'convert', primary: 'excel-to-pdf', crossCluster: 'compress-pdf' },
+  'excel-to-pdf-no-login':              { cluster: 'convert', primary: 'excel-to-pdf', crossCluster: 'protect-pdf' },
+  'convert-excel-to-pdf-high-quality':  { cluster: 'convert', primary: 'excel-to-pdf', crossCluster: 'compress-pdf' },
 
   // ── SECURITY ─────────────────────────────────────────────────────────────
   'remove-password-from-pdf':           { cluster: 'security', primary: 'unlock-pdf', crossCluster: 'compress-pdf' },
@@ -95,6 +106,7 @@ const ANCHOR_VARIATIONS: Record<string, string[]> = {
   'protect-pdf':      ['protect PDF with password', 'encrypt your PDF', 'password-protect PDF', 'secure PDF file'],
   'unlock-pdf':       ['remove PDF password', 'unlock PDF free', 'decrypt your PDF', 'PDF password remover'],
   'add-page-numbers': ['add page numbers to PDF', 'number PDF pages', 'paginate your PDF', 'PDF page numbering'],
+  'excel-to-pdf':     ['Excel to PDF free', 'convert Excel to PDF', 'spreadsheet to PDF', 'XLSX to PDF'],
 };
 
 /** Deterministic anchor text rotation — same (slug, tool) pair always → same anchor */
