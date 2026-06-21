@@ -11,7 +11,6 @@ import {
     splitPdfLocal,
     deletePdfPagesLocal,
     imagesToPdfLocal,
-    unlockPdfLocal,
     addPageNumbersLocal
 } from '../lib/pdfUtils';
 
@@ -340,7 +339,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
         try {
             const localTools = [
                 'merge-pdf', 'rotate-pdf', 'split-pdf', 'delete-pdf-pages',
-                'jpg-to-pdf', 'png-to-pdf', 'unlock-pdf', 'add-page-numbers'
+                'jpg-to-pdf', 'png-to-pdf', 'add-page-numbers'
             ];
 
             let blob: Blob | null = null;
@@ -399,12 +398,11 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                     }
                     else if (type === 'delete-pdf-pages') resultBytes = await deletePdfPagesLocal(file!, pagesToDelete);
                     else if (type === 'jpg-to-pdf' || type === 'png-to-pdf') resultBytes = await imagesToPdfLocal(files);
-                    else if (type === 'unlock-pdf') resultBytes = await unlockPdfLocal(file!, unlockPassword);
                     else if (type === 'add-page-numbers') resultBytes = await addPageNumbersLocal(file!, { position: pageNumberPosition, margin: pageNumberMargin, firstNumber, pageMode, isCoverPage: isCoverPage.toString() });
                     else throw new Error("Local tool not implemented");
 
                     setProgress(100);
-                    blob = new Blob([resultBytes], { type: isZip ? 'application/zip' : 'application/pdf' });
+                    blob = new Blob([resultBytes as any], { type: isZip ? 'application/zip' : 'application/pdf' });
 
                     if (type === 'merge-pdf') outputFileName = 'merged.pdf';
                     else if (config.multi) outputFileName = `converted_images.pdf`;

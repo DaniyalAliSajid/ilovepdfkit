@@ -102,13 +102,7 @@ export const imagesToPdfLocal = async (files: File[]): Promise<Uint8Array> => {
     return await pdfDoc.save();
 };
 
-export const unlockPdfLocal = async (file: File, password?: string): Promise<Uint8Array> => {
-    const buffer = await fileToArrayBuffer(file);
-    // Loading with password will decrypt it
-    const pdfDoc = await PDFDocument.load(buffer, { password: password || '' });
-    // Saving without password saves it unencrypted
-    return await pdfDoc.save();
-};
+
 
 export const addPageNumbersLocal = async (file: File, options: any): Promise<Uint8Array> => {
     const buffer = await fileToArrayBuffer(file);
