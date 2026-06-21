@@ -5,6 +5,16 @@ import { Download, CheckCircle, XCircle, Clock, RotateCw, RotateCcw, FileCheck }
 import { saveAs } from 'file-saver';
 import FileDropzone from './FileDropzone';
 import styles from './Converter.module.css';
+import {
+    mergePdfsLocal,
+    rotatePdfLocal,
+    splitPdfLocal,
+    deletePdfPagesLocal,
+    imagesToPdfLocal,
+    unlockPdfLocal,
+    addPageNumbersLocal
+} from '../lib/pdfUtils';
+
 
 interface ConverterProps {
     type: 'pdf-to-word' | 'word-to-pdf' | 'pdf-to-jpg' | 'jpg-to-pdf' | 'ppt-to-pdf' | 'rotate-pdf' | 'merge-pdf' | 'pdf-to-ppt' | 'add-page-numbers' | 'pdf-to-excel' | 'excel-to-pdf' | 'delete-pdf-pages' | 'protect-pdf' | 'pdf-to-png' | 'png-to-pdf' | 'compress-pdf' | 'unlock-pdf' | 'split-pdf';
@@ -207,6 +217,8 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
     const [unlockPassword, setUnlockPassword] = useState<string>('');
     const [splitMode, setSplitMode] = useState<'single' | 'range' | 'extract'>('single');
     const [splitData, setSplitData] = useState('');
+    const [pagesToDelete, setPagesToDelete] = useState('');
+
 
     const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
     if (!config) return null;
@@ -234,6 +246,7 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
         setUnlockPassword('');
         setSplitMode('single');
         setSplitData('');
+        setPagesToDelete('');
     };
 
     const handleConvert = async () => {
@@ -313,54 +326,116 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
 
 
 
+        if (type === 'delete-pdf-pages') {
+            formData.append('pages_to_delete', pagesToDelete);
+        }
+
+        const totalSize = files.reduce((acc, f) => acc + f.size, 0) + (file ? file.size : 0);
+        if (totalSize > 50 * 1024 * 1024) {
+            setError('File is too large for browser processing. Please upload a file smaller than 50MB.');
+            setLoading(false);
+            return;
+        }
+
         try {
-            const progressInterval = setInterval(() => {
-                setProgress((prev) => (prev < 90 ? prev + 10 : prev));
-            }, 500);
+            const localTools = [
+                'merge-pdf', 'rotate-pdf', 'split-pdf', 'delete-pdf-pages',
+                'jpg-to-pdf', 'png-to-pdf', 'unlock-pdf', 'add-page-numbers'
+            ];
 
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                body: formData,
-            });
+            let blob: Blob | null = null;
+            let outputFileName: string = '';
 
-            clearInterval(progressInterval);
-            setProgress(100);
+            const executeBackendConversion = async () => {
+                const progressInterval = setInterval(() => {
+                    setProgress((prev) => (prev < 90 ? prev + 10 : prev));
+                }, 500);
 
-            if (!response.ok) {
-                let errorMessage = 'Conversion failed';
-                try {
-                    const errorJson = await response.json();
-                    errorMessage = errorJson.error || errorJson.details || errorMessage;
-                } catch (e) {
-                    errorMessage = `Server Error: ${response.status} ${response.statusText}`;
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                clearInterval(progressInterval);
+                setProgress(100);
+
+                if (!response.ok) {
+                    let errorMessage = 'Conversion failed';
+                    try {
+                        const errorJson = await response.json();
+                        errorMessage = errorJson.error || errorJson.details || errorMessage;
+                    } catch (e) {
+                        errorMessage = `Server Error: ${response.status} ${response.statusText}`;
+                    }
+                    throw new Error(errorMessage);
                 }
-                throw new Error(errorMessage);
-            }
-            // 4. Handle conversion result
-            const blob = await response.blob();
-
-            if (blob.size === 0) {
-                throw new Error("Received an empty file from the server.");
-            }
+                
+                const b = await response.blob();
+                if (b.size === 0) {
+                    throw new Error("Received an empty file from the server.");
+                }
+                return b;
+            };
 
             const originalName = file?.name || 'document';
             const nameParts = originalName.split('.');
             if (nameParts.length > 1) nameParts.pop();
             const baseName = nameParts.join('.');
-            let outputFileName;
-            if (type === 'merge-pdf') {
-                outputFileName = 'merged.pdf';
-            } else if (config.multi) {
-                outputFileName = `converted_images.pdf`;
-            } else {
-                let extension = config.extension;
-                if (type === 'split-pdf' && splitMode === 'single') {
-                    extension = '.zip';
+
+            let localSuccess = false;
+
+            if (localTools.includes(type)) {
+                try {
+                    setProgress(50);
+                    let resultBytes: Uint8Array;
+                    let isZip = false;
+
+                    if (type === 'merge-pdf') resultBytes = await mergePdfsLocal(files);
+                    else if (type === 'rotate-pdf') resultBytes = await rotatePdfLocal(file!, angle);
+                    else if (type === 'split-pdf') {
+                        const res = await splitPdfLocal(file!, splitMode, splitData);
+                        resultBytes = res.data;
+                        isZip = res.isZip;
+                    }
+                    else if (type === 'delete-pdf-pages') resultBytes = await deletePdfPagesLocal(file!, pagesToDelete);
+                    else if (type === 'jpg-to-pdf' || type === 'png-to-pdf') resultBytes = await imagesToPdfLocal(files);
+                    else if (type === 'unlock-pdf') resultBytes = await unlockPdfLocal(file!, unlockPassword);
+                    else if (type === 'add-page-numbers') resultBytes = await addPageNumbersLocal(file!, { position: pageNumberPosition, margin: pageNumberMargin, firstNumber, pageMode, isCoverPage: isCoverPage.toString() });
+                    else throw new Error("Local tool not implemented");
+
+                    setProgress(100);
+                    blob = new Blob([resultBytes], { type: isZip ? 'application/zip' : 'application/pdf' });
+
+                    if (type === 'merge-pdf') outputFileName = 'merged.pdf';
+                    else if (config.multi) outputFileName = `converted_images.pdf`;
+                    else outputFileName = `${baseName}${isZip ? '.zip' : config.extension}`;
+
+                    localSuccess = true;
+                } catch (localErr) {
+                    console.warn("Local processing failed, falling back to backend...", localErr);
+                    setProgress(0); // Reset progress for backend fallback
                 }
-                outputFileName = `${baseName}${extension}`;
             }
 
-            // 5. Trigger Auto-download (User Requirements 4 & 6)
+            if (!localTools.includes(type) || (!localSuccess && localTools.includes(type))) {
+                blob = await executeBackendConversion();
+                
+                if (type === 'merge-pdf') {
+                    outputFileName = 'merged.pdf';
+                } else if (config.multi) {
+                    outputFileName = `converted_images.pdf`;
+                } else {
+                    let extension = config.extension;
+                    if (type === 'split-pdf' && splitMode === 'single') {
+                        extension = '.zip';
+                    }
+                    outputFileName = `${baseName}${extension}`;
+                }
+            }
+
+            if (!blob) throw new Error("Conversion failed entirely.");
+
+            // 5. Trigger Auto-download
             // We use a virtual anchor element to trigger the browser's download dialog automatically
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -583,6 +658,22 @@ const Converter: React.FC<ConverterProps> = ({ type }) => {
                             <p className={styles.historyMeta} style={{ marginTop: '0.5rem' }}>
                                 If the PDF has an owner password, we'll attempt to remove restrictions.
                             </p>
+                        </div>
+                    </div>
+                )}
+
+                {type === 'delete-pdf-pages' && (
+                    <div className={styles.optionsContainer}>
+                        <div className={styles.formGroup}>
+                            <p className={styles.optionLabel}>Pages to Delete (comma separated):</p>
+                            <input
+                                type="text"
+                                className={styles.selectInput}
+                                placeholder="e.g. 1, 3, 5-7"
+                                value={pagesToDelete}
+                                onChange={(e) => setPagesToDelete(e.target.value)}
+                                style={{ width: '100%', padding: '0.8rem' }}
+                            />
                         </div>
                     </div>
                 )}
