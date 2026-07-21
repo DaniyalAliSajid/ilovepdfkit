@@ -47,12 +47,14 @@ interface FAQProps {
     customFaqs?: FAQData[];
     title?: string;
     subtitle?: string;
+    renderSchema?: boolean;
 }
 
 export default function FAQ({
     customFaqs,
     title = "Frequently Asked Questions",
-    subtitle = "Everything you need to know about iLovePDFKit"
+    subtitle = "Everything you need to know about iLovePDFKit",
+    renderSchema = true
 }: FAQProps) {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
 
@@ -118,25 +120,27 @@ export default function FAQ({
             </section>
 
             {/* Schema.org JSON-LD for SEO */}
-            <Script
-                id={`faq-schema-${title.replace(/\s+/g, '-').toLowerCase()}`}
-                type="application/ld+json"
-                strategy="afterInteractive"
-                dangerouslySetInnerHTML={{
-                    __html: JSON.stringify({
-                        '@context': 'https://schema.org',
-                        '@type': 'FAQPage',
-                        mainEntity: faqs.map((faq) => ({
-                            '@type': 'Question',
-                            name: faq.question,
-                            acceptedAnswer: {
-                                '@type': 'Answer',
-                                text: faq.answer
-                            }
-                        }))
-                    })
-                }}
-            />
+            {renderSchema && (
+                <Script
+                    id={`faq-schema-${title.replace(/\s+/g, '-').toLowerCase()}`}
+                    type="application/ld+json"
+                    strategy="afterInteractive"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            '@context': 'https://schema.org',
+                            '@type': 'FAQPage',
+                            mainEntity: faqs.map((faq) => ({
+                                '@type': 'Question',
+                                name: faq.question,
+                                acceptedAnswer: {
+                                    '@type': 'Answer',
+                                    text: faq.answer
+                                }
+                            }))
+                        })
+                    }}
+                />
+            )}
         </>
     );
 }

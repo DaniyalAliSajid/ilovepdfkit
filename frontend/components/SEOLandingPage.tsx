@@ -62,11 +62,58 @@ export default function SEOLandingPage(props: SEOLandingPageProps) {
     };
   }
 
+  // Supplement FAQs if they are too few (ensure at least 4 FAQs for better SEO/AEO search presence)
+  const defaultGeneralFaqs = [
+    {
+      question: 'Is my data secure when using iLovePDFKit?',
+      answer: 'Yes, absolutely. Your files are processed securely and are never stored on our servers. All conversions happen in real-time, and files are automatically deleted after processing. We prioritize your privacy and data security.'
+    },
+    {
+      question: 'Do I need to create an account to use these tools?',
+      answer: 'No account or login is required! iLovePDFKit is completely free to use without any registration. Simply upload your file, process it, and download the output instantly.'
+    },
+    {
+      question: 'Will my document formatting be preserved after processing?',
+      answer: 'Yes! iLovePDFKit uses high-precision algorithms to maintain pixel-perfect formatting, fonts, images, and layouts from your original document.'
+    },
+    {
+      question: 'Is there a file size limit for free conversions?',
+      answer: 'Currently, we support files up to 50MB for optimal performance. For larger files, we recommend splitting them into smaller documents first.'
+    }
+  ];
+
+  const supplementedFaqs = [...props.faqs];
+  for (const defaultFaq of defaultGeneralFaqs) {
+    if (supplementedFaqs.length >= 4) break;
+    if (!supplementedFaqs.some(f => f.question.toLowerCase() === defaultFaq.question.toLowerCase())) {
+      supplementedFaqs.push(defaultFaq);
+    }
+  }
+
+  let faqSchema = null;
+  if (supplementedFaqs.length > 0) {
+    faqSchema = {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": supplementedFaqs.map((faq) => ({
+        "@type": "Question",
+        "name": faq.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": faq.answer
+        }
+      }))
+    };
+  }
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       {howToSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }} />
+      )}
+      {faqSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       )}
 
       {/* 1. Hero & Breadcrumbs */}
@@ -268,7 +315,8 @@ export default function SEOLandingPage(props: SEOLandingPageProps) {
         <FAQ
           title={props.faqTitle}
           subtitle={props.faqSubtitle}
-          customFaqs={props.faqs}
+          customFaqs={supplementedFaqs}
+          renderSchema={false}
         />
       </div>
 
