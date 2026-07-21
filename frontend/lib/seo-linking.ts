@@ -79,13 +79,73 @@ const CLUSTER_MAP: Record<string, ClusterEntry> = {
   'protect-pdf-with-password':          { cluster: 'security', primary: 'protect-pdf', crossCluster: 'compress-pdf' },
   'add-page-numbers-to-pdf':            { cluster: 'security', primary: 'add-page-numbers', crossCluster: 'merge-pdf' },
 
-  // ── GENERAL (audience + comparison) ─────────────────────────────────────
-  // primary: '' → resolves to homepage CTA
+  // ── COMPRESS PHASE 2 ─────────────────────────────────────────────────────
+  'compress-pdf-to-50kb':              { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-pdf-to-300kb-online':       { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'protect-pdf' },
+  'compress-pdf-for-gmail':             { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-pdf-for-google-drive':      { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-pdf-for-portal-upload':     { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-scanned-pdf':               { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'pdf-to-word' },
+  'compress-pdf-on-mac':                { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'merge-pdf' },
+  'compress-pdf-mobile-free':           { cluster: 'compress', primary: 'compress-pdf', crossCluster: 'jpg-to-pdf' },
+
+  // ── ORGANIZE PHASE 2 ─────────────────────────────────────────────────────
+  'merge-scanned-pdf-files':           { cluster: 'organize', primary: 'merge-pdf', crossCluster: 'compress-pdf' },
+  'combine-pdf-files-free':            { cluster: 'organize', primary: 'merge-pdf', crossCluster: 'compress-pdf' },
+  'merge-pdf-large-files':             { cluster: 'organize', primary: 'merge-pdf', crossCluster: 'compress-pdf' },
+  'split-pdf-into-single-pages':        { cluster: 'organize', primary: 'split-pdf', crossCluster: 'compress-pdf' },
+  'extract-specific-pages-from-pdf':    { cluster: 'organize', primary: 'split-pdf', crossCluster: 'pdf-to-word' },
+  'remove-blank-pages-from-pdf':        { cluster: 'organize', primary: 'delete-pdf-pages', crossCluster: 'compress-pdf' },
+  'rotate-and-save-pdf':               { cluster: 'organize', primary: 'delete-pdf-pages', crossCluster: 'merge-pdf' },
+  'organize-pdf-pages-free':           { cluster: 'organize', primary: 'delete-pdf-pages', crossCluster: 'merge-pdf' },
+
+  // ── CONVERT PHASE 2 ──────────────────────────────────────────────────────
+  'pdf-to-word-without-losing-formatting': { cluster: 'convert', primary: 'pdf-to-word', crossCluster: 'compress-pdf' },
+  'convert-scanned-pdf-to-word':        { cluster: 'convert', primary: 'pdf-to-word', crossCluster: 'compress-pdf' },
+  'pdf-to-docx-converter-free':         { cluster: 'convert', primary: 'pdf-to-word', crossCluster: 'compress-pdf' },
+  'convert-pdf-to-excel-with-columns':  { cluster: 'convert', primary: 'pdf-to-excel', crossCluster: 'compress-pdf' },
+  'pdf-to-xlsx-online-free':            { cluster: 'convert', primary: 'pdf-to-excel', crossCluster: 'compress-pdf' },
+  'convert-pdf-to-powerpoint-free':     { cluster: 'convert', primary: 'pdf-to-ppt', crossCluster: 'compress-pdf' },
+  'pdf-to-ppt-editable-slides':         { cluster: 'convert', primary: 'pdf-to-ppt', crossCluster: 'compress-pdf' },
+  'ppt-to-pdf-converter-online':        { cluster: 'convert', primary: 'ppt-to-pdf', crossCluster: 'compress-pdf' },
+  'jpg-to-pdf-converter-high-resolution': { cluster: 'convert', primary: 'jpg-to-pdf', crossCluster: 'compress-pdf' },
+  'png-to-pdf-converter-free':          { cluster: 'convert', primary: 'png-to-pdf', crossCluster: 'compress-pdf' },
+  'convert-multiple-images-to-one-pdf': { cluster: 'convert', primary: 'jpg-to-pdf', crossCluster: 'compress-pdf' },
+  'word-to-pdf-high-resolution':        { cluster: 'convert', primary: 'word-to-pdf', crossCluster: 'compress-pdf' },
+  'convert-doc-to-pdf-online':          { cluster: 'convert', primary: 'word-to-pdf', crossCluster: 'compress-pdf' },
+  'pdf-to-png-transparent-hd':          { cluster: 'convert', primary: 'pdf-to-png', crossCluster: 'compress-pdf' },
+  'txt-to-pdf-online-free':             { cluster: 'convert', primary: '', crossCluster: 'compress-pdf' },
+  'html-to-pdf-converter-free':        { cluster: 'convert', primary: '', crossCluster: 'compress-pdf' },
+  'convert-vector-pdf-to-svg':          { cluster: 'convert', primary: '', crossCluster: 'compress-pdf' },
+
+  // ── SECURITY PHASE 2 ─────────────────────────────────────────────────────
+  'watermark-pdf-online-free':          { cluster: 'security', primary: 'protect-pdf', crossCluster: 'compress-pdf' },
+  'add-text-watermark-to-pdf':          { cluster: 'security', primary: 'protect-pdf', crossCluster: 'compress-pdf' },
+  'flatten-pdf-form-fields':            { cluster: 'security', primary: 'protect-pdf', crossCluster: 'compress-pdf' },
+  'redact-sensitive-info-pdf':          { cluster: 'security', primary: 'protect-pdf', crossCluster: 'compress-pdf' },
+  'sign-pdf-online-free':               { cluster: 'security', primary: 'protect-pdf', crossCluster: 'compress-pdf' },
+  'compress-password-protected-pdf':    { cluster: 'security', primary: 'compress-pdf', crossCluster: 'unlock-pdf' },
+  'unlock-pdf-without-password':        { cluster: 'security', primary: 'unlock-pdf', crossCluster: 'compress-pdf' },
+  'add-header-and-footer-to-pdf':       { cluster: 'security', primary: 'add-page-numbers', crossCluster: 'merge-pdf' },
+
+  // ── GENERAL PHASE 1 ──────────────────────────────────────────────────────
   'pdf-tools-for-students':             { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
   'pdf-tools-for-freelancers':          { cluster: 'general', primary: '', crossCluster: 'merge-pdf' },
   'pdf-tools-for-business':             { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
   'best-pdf-tools-free':                { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
   'ilovepdf-alternative-free':          { cluster: 'general', primary: '', crossCluster: 'merge-pdf' },
+
+  // ── GENERAL PHASE 2 ──────────────────────────────────────────────────────
+  'pdf-tools-for-realtors':             { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
+  'pdf-tools-for-lawyers':              { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
+  'pdf-tools-for-accountants':          { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
+  'pdf-tools-for-teachers':             { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
+  'pdf-tools-for-job-seekers':          { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
+  'smallpdf-alternative-free':          { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
+  'adobe-acrobat-alternative-free':     { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
+  'pdf2go-alternative-free':            { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
+  'sejda-alternative-free':             { cluster: 'general', primary: '', crossCluster: 'merge-pdf' },
+  'best-free-pdf-compressor-online':    { cluster: 'general', primary: '', crossCluster: 'compress-pdf' },
 };
 
 // ─── ANCHOR TEXT VARIATIONS ──────────────────────────────────────────────────
@@ -107,6 +167,10 @@ const ANCHOR_VARIATIONS: Record<string, string[]> = {
   'unlock-pdf':       ['remove PDF password', 'unlock PDF free', 'decrypt your PDF', 'PDF password remover'],
   'add-page-numbers': ['add page numbers to PDF', 'number PDF pages', 'paginate your PDF', 'PDF page numbering'],
   'excel-to-pdf':     ['Excel to PDF free', 'convert Excel to PDF', 'spreadsheet to PDF', 'XLSX to PDF'],
+  'pdf-to-ppt':       ['PDF to PowerPoint free', 'convert PDF to PPT', 'PDF to editable presentation', 'PDF to slides'],
+  'ppt-to-pdf':       ['PowerPoint to PDF free', 'convert PPT to PDF', 'presentation to PDF', 'PPTX to PDF'],
+  'pdf-to-png':       ['PDF to PNG free', 'extract PNG from PDF', 'convert PDF to PNG image', 'PDF to HD PNG'],
+  'png-to-pdf':       ['PNG to PDF free', 'convert PNG to PDF', 'image to PDF online', 'PNG document converter'],
 };
 
 /** Deterministic anchor text rotation — same (slug, tool) pair always → same anchor */

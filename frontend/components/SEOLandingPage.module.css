@@ -99,6 +99,8 @@
 .heroCta:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.1);
+  color: white !important;
 }
 
 /* Sections */
@@ -415,6 +417,8 @@
 .midCta:hover {
   transform: translateY(-2px);
   box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.2);
+  filter: brightness(1.1);
+  color: white !important;
 }
 
 /* Bottom CTA Banner */
@@ -452,6 +456,7 @@
 .ctaBannerBtn:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  filter: brightness(0.95);
 }
 
 /* Media Queries for Responsiveness */
